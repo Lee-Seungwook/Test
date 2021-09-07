@@ -3,8 +3,6 @@
 #include "pch.h"
 #include "ChildFrm.h"
 
-#include "BrightnessContrastDlg.h"
-
 // 풀 푸시 커밋 테스트 진행중입니다.
 
 // 풀 푸시 2차 테스트입니다.
