@@ -86,13 +86,19 @@
 #define ID_BITPLANE_SLICING             32808
 #define ID_32809                        32809
 #define ID_WINDOW_CLOSEALL              32810
+#define ID_32811                        32811
+#define ID_32812                        32812
+#define ID_32813                        32813
+#define ID_FILTER_MEAN                  32814
+#define ID_FILTER_WEIGHTED_MEAN         32815
+#define ID__FILTER_GAUSSIAN             32816
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        325
-#define _APS_NEXT_COMMAND_VALUE         32811
+#define _APS_NEXT_COMMAND_VALUE         32817
 #define _APS_NEXT_CONTROL_VALUE         1011
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

@@ -2,10 +2,17 @@
 #include "IppFilter.h"
 #include "stdafx.h"
 
-const float PI_F = 3.14159265358979323846f;
+#include <math.h>
+#include <time.h>
+#include <stdlib.h>
+#include <random>
+#include <algorithm>
+
+const double PI = 3.14159265358979323846;
+const float  PI_F = 3.14159265358979323846f;
 
 // 평균값 필터
-void IppFileterMean(IppByteImage& imgSrc, IppByteImage& imgDst)
+void IppFilterMean(IppByteImage& imgSrc, IppByteImage& imgDst)
 {
 	int w = imgSrc.GetWidth();
 	int h = imgSrc.GetHeight();

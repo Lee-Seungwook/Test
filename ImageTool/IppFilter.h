@@ -3,7 +3,7 @@
 #include "IppImage/IppImage.h"
 
 // 평균 값 필터 구현
-void IppFileterMean(IppByteImage& imgSrc, IppByteImage& imgDst); // imgSrc 영상에 3 x 3 크기의 마스크를 이용한 평균값 필터링을 수행, imgDst에 저장
+void IppFilterMean(IppByteImage& imgSrc, IppByteImage& imgDst); // imgSrc 영상에 3 x 3 크기의 마스크를 이용한 평균값 필터링을 수행, imgDst에 저장
 
 // 가중 평균 값 필터링 수행
 void IppFilterWeightedMean(IppByteImage& imgSrc, IppByteImage& imgDst); // imgSrc 영상에 3 x 3 크기의 마스크를 이용한 가중 평균값 필터링을 수행, imgDst에 저장

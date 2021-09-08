@@ -56,7 +56,7 @@ IppImage<T>::IppImage(int w, int h) : width(w), height(h), pixels(NULL) // 특정 
 	pixels = new T*[sizeof(T*) * height];
 	pixels[0] = new T[sizeof(T) * width * height];
 
-	for (int i = 0; i < height; i++)
+	for (int i = 1; i < height; i++)
 		pixels[i] = pixels[i - 1] + width;
 	
 	memset(pixels[0], 0, sizeof(T) * width * height); // 픽셀 값 초기화

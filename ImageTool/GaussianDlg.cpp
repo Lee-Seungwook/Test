@@ -13,7 +13,7 @@ IMPLEMENT_DYNAMIC(CGaussianDlg, CDialogEx)
 
 CGaussianDlg::CGaussianDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_GAUSSIAN, pParent)
-	, m_fSigma(0)
+	, m_fSigma(1.40f)
 {
 
 }
@@ -57,7 +57,7 @@ BOOL CGaussianDlg::OnInitDialog()
 }
 
 
-void CGaussianDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
+void CGaussianDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) // 스크롤바 위치 값 반환
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 
@@ -65,14 +65,14 @@ void CGaussianDlg::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	if (m_sliderSigma.GetSafeHwnd() == pScrollBar->GetSafeHwnd())
 	{
 		int pos = m_sliderSigma.GetPos();
-		m_fSigma = (pos / 50.0f);
+		m_fSigma = (pos / 50.f);
 		UpdateData(FALSE);
 	}
 	CDialogEx::OnHScroll(nSBCode, nPos, pScrollBar);
 }
 
 
-void CGaussianDlg::OnChangeSigmaEdit()
+void CGaussianDlg::OnChangeSigmaEdit() // 에딧 컨트롤 값 설정
 {
 	// TODO:  RICHEDIT 컨트롤인 경우, 이 컨트롤은
 	// CDialogEx::OnInitDialog() 함수를 재지정 
