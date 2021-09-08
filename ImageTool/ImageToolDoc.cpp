@@ -27,6 +27,7 @@
 #include "IppFilter.h"
 #include "GaussianDlg.h"
 #include "HighboostDlg.h"
+#include "AddNoiseDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -74,6 +75,7 @@ ON_COMMAND(ID__FILTER_GAUSSIAN, &CImageToolDoc::OnFilterGaussian)
 ON_COMMAND(ID_FILTER_LAPLACIAN, &CImageToolDoc::OnFilterLaplacian)
 ON_COMMAND(ID_FILTER_UNSHARP_MASK, &CImageToolDoc::OnFilterUnsharpMask)
 ON_COMMAND(ID_FILTER_HIGHBOOST, &CImageToolDoc::OnFilterHighboost)
+ON_COMMAND(ID_ADD_NOISE, &CImageToolDoc::OnAddNoise)
 END_MESSAGE_MAP()
 
 
@@ -551,11 +553,34 @@ void CImageToolDoc::OnFilterHighboost()
 	{
 		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
 		IppByteImage imgDst;
-		//float alpha = 1.2f;
+		//float alpha = 1.2f; // 대화상자를 새로 생성하여 알파값을 입력받기 때문에 삭제함
 		IppFilterHighboost(imgSrc, imgDst, dlg.m_fAlpha);
 		CONVERT_IMAGE_TO_DIB(imgDst, dib)
 
 		AfxPrintInfo(_T("[하이부스트 필터] 입력 영상 : %s, alpha = %4.2f"), GetTitle(), dlg.m_fAlpha);
+		AfxNewBitmap(dib);
+	}
+}
+
+
+void CImageToolDoc::OnAddNoise()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CAddNoiseDlg dlg;
+	if (dlg.DoModal() == IDOK)
+	{
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+		IppByteImage imgDst;
+
+		if (dlg.m_nNoiseType == 0)
+			IppNoiseGaussian(imgSrc, imgDst, dlg.m_nAmount);
+		else
+			IppNoiseSaltNPepper(imgSrc, imgDst, dlg.m_nAmount);
+		
+		CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+		TCHAR* noise[] = { _T("가우시안"), _T("소금 & 후추") };
+		AfxPrintInfo(_T("[잡음 추가] 입력 영상 : %s,  잡음 종류 : %s,  잡음 양 : %d"), GetTitle(), noise[dlg.m_nNoiseType], dlg.m_nAmount);
 		AfxNewBitmap(dib);
 	}
 }
