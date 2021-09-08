@@ -157,3 +157,70 @@ void IppFilterGaussian(IppByteImage& imgSrc, IppFloatImage& imgDst, float sigma)
 		pDst[j][i] = sum2 / sum1; // 출력 영상에 저장
 	}
 }
+
+
+// 라플라시안 필터 구현
+void IppFilterLaplacian(IppByteImage& imgSrc, IppByteImage& imgDst)
+{
+	int w = imgSrc.GetWidth();
+	int h = imgSrc.GetHeight();
+
+	imgDst.CreateImage(w, h); // 결과 영상을 새로 생성함으로써 모든 픽셀 값을 0으로 초기화
+
+	BYTE** pSrc = imgSrc.GetPixels2D();
+	BYTE** pDst = imgDst.GetPixels2D();
+
+	int i, j, sum;
+	for (j = 1; j < h - 1; j++) // 4방향에 대한 픽셀 값을 직접 참조하여 결과 픽셀 값을 계산
+	for (i = 1; i < w - 1; i++) // 최외곽 픽셀은 연산에서 제외
+	{
+		sum = pSrc[j - 1][i] + pSrc[j][i - 1] + pSrc[j + 1][i] + pSrc[j][i + 1] - 4 * pSrc[j][i];
+
+		pDst[j][i] = static_cast<BYTE>(limit(sum + 128));
+	}
+}
+
+
+ // 언샤프 마스크 필터링
+void IppFilterUnsharpMask(IppByteImage& imgSrc, IppByteImage& imgDst)
+{
+	int w = imgSrc.GetWidth();
+	int h = imgSrc.GetHeight();
+
+	imgDst = imgSrc;
+
+	BYTE** pSrc = imgSrc.GetPixels2D();
+	BYTE** pDst = imgDst.GetPixels2D();
+
+	int i, j, sum;
+	for (j = 1; j < h - 1; j++) // 4방향에 대한 픽셀 값을 직접 참조하여 결과 픽셀 값을 계산
+	for (i = 1; i < w - 1; i++)
+	{
+		sum = 5 * pSrc[j][i] - pSrc[j - 1][i] - pSrc[j][i - 1] - pSrc[j + 1][i] - pSrc[j][i + 1];
+
+		pDst[j][i] = static_cast<BYTE>(limit(sum));
+	}
+}
+
+
+// 하이부스트 필터
+void IppFilterHighboost(IppByteImage& imgSrc, IppByteImage& imgDst, float alpha)
+{
+	int w = imgSrc.GetWidth();
+	int h = imgSrc.GetHeight();
+
+	imgDst = imgSrc;
+
+	BYTE** pSrc = imgSrc.GetPixels2D();
+	BYTE** pDst = imgDst.GetPixels2D();
+
+	int i, j;
+	float sum;
+
+	for (j = 1; j < h - 1; j++) // 4방향에 대한 픽셀 값을 직접 참조하여 결과 픽셀 값을 계산
+	for (i = 1; i < w - 1; i++)
+	{
+		sum = (4 + alpha) * pSrc[j][i] - pSrc[j - 1][i] - pSrc[j][i - 1] - pSrc[j + 1][i] - pSrc[j][i + 1]; // alpha 값으로 명암비를 조절한다.
+		pDst[j][i] = static_cast<BYTE>(limit(sum + 0.5f)); // 반올림하여 정수형으로 전환한다.
+	}
+}

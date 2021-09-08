@@ -10,3 +10,12 @@ void IppFilterWeightedMean(IppByteImage& imgSrc, IppByteImage& imgDst); // imgSr
 
 // 가우시안 필터 구현
 void IppFilterGaussian(IppByteImage& imgSrc, IppFloatImage& imgDst, float sigma); // imgsrc 영상에 표준 편차가 sigma인 가우시안 필터링을 수행, imgDst에 저장
+
+// 라플라시안 필터
+void IppFilterLaplacian(IppByteImage& imgSrc, IppByteImage& imgDst);
+
+// 언사프 마스크 필터
+void IppFilterUnsharpMask(IppByteImage& imgSrc, IppByteImage& imgDst);
+
+// 하이부스트 필터
+void IppFilterHighboost(IppByteImage& imgSrc, IppByteImage& imgDst, float alpha);
