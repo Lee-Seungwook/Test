@@ -26,6 +26,7 @@
 
 #include "IppFilter.h"
 #include "GaussianDlg.h"
+#include "HighboostDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -545,12 +546,16 @@ void CImageToolDoc::OnFilterUnsharpMask()
 void CImageToolDoc::OnFilterHighboost()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
-	IppByteImage imgDst;
-	float alpha = 1.2f;
-	IppFilterHighboost(imgSrc, imgDst, alpha);
-	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+	CHighboostDlg dlg;
+	if (dlg.DoModal() == IDOK)
+	{
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+		IppByteImage imgDst;
+		//float alpha = 1.2f;
+		IppFilterHighboost(imgSrc, imgDst, dlg.m_fAlpha);
+		CONVERT_IMAGE_TO_DIB(imgDst, dib)
 
-	AfxPrintInfo(_T("[하이부스트 필터] 입력 영상 : %s, alpha = %4.2f"), GetTitle(), alpha);
-	AfxNewBitmap(dib);
+		AfxPrintInfo(_T("[하이부스트 필터] 입력 영상 : %s, alpha = %4.2f"), GetTitle(), dlg.m_fAlpha);
+		AfxNewBitmap(dib);
+	}
 }

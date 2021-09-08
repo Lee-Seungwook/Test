@@ -31,6 +31,7 @@
 #define IDD_HISTOGRAM                   317
 #define IDD_ARITHMETIC_LOGICAL          319
 #define IDD_GAUSSIAN                    321
+#define IDD_HIGHBOOST                   325
 #define IDC_WIDTH                       1000
 #define IDC_HEIGHT                      1001
 #define IDC_IMAGE_TYPE                  1002
@@ -48,7 +49,9 @@
 #define IDC_EDIT1                       1010
 #define IDC_SIGMA_EDIT                  1010
 #define IDC_FUNCTION5                   1011
+#define IDC_ALPHA_SLIDER                1011
 #define IDC_FUNCTION4                   1012
+#define IDC_ALPHA_EDIT                  1012
 #define IDC_FUNCTION6                   1013
 #define IDC_FUNCTION3                   1014
 #define ID_32771                        32771
@@ -103,9 +106,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        325
+#define _APS_NEXT_RESOURCE_VALUE        327
 #define _APS_NEXT_COMMAND_VALUE         32823
-#define _APS_NEXT_CONTROL_VALUE         1011
+#define _APS_NEXT_CONTROL_VALUE         1013
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif
