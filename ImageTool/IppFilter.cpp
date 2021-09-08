@@ -235,14 +235,34 @@ void IppNoiseGaussian(IppByteImage& imgSrc, IppByteImage& imgDst, int amount)
 	imgDst = imgSrc;
 	BYTE* pDst = imgDst.GetPixels();
 
-	unsigned int seed = static_cast<unsigned int>(time(NULL)); // 가우시안 난수(정상 분포 난수), 시스템 시간을 초 단위로 불러와 시드 값으로 사용
-	std::default_random_engine generator(seed); // 생성하는
-	std::normal_distribution<double> distribution(0.0, 1.0); // 코드
+	unsigned int seed = static_cast<unsigned int>(time(NULL)); //  시스템 시간을 초 단위로 불러와 시드 값으로 사용
+	std::default_random_engine generator(seed); // 
+	std::normal_distribution<double> distribution(0.0, 1.0); // 가우시안 난수(정상 분포 난수),
 
 	double rn;
 	for (int i = 0; i < size; i++)
 	{
 		rn = distribution(generator) * 255 * amount / 100;
 		pDst[i] = static_cast<BYTE>(limit(pDst[i] + rn));
+	}
+}
+
+
+// 소금 후추 잡음 생성
+void IppNoiseSaltNPepper(IppByteImage& imgSrc, IppByteImage& imgDst, int amount) // amount는 소금 후추 잡음이 추가될 픽셀의 양을 제어하는 역할
+{
+	int size = imgSrc.GetSize();
+
+	imgDst = imgSrc;
+	BYTE* pDst = imgDst.GetPixels();
+
+	unsigned int seed = static_cast<unsigned int>(time(NULL));
+	std::default_random_engine generator(seed);
+	std::uniform_int_distribution<int> distribution(0, size - 1); // 소금 후추 잡음 생성할 난수 생성
+
+	int num = size * amount / 100; // 잡음이 추가될 픽셀의 개수를 구함
+	for (int i = 0; i < num; i++)
+	{
+		pDst[distribution(generator)] = (i & 0x01) * 255; // 잡음이 추가될 좌표
 	}
 }
