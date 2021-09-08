@@ -70,6 +70,9 @@ ON_COMMAND(ID_BITPLANE_SLICING, &CImageToolDoc::OnBitplaneSlicing)
 ON_COMMAND(ID_FILTER_MEAN, &CImageToolDoc::OnFilterMean)
 ON_COMMAND(ID_FILTER_WEIGHTED_MEAN, &CImageToolDoc::OnFilterWeightedMean)
 ON_COMMAND(ID__FILTER_GAUSSIAN, &CImageToolDoc::OnFilterGaussian)
+ON_COMMAND(ID_FILTER_LAPLACIAN, &CImageToolDoc::OnFilterLaplacian)
+ON_COMMAND(ID_FILTER_UNSHARP_MASK, &CImageToolDoc::OnFilterUnsharpMask)
+ON_COMMAND(ID_FILTER_HIGHBOOST, &CImageToolDoc::OnFilterHighboost)
 END_MESSAGE_MAP()
 
 
@@ -510,4 +513,44 @@ void CImageToolDoc::OnFilterGaussian()
 		AfxNewBitmap(dib);
 	}
 
+}
+
+
+void CImageToolDoc::OnFilterLaplacian()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+	IppByteImage imgDst;
+	IppFilterLaplacian(imgSrc, imgDst);
+	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+	AfxPrintInfo(_T("[라플라시안 필터] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnFilterUnsharpMask()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+	IppByteImage imgDst;
+	IppFilterUnsharpMask(imgSrc, imgDst);
+	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+	AfxPrintInfo(_T("[언샤프 마스크 필터] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnFilterHighboost()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+	IppByteImage imgDst;
+	float alpha = 1.2f;
+	IppFilterHighboost(imgSrc, imgDst, alpha);
+	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+	AfxPrintInfo(_T("[하이부스트 필터] 입력 영상 : %s, alpha = %4.2f"), GetTitle(), alpha);
+	AfxNewBitmap(dib);
 }
