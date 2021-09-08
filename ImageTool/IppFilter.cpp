@@ -224,3 +224,25 @@ void IppFilterHighboost(IppByteImage& imgSrc, IppByteImage& imgDst, float alpha)
 		pDst[j][i] = static_cast<BYTE>(limit(sum + 0.5f)); // 반올림하여 정수형으로 전환한다.
 	}
 }
+
+
+
+// 가우시안 임의 잡음 생성 
+void IppNoiseGaussian(IppByteImage& imgSrc, IppByteImage& imgDst, int amount)
+{
+	int size = imgSrc.GetSize();
+
+	imgDst = imgSrc;
+	BYTE* pDst = imgDst.GetPixels();
+
+	unsigned int seed = static_cast<unsigned int>(time(NULL)); // 가우시안 난수(정상 분포 난수), 시스템 시간을 초 단위로 불러와 시드 값으로 사용
+	std::default_random_engine generator(seed); // 생성하는
+	std::normal_distribution<double> distribution(0.0, 1.0); // 코드
+
+	double rn;
+	for (int i = 0; i < size; i++)
+	{
+		rn = distribution(generator) * 255 * amount / 100;
+		pDst[i] = static_cast<BYTE>(limit(pDst[i] + rn));
+	}
+}

@@ -19,3 +19,7 @@ void IppFilterUnsharpMask(IppByteImage& imgSrc, IppByteImage& imgDst);
 
 // 하이부스트 필터
 void IppFilterHighboost(IppByteImage& imgSrc, IppByteImage& imgDst, float alpha);
+
+
+// 가우시안 잡음 추가
+void IppNoiseGaussian(IppByteImage& imgSrc, IppByteImage& imgDst, int amount);
