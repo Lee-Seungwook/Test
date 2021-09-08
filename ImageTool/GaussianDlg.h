@@ -23,4 +23,7 @@ protected:
 public:
 	CSliderCtrl m_sliderSigma;
 	float m_fSigma;
+	virtual BOOL OnInitDialog();
+	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
+	afx_msg void OnChangeSigmaEdit();
 };
