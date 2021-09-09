@@ -33,6 +33,10 @@
 #define IDD_GAUSSIAN                    321
 #define IDD_HIGHBOOST                   325
 #define IDD_ADD_NOISE                   327
+#define IDD_DIFFUSION                   331
+#define IDD_TRANSLATE                   333
+#define IDD_RESIZE                      335
+#define IDD_ROTATE                      338
 #define IDC_WIDTH                       1000
 #define IDC_HEIGHT                      1001
 #define IDC_IMAGE_TYPE                  1002
@@ -50,15 +54,33 @@
 #define IDC_EDIT1                       1010
 #define IDC_SIGMA_EDIT                  1010
 #define IDC_NOISE_AMOUNT                1010
+#define IDC_DIFFSION_K                  1010
+#define IDC_NEW_SX                      1010
+#define IDC_NEW_WIDTH                   1010
+#define IDC_ANGLE                       1010
 #define IDC_FUNCTION5                   1011
 #define IDC_ALPHA_SLIDER                1011
+#define IDC_DIFFUSION_ITER              1011
+#define IDC_NEW_HEIGHT                  1011
 #define IDC_FUNCTION4                   1012
 #define IDC_ALPHA_EDIT                  1012
+#define IDC_DIFFUSION_LAMBDA            1012
 #define IDC_FUNCTION6                   1013
 #define IDC_NOISE_RADIO1                1013
 #define IDC_FUNCTION3                   1014
 #define IDC_NOISE_RADIO2                1014
 #define IDC_SPIN_AMOUNT                 1016
+#define IDC_NEW_SY                      1018
+#define IDC_INTERPOLATION               1019
+#define IDC_ASPECT_RATIO                1020
+#define IDC_SPIN_WIDTH                  1021
+#define IDC_SPIN_HEIGHT                 1022
+#define IDC_OLD_WIDTH                   1023
+#define IDC_OLD_HEIGHT                  1024
+#define IDC_ROTATE1                     1025
+#define IDC_ROTATE2                     1026
+#define IDC_ROTATE3                     1027
+#define IDC_ROTATE4                     1028
 #define ID_32771                        32771
 #define ID_WINDOW_DUPLICATE             32772
 #define ID_32773                        32773
@@ -108,14 +130,29 @@
 #define ID_FILTER_HIGHBOOST             32822
 #define ID_32823                        32823
 #define ID_ADD_NOISE                    32824
+#define ID_32825                        32825
+#define ID_FILTER_MEDIAN                32826
+#define ID_32827                        32827
+#define ID_FILTER_DIFFUSION             32828
+#define ID_32829                        32829
+#define ID_IMAGE_TRANSLATION            32830
+#define ID_32831                        32831
+#define ID_IMAGE_RESIZE                 32832
+#define ID_32833                        32833
+#define ID_IMAGE_ROTATE                 32834
+#define ID_Menu                         32835
+#define ID_32836                        32836
+#define ID_32837                        32837
+#define ID_IMAGE_MIRROR                 32838
+#define ID_IMAGE_FLIP                   32839
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        329
-#define _APS_NEXT_COMMAND_VALUE         32825
-#define _APS_NEXT_CONTROL_VALUE         1017
+#define _APS_NEXT_RESOURCE_VALUE        340
+#define _APS_NEXT_COMMAND_VALUE         32840
+#define _APS_NEXT_CONTROL_VALUE         1026
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

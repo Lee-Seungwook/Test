@@ -28,6 +28,13 @@
 #include "GaussianDlg.h"
 #include "HighboostDlg.h"
 #include "AddNoiseDlg.h"
+#include "DiffusionDlg.h"
+
+#include "IppGeometry.h"
+#include "TranslateDlg.h"
+
+#include "ResizeDlg.h"
+#include "RotateDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -76,6 +83,13 @@ ON_COMMAND(ID_FILTER_LAPLACIAN, &CImageToolDoc::OnFilterLaplacian)
 ON_COMMAND(ID_FILTER_UNSHARP_MASK, &CImageToolDoc::OnFilterUnsharpMask)
 ON_COMMAND(ID_FILTER_HIGHBOOST, &CImageToolDoc::OnFilterHighboost)
 ON_COMMAND(ID_ADD_NOISE, &CImageToolDoc::OnAddNoise)
+ON_COMMAND(ID_FILTER_MEDIAN, &CImageToolDoc::OnFilterMedian)
+ON_COMMAND(ID_FILTER_DIFFUSION, &CImageToolDoc::OnFilterDiffusion)
+ON_COMMAND(ID_IMAGE_TRANSLATION, &CImageToolDoc::OnImageTranslation)
+ON_COMMAND(ID_IMAGE_RESIZE, &CImageToolDoc::OnImageResize)
+ON_COMMAND(ID_IMAGE_ROTATE, &CImageToolDoc::OnImageRotate)
+ON_COMMAND(ID_IMAGE_MIRROR, &CImageToolDoc::OnImageMirror)
+ON_COMMAND(ID_IMAGE_FLIP, &CImageToolDoc::OnImageFlip)
 END_MESSAGE_MAP()
 
 
@@ -583,4 +597,141 @@ void CImageToolDoc::OnAddNoise()
 		AfxPrintInfo(_T("[잡음 추가] 입력 영상 : %s,  잡음 종류 : %s,  잡음 양 : %d"), GetTitle(), noise[dlg.m_nNoiseType], dlg.m_nAmount);
 		AfxNewBitmap(dib);
 	}
+}
+
+
+void CImageToolDoc::OnFilterMedian()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+	IppByteImage imgDst;
+	IppFilterMedian(imgSrc, imgDst);
+	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+	AfxPrintInfo(_T("[미디언 필터] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnFilterDiffusion()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CDiffusionDlg dlg;
+	if (dlg.DoModal() == IDOK)
+	{
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+		IppFloatImage imgDst;
+		IppFilterDiffusion(imgSrc, imgDst, dlg.m_fLambda, dlg.m_fK, dlg.m_nIteration);
+		CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+		AfxPrintInfo(_T("[비등방성 확산 필터] 입력 영상 : %s, Lambda : %4.2f, K : %4.2f, 반복 횟수 : %d"), 
+			GetTitle(), dlg.m_fLambda, dlg.m_fK, dlg.m_nIteration);;
+		AfxNewBitmap(dib);
+	}
+}
+
+
+void CImageToolDoc::OnImageTranslation()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CTranslateDlg dlg;
+	if (dlg.DoModal() == IDOK)
+	{
+		if (m_Dib.GetBitCount() == 8)
+		{
+			CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+			IppByteImage imgDst;
+			IppTranslate(imgSrc, imgDst, dlg.m_nNewSX, dlg.m_nNewSY);
+			CONVERT_IMAGE_TO_DIB(imgDst, dib)
+				AfxPrintInfo(_T("[이동 변환] 입력 영상 : %s, 가로 이동 : %d, 세로 이동 : %d"), GetTitle(), dlg.m_nNewSX, dlg.m_nNewSY);
+			AfxNewBitmap(dib);
+		}
+		else if (m_Dib.GetBitCount() == 24)
+		{
+			CONVERT_DIB_TO_RGBIMAGE(m_Dib, imgSrc)
+			IppRgbImage imgDst;
+			IppTranslate(imgSrc, imgDst, dlg.m_nNewSX, dlg.m_nNewSY);
+			CONVERT_IMAGE_TO_DIB(imgDst, dib)
+			AfxPrintInfo(_T("[이동 변환] 입력 영상 : %s, 가로 이동 : %d, 세로 이동 : %d"), GetTitle(), dlg.m_nNewSX, dlg.m_nNewSY);
+			AfxNewBitmap(dib);
+		}
+	
+	}
+}
+
+
+void CImageToolDoc::OnImageResize()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CResizeDlg dlg;
+	dlg.m_nOldWidth = m_Dib.GetWidth();
+	dlg.m_nOldHeight = m_Dib.GetHeight();
+	if (dlg.DoModal() == IDOK)
+	{
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+		IppByteImage imgDst;
+		switch (dlg.m_nInterpolation)
+		{
+		case 0: IppResizeNearest(imgSrc, imgDst, dlg.m_nNewWidth, dlg.m_nNewHeight); break;
+		case 1: IppResizeBilinear(imgSrc, imgDst, dlg.m_nNewWidth, dlg.m_nNewHeight); break;
+		case 2: IppResizeCubic(imgSrc, imgDst, dlg.m_nNewWidth, dlg.m_nNewHeight); break;
+		}
+		CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+		TCHAR* interpolation[] = { _T("최근방 이웃 보간법"), _T("양선형 보간법"), _T("3차 회선 보간법") };
+		AfxPrintInfo(_T("[크기 변환] 입력 영상 : %s, , 새 가로 크기 : %d, 새 세로 크기 : %d, 보간법 : %s")
+			, GetTitle(), dlg.m_nNewWidth, dlg.m_nNewHeight, interpolation[dlg.m_nInterpolation]);
+		AfxNewBitmap(dib);
+	}
+}
+
+
+void CImageToolDoc::OnImageRotate()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CRotateDlg dlg;
+	if (dlg.DoModal() == IDOK)
+	{
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+		IppByteImage imgDst;
+		switch (dlg.m_nRotate) // 라디오 버튼 선택에 따름
+		{
+		case 0: IppRotate90(imgSrc, imgDst); break;
+		case 1: IppRotate180(imgSrc, imgDst); break;
+		case 2: IppRotate270(imgSrc, imgDst); break;
+		case 3: IppRotate(imgSrc, imgDst, (double)dlg.m_fAngle); break;
+		}
+		CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+		TCHAR* rotate[] = { _T("90도"), _T("180도"), _T("270도") };
+		if (dlg.m_nRotate != 3) // 각도 정해놓은 함수인 경우
+			AfxPrintInfo(_T("[회전 변환] 입력 영상 : %s, 회전 각도 : %s"), GetTitle(),rotate[dlg.m_nRotate]);
+		else // 각도 정해놓은 함수가 아닌 경우
+			AfxPrintInfo(_T("[회전 변환] 입력 영상 : %s, 회전 각도 : %4.2f도"), GetTitle(), dlg.m_fAngle);
+
+		AfxNewBitmap(dib);
+	}
+}
+
+
+void CImageToolDoc::OnImageMirror()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+	IppByteImage imgDst;
+	IppMirror(imgSrc, imgDst);
+	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+	AfxPrintInfo(_T("[좌우 변환] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnImageFlip()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+	IppByteImage imgDst;
+	IppFlip(imgSrc, imgDst);
+	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+	AfxPrintInfo(_T("[상하 대칭] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
 }
