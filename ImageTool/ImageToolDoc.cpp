@@ -88,6 +88,8 @@ ON_COMMAND(ID_FILTER_DIFFUSION, &CImageToolDoc::OnFilterDiffusion)
 ON_COMMAND(ID_IMAGE_TRANSLATION, &CImageToolDoc::OnImageTranslation)
 ON_COMMAND(ID_IMAGE_RESIZE, &CImageToolDoc::OnImageResize)
 ON_COMMAND(ID_IMAGE_ROTATE, &CImageToolDoc::OnImageRotate)
+ON_COMMAND(ID_IMAGE_MIRROR, &CImageToolDoc::OnImageMirror)
+ON_COMMAND(ID_IMAGE_FLIP, &CImageToolDoc::OnImageFlip)
 END_MESSAGE_MAP()
 
 
@@ -708,4 +710,28 @@ void CImageToolDoc::OnImageRotate()
 
 		AfxNewBitmap(dib);
 	}
+}
+
+
+void CImageToolDoc::OnImageMirror()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+	IppByteImage imgDst;
+	IppMirror(imgSrc, imgDst);
+	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+	AfxPrintInfo(_T("[좌우 변환] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnImageFlip()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+	IppByteImage imgDst;
+	IppFlip(imgSrc, imgDst);
+	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+	AfxPrintInfo(_T("[상하 대칭] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
 }

@@ -140,13 +140,18 @@
 #define ID_IMAGE_RESIZE                 32832
 #define ID_32833                        32833
 #define ID_IMAGE_ROTATE                 32834
+#define ID_Menu                         32835
+#define ID_32836                        32836
+#define ID_32837                        32837
+#define ID_IMAGE_MIRROR                 32838
+#define ID_IMAGE_FLIP                   32839
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        340
-#define _APS_NEXT_COMMAND_VALUE         32835
+#define _APS_NEXT_COMMAND_VALUE         32840
 #define _APS_NEXT_CONTROL_VALUE         1026
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

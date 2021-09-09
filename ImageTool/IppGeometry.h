@@ -26,3 +26,10 @@ void IppRotate90(IppByteImage& imgSrc, IppByteImage& imgDst);
 void IppRotate180(IppByteImage& imgSrc, IppByteImage& imgDst);
 // 영상의 270도 회전 변환
 void IppRotate270(IppByteImage& imgSrc, IppByteImage& imgDst);
+
+
+// 영상의 좌우 반전
+void IppMirror(IppByteImage& imgSrc, IppByteImage& imgDst);
+
+// 영상의 상하 반전
+void IppFlip(IppByteImage& imgSrc, IppByteImage& imgDst);

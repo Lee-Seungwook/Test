@@ -311,3 +311,42 @@ void IppRotate270(IppByteImage& imgSrc, IppByteImage& imgDst)
 		pDst[j][i] = pSrc[i][w - 1 - j];
 	}
 }
+
+
+// 영상의 좌우 반전 구현
+void IppMirror(IppByteImage& imgSrc, IppByteImage& imgDst)
+{
+	int w = imgSrc.GetWidth();
+	int h = imgSrc.GetHeight();
+
+	imgDst.CreateImage(w, h);
+
+	BYTE** pSrc = imgSrc.GetPixels2D();
+	BYTE** pDst = imgDst.GetPixels2D();
+
+	int i, j;
+	for (j = 0; j < h; j++)
+	for (i = 0; i < w; i++) // 변환 공식 적용
+	{
+		pDst[j][i] = pSrc[j][w - 1 - i];
+	}
+}
+
+// 영상의 상하 반전 구현
+void IppFlip(IppByteImage& imgSrc, IppByteImage& imgDst)
+{
+	int w = imgSrc.GetWidth();
+	int h = imgSrc.GetHeight();
+
+	imgDst.CreateImage(w, h);
+
+	BYTE** pSrc = imgSrc.GetPixels2D();
+	BYTE** pDst = imgDst.GetPixels2D();
+
+	int i, j;
+	for (j = 0; j < h; j++)
+	for (i = 0; i < w; i++) // 변환 공식 적용
+	{
+		pDst[j][i] = pSrc[h - 1 - j][i];
+	}
+}
