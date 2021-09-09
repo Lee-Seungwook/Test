@@ -34,6 +34,7 @@
 #include "TranslateDlg.h"
 
 #include "ResizeDlg.h"
+#include "RotateDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -86,6 +87,7 @@ ON_COMMAND(ID_FILTER_MEDIAN, &CImageToolDoc::OnFilterMedian)
 ON_COMMAND(ID_FILTER_DIFFUSION, &CImageToolDoc::OnFilterDiffusion)
 ON_COMMAND(ID_IMAGE_TRANSLATION, &CImageToolDoc::OnImageTranslation)
 ON_COMMAND(ID_IMAGE_RESIZE, &CImageToolDoc::OnImageResize)
+ON_COMMAND(ID_IMAGE_ROTATE, &CImageToolDoc::OnImageRotate)
 END_MESSAGE_MAP()
 
 
@@ -676,6 +678,34 @@ void CImageToolDoc::OnImageResize()
 		TCHAR* interpolation[] = { _T("최근방 이웃 보간법"), _T("양선형 보간법"), _T("3차 회선 보간법") };
 		AfxPrintInfo(_T("[크기 변환] 입력 영상 : %s, , 새 가로 크기 : %d, 새 세로 크기 : %d, 보간법 : %s")
 			, GetTitle(), dlg.m_nNewWidth, dlg.m_nNewHeight, interpolation[dlg.m_nInterpolation]);
+		AfxNewBitmap(dib);
+	}
+}
+
+
+void CImageToolDoc::OnImageRotate()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CRotateDlg dlg;
+	if (dlg.DoModal() == IDOK)
+	{
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+		IppByteImage imgDst;
+		switch (dlg.m_nRotate) // 라디오 버튼 선택에 따름
+		{
+		case 0: IppRotate90(imgSrc, imgDst); break;
+		case 1: IppRotate180(imgSrc, imgDst); break;
+		case 2: IppRotate270(imgSrc, imgDst); break;
+		case 3: IppRotate(imgSrc, imgDst, (double)dlg.m_fAngle); break;
+		}
+		CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+		TCHAR* rotate[] = { _T("90도"), _T("180도"), _T("270도") };
+		if (dlg.m_nRotate != 3) // 각도 정해놓은 함수인 경우
+			AfxPrintInfo(_T("[회전 변환] 입력 영상 : %s, 회전 각도 : %s"), GetTitle(),rotate[dlg.m_nRotate]);
+		else // 각도 정해놓은 함수가 아닌 경우
+			AfxPrintInfo(_T("[회전 변환] 입력 영상 : %s, 회전 각도 : %4.2f도"), GetTitle(), dlg.m_fAngle);
+
 		AfxNewBitmap(dib);
 	}
 }

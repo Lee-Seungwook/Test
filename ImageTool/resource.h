@@ -36,6 +36,7 @@
 #define IDD_DIFFUSION                   331
 #define IDD_TRANSLATE                   333
 #define IDD_RESIZE                      335
+#define IDD_ROTATE                      338
 #define IDC_WIDTH                       1000
 #define IDC_HEIGHT                      1001
 #define IDC_IMAGE_TYPE                  1002
@@ -56,6 +57,7 @@
 #define IDC_DIFFSION_K                  1010
 #define IDC_NEW_SX                      1010
 #define IDC_NEW_WIDTH                   1010
+#define IDC_ANGLE                       1010
 #define IDC_FUNCTION5                   1011
 #define IDC_ALPHA_SLIDER                1011
 #define IDC_DIFFUSION_ITER              1011
@@ -75,6 +77,10 @@
 #define IDC_SPIN_HEIGHT                 1022
 #define IDC_OLD_WIDTH                   1023
 #define IDC_OLD_HEIGHT                  1024
+#define IDC_ROTATE1                     1025
+#define IDC_ROTATE2                     1026
+#define IDC_ROTATE3                     1027
+#define IDC_ROTATE4                     1028
 #define ID_32771                        32771
 #define ID_WINDOW_DUPLICATE             32772
 #define ID_32773                        32773
@@ -132,14 +138,16 @@
 #define ID_IMAGE_TRANSLATION            32830
 #define ID_32831                        32831
 #define ID_IMAGE_RESIZE                 32832
+#define ID_32833                        32833
+#define ID_IMAGE_ROTATE                 32834
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        338
-#define _APS_NEXT_COMMAND_VALUE         32833
-#define _APS_NEXT_CONTROL_VALUE         1025
+#define _APS_NEXT_RESOURCE_VALUE        340
+#define _APS_NEXT_COMMAND_VALUE         32835
+#define _APS_NEXT_CONTROL_VALUE         1026
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

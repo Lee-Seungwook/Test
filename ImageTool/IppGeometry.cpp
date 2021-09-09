@@ -266,7 +266,7 @@ void IppRotate90(IppByteImage& imgSrc, IppByteImage& imgDst)
 
 	int i, j;
 	for (j = 0; j < w; j++)
-	for (i = 0; i < h; i++)
+	for (i = 0; i < h; i++) // 변환 공식 적용
 	{
 		pDst[j][i] = pSrc[h - 1 - i][j];
 	}
@@ -285,7 +285,7 @@ void IppRotate180(IppByteImage& imgSrc, IppByteImage& imgDst)
 
 	int i, j;
 	for (j = 0; j < h; j++)
-	for (i = 0; i < w; i++)
+	for (i = 0; i < w; i++) // 변환 공식 적용
 	{
 		pDst[j][i] = pSrc[h - 1 - j][w - 1 - i];
 	}
@@ -306,7 +306,7 @@ void IppRotate270(IppByteImage& imgSrc, IppByteImage& imgDst)
 
 	int i, j;
 	for (j = 0; j < w; j++)
-	for (i = 0; i < h; i++)
+	for (i = 0; i < h; i++) // 변환 공식 적용
 	{
 		pDst[j][i] = pSrc[i][w - 1 - j];
 	}
