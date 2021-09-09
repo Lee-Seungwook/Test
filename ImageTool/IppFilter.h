@@ -32,3 +32,6 @@ void IppNoiseSaltNPepper(IppByteImage& imgSrc, IppByteImage& imgDst, int amount)
 // 잡음 제거 
 // 미디언 필터링 함수 추가 
 void IppFilterMedian(IppByteImage& imgSrc, IppByteImage& imgDst);
+
+// 비등방성 확산 필터 함수 추가
+void IppFilterDiffusion(IppByteImage& imgSrc, IppFloatImage& imgDst, float lambda, float k, int iter);

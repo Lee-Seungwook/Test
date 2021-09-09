@@ -295,3 +295,49 @@ void IppFilterMedian(IppByteImage& imgSrc, IppByteImage& imgDst)
 	}
 
 }
+
+// 비등방성 확산 필터 구현
+void IppFilterDiffusion(IppByteImage& imgSrc, IppFloatImage& imgDst, float lambda, float k, int iter)
+{
+	int w = imgSrc.GetWidth();
+	int h = imgSrc.GetHeight();
+
+	IppFloatImage imgCpy;
+	imgCpy.Convert(imgSrc);
+
+	imgDst = imgCpy;
+
+	float** pCpy = imgCpy.GetPixels2D();
+	float** pDst = imgDst.GetPixels2D();
+
+	//-------------------------------------------------------------------------
+	// iter 횟수만큼 비등방성 확산 알고리즘 수행
+	//-------------------------------------------------------------------------
+
+	register int i, x, y;
+	float gradn, grads, grade, gradw;
+	float gcn, gcs, gce, gcw;
+	float k2 = k * k;
+
+	for (i = 0; i < iter; i++)
+	{
+		for (y = 1; y < h - 1; y++)
+		for (x = 1; x < w - 1; x++)
+		{
+			gradn = pCpy[y - 1][x] - pCpy[y][x];
+			grads = pCpy[y + 1][x] - pCpy[y][x];
+			grade = pCpy[y][x - 1] - pCpy[y][x];
+			gradw = pCpy[y][x + 1] - pCpy[y][x];
+
+			gcn = gradn / (1.0f + gradn * gradn / k2);
+			gcs = grads / (1.0f + grads * grads / k2);
+			gce = grade / (1.0f + grade * grade / k2);
+			gcw = gradw / (1.0f + gradw * gradw / k2);
+
+			pDst[y][x] = pCpy[y][x] + lambda * (gcn + gcs + gce + gcw);
+		}
+		// 버퍼 복사
+		if (i < iter - 1)
+			memcpy(imgCpy.GetPixels(), imgDst.GetPixels(), sizeof(float) * w * h);
+	}
+}
