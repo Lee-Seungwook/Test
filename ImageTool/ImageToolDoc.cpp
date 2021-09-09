@@ -28,6 +28,7 @@
 #include "GaussianDlg.h"
 #include "HighboostDlg.h"
 #include "AddNoiseDlg.h"
+#include "DiffusionDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -77,6 +78,7 @@ ON_COMMAND(ID_FILTER_UNSHARP_MASK, &CImageToolDoc::OnFilterUnsharpMask)
 ON_COMMAND(ID_FILTER_HIGHBOOST, &CImageToolDoc::OnFilterHighboost)
 ON_COMMAND(ID_ADD_NOISE, &CImageToolDoc::OnAddNoise)
 ON_COMMAND(ID_FILTER_MEDIAN, &CImageToolDoc::OnFilterMedian)
+ON_COMMAND(ID_FILTER_DIFFUSION, &CImageToolDoc::OnFilterDiffusion)
 END_MESSAGE_MAP()
 
 
@@ -596,4 +598,22 @@ void CImageToolDoc::OnFilterMedian()
 	CONVERT_IMAGE_TO_DIB(imgDst, dib)
 	AfxPrintInfo(_T("[미디언 필터] 입력 영상 : %s"), GetTitle());
 	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnFilterDiffusion()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CDiffusionDlg dlg;
+	if (dlg.DoModal() == IDOK)
+	{
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+		IppFloatImage imgDst;
+		IppFilterDiffusion(imgSrc, imgDst, dlg.m_fLambda, dlg.m_fK, dlg.m_nIteration);
+		CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+		AfxPrintInfo(_T("[비등방성 확산 필터] 입력 영상 : %s, Lambda : %4.2f, K : %4.2f, 반복 횟수 : %d"), 
+			GetTitle(), dlg.m_fLambda, dlg.m_fK, dlg.m_nIteration);;
+		AfxNewBitmap(dib);
+	}
 }

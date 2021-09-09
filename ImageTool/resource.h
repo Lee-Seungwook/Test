@@ -1,6 +1,6 @@
 ﻿//{{NO_DEPENDENCIES}}
 // Microsoft Visual C++에서 생성한 포함 파일입니다.
-// ImageTool.rc 에서 사용되고 있습니다.
+// ImageTool.rc에서 사용되고 있습니다.
 //
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             100
@@ -33,6 +33,7 @@
 #define IDD_GAUSSIAN                    321
 #define IDD_HIGHBOOST                   325
 #define IDD_ADD_NOISE                   327
+#define IDD_DIFFUSION                   331
 #define IDC_WIDTH                       1000
 #define IDC_HEIGHT                      1001
 #define IDC_IMAGE_TYPE                  1002
@@ -50,10 +51,13 @@
 #define IDC_EDIT1                       1010
 #define IDC_SIGMA_EDIT                  1010
 #define IDC_NOISE_AMOUNT                1010
+#define IDC_DIFFSION_K                  1010
 #define IDC_FUNCTION5                   1011
 #define IDC_ALPHA_SLIDER                1011
+#define IDC_DIFFUSION_ITER              1011
 #define IDC_FUNCTION4                   1012
 #define IDC_ALPHA_EDIT                  1012
+#define IDC_DIFFUSION_LAMBDA            1012
 #define IDC_FUNCTION6                   1013
 #define IDC_NOISE_RADIO1                1013
 #define IDC_FUNCTION3                   1014
@@ -110,13 +114,15 @@
 #define ID_ADD_NOISE                    32824
 #define ID_32825                        32825
 #define ID_FILTER_MEDIAN                32826
+#define ID_32827                        32827
+#define ID_FILTER_DIFFUSION             32828
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        331
-#define _APS_NEXT_COMMAND_VALUE         32827
+#define _APS_NEXT_RESOURCE_VALUE        333
+#define _APS_NEXT_COMMAND_VALUE         32829
 #define _APS_NEXT_CONTROL_VALUE         1017
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
