@@ -1,6 +1,6 @@
 ﻿//{{NO_DEPENDENCIES}}
 // Microsoft Visual C++에서 생성한 포함 파일입니다.
-// ImageTool.rc에서 사용되고 있습니다.
+// ImageTool.rc 에서 사용되고 있습니다.
 //
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             100
@@ -108,13 +108,15 @@
 #define ID_FILTER_HIGHBOOST             32822
 #define ID_32823                        32823
 #define ID_ADD_NOISE                    32824
+#define ID_32825                        32825
+#define ID_FILTER_MEDIAN                32826
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        329
-#define _APS_NEXT_COMMAND_VALUE         32825
+#define _APS_NEXT_RESOURCE_VALUE        331
+#define _APS_NEXT_COMMAND_VALUE         32827
 #define _APS_NEXT_CONTROL_VALUE         1017
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

@@ -76,6 +76,7 @@ ON_COMMAND(ID_FILTER_LAPLACIAN, &CImageToolDoc::OnFilterLaplacian)
 ON_COMMAND(ID_FILTER_UNSHARP_MASK, &CImageToolDoc::OnFilterUnsharpMask)
 ON_COMMAND(ID_FILTER_HIGHBOOST, &CImageToolDoc::OnFilterHighboost)
 ON_COMMAND(ID_ADD_NOISE, &CImageToolDoc::OnAddNoise)
+ON_COMMAND(ID_FILTER_MEDIAN, &CImageToolDoc::OnFilterMedian)
 END_MESSAGE_MAP()
 
 
@@ -583,4 +584,16 @@ void CImageToolDoc::OnAddNoise()
 		AfxPrintInfo(_T("[잡음 추가] 입력 영상 : %s,  잡음 종류 : %s,  잡음 양 : %d"), GetTitle(), noise[dlg.m_nNoiseType], dlg.m_nAmount);
 		AfxNewBitmap(dib);
 	}
+}
+
+
+void CImageToolDoc::OnFilterMedian()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+	IppByteImage imgDst;
+	IppFilterMedian(imgSrc, imgDst);
+	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+	AfxPrintInfo(_T("[미디언 필터] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
 }
