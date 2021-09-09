@@ -16,3 +16,7 @@ void IppResizeBilinear(IppByteImage& imgSrc, IppByteImage& imgDst, int nw, int n
 void IppResizeCubic(IppByteImage& imgSrc, IppByteImage& imgDst, int nw, int nh);
 double cubic_interpolation(double v1, double v2, double v3, double v4, double d); // 행의 4개의 점을 이용한 보간법을 이용하여 값을 반환
 
+
+// 영상의 회전 변환
+void IppRotate(IppByteImage& imgSrc, IppByteImage& imgDst, double angle); // angle은 시계방향 회전 각도
+
