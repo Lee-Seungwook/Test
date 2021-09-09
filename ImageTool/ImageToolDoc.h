@@ -78,4 +78,5 @@ public:
 	afx_msg void OnAddNoise();
 	afx_msg void OnFilterMedian();
 	afx_msg void OnFilterDiffusion();
+	afx_msg void OnImageTranslation();
 };
