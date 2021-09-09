@@ -167,6 +167,33 @@ void IppHistogram(IppByteImage& img, float histo[256])
 	}
 }
 
+void IppHistogramRgb(IppRgbImage& img, float histoB[256], float histoG[256], float histoR[256])
+{
+	int size = img.GetSize();
+	RGBBYTE* p = img.GetPixels();
+
+	// 히스토그램 계산
+	int cntB[256];
+	int cntG[256];
+	int cntR[256];
+	memset(cntB, 0, sizeof(int) * 256);
+	memset(cntG, 0, sizeof(int) * 256);
+	memset(cntR, 0, sizeof(int) * 256);
+	for (int i = 0; i < size; i++) // 픽셀의 개수를 계산
+	{
+		cntB[p[i].b]++;
+		cntG[p[i].g]++;
+		cntR[p[i].r]++;
+	}
+	// 히스토그램 정규화(histogram normalization)
+	for (int i = 0; i < 256; i++)
+	{
+		histoB[i] = static_cast<float>(cntB[i]) / size; // cnt 배열에 저장된 값을 전체 픽셀의 개수로 나누어 정규화된 히스토그램 값을 histo 배열에 저장
+		histoG[i] = static_cast<float>(cntG[i]) / size;
+		histoR[i] = static_cast<float>(cntR[i]) / size;
+	}
+}
+
 // 히스토그램 스트레칭 함수
 void IppHistogramStretching(IppByteImage& img)
 {
