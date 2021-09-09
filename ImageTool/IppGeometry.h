@@ -20,3 +20,9 @@ double cubic_interpolation(double v1, double v2, double v3, double v4, double d)
 // 영상의 회전 변환
 void IppRotate(IppByteImage& imgSrc, IppByteImage& imgDst, double angle); // angle은 시계방향 회전 각도
 
+// 영상의 90도 회전 변환
+void IppRotate90(IppByteImage& imgSrc, IppByteImage& imgDst);
+// 영상의 180도 회전 변환
+void IppRotate180(IppByteImage& imgSrc, IppByteImage& imgDst);
+// 영상의 270도 회전 변환
+void IppRotate270(IppByteImage& imgSrc, IppByteImage& imgDst);

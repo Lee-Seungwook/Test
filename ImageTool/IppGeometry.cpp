@@ -195,8 +195,8 @@ void IppRotate(IppByteImage& imgSrc, IppByteImage& imgDst, double angle)
 
 	int nx, ny, minx, miny, maxx, maxy, nw, nh;
 
-	minx = maxx = 0;
-	miny = maxy = 0;
+	minx = maxx = 0; // minx, miny는 결과 영상의 좌상단 모서리 점의 좌표
+	miny = maxy = 0; // maxx, maxy는 결과 영상의 우하단 모서리 점의 좌표
 
 	nx = static_cast<int>(floor((w - 1) * cos_value + 0.5));
 	ny = static_cast<int>(floor((w - 1) * sin_value + 0.5));
@@ -249,5 +249,65 @@ void IppRotate(IppByteImage& imgSrc, IppByteImage& imgDst, double angle)
 			+ (1.0 - p) * q * pSrc[y2][x1] + p * q * pSrc[y2][x2];
 
 		pDst[j - miny][i - minx] = static_cast<BYTE>(limit(temp));
+	}
+}
+
+
+// 영상의 90도 회전 변환
+void IppRotate90(IppByteImage& imgSrc, IppByteImage& imgDst)
+{
+	int w = imgSrc.GetWidth();
+	int h = imgSrc.GetHeight();
+
+	imgDst.CreateImage(h, w);
+
+	BYTE** pSrc = imgSrc.GetPixels2D();
+	BYTE** pDst = imgDst.GetPixels2D();
+
+	int i, j;
+	for (j = 0; j < w; j++)
+	for (i = 0; i < h; i++)
+	{
+		pDst[j][i] = pSrc[h - 1 - i][j];
+	}
+}
+
+// 영상의 180도 회전 변환
+void IppRotate180(IppByteImage& imgSrc, IppByteImage& imgDst)
+{
+	int w = imgSrc.GetWidth();
+	int h = imgSrc.GetHeight();
+
+	imgDst.CreateImage(w, h);
+
+	BYTE** pSrc = imgSrc.GetPixels2D();
+	BYTE** pDst = imgDst.GetPixels2D();
+
+	int i, j;
+	for (j = 0; j < h; j++)
+	for (i = 0; i < w; i++)
+	{
+		pDst[j][i] = pSrc[h - 1 - j][w - 1 - i];
+	}
+}
+
+// 영상의 270도 회전 변환
+void IppRotate270(IppByteImage& imgSrc, IppByteImage& imgDst)
+{
+	IppByteImage cpy = imgSrc;
+
+	int w = imgSrc.GetWidth();
+	int h = imgSrc.GetHeight();
+
+	imgDst.CreateImage(h, w);
+
+	BYTE** pSrc = imgSrc.GetPixels2D();
+	BYTE** pDst = imgDst.GetPixels2D();
+
+	int i, j;
+	for (j = 0; j < w; j++)
+	for (i = 0; i < h; i++)
+	{
+		pDst[j][i] = pSrc[i][w - 1 - j];
 	}
 }
