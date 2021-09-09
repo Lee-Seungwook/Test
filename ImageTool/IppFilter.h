@@ -23,3 +23,6 @@ void IppFilterHighboost(IppByteImage& imgSrc, IppByteImage& imgDst, float alpha)
 
 // 가우시안 잡음 추가
 void IppNoiseGaussian(IppByteImage& imgSrc, IppByteImage& imgDst, int amount);
+
+// 소금, 후추 잡음 추가
+void IppNoiseSaltNPepper(IppByteImage& imgSrc, IppByteImage& imgDst, int amount);
