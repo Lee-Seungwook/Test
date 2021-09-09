@@ -130,13 +130,15 @@
 #define ID_FILTER_DIFFUSION             32828
 #define ID_32829                        32829
 #define ID_IMAGE_TRANSLATION            32830
+#define ID_32831                        32831
+#define ID_IMAGE_RESIZE                 32832
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        338
-#define _APS_NEXT_COMMAND_VALUE         32831
+#define _APS_NEXT_COMMAND_VALUE         32833
 #define _APS_NEXT_CONTROL_VALUE         1025
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

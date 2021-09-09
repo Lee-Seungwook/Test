@@ -33,6 +33,8 @@
 #include "IppGeometry.h"
 #include "TranslateDlg.h"
 
+#include "ResizeDlg.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -83,6 +85,7 @@ ON_COMMAND(ID_ADD_NOISE, &CImageToolDoc::OnAddNoise)
 ON_COMMAND(ID_FILTER_MEDIAN, &CImageToolDoc::OnFilterMedian)
 ON_COMMAND(ID_FILTER_DIFFUSION, &CImageToolDoc::OnFilterDiffusion)
 ON_COMMAND(ID_IMAGE_TRANSLATION, &CImageToolDoc::OnImageTranslation)
+ON_COMMAND(ID_IMAGE_RESIZE, &CImageToolDoc::OnImageResize)
 END_MESSAGE_MAP()
 
 
@@ -644,9 +647,35 @@ void CImageToolDoc::OnImageTranslation()
 			IppRgbImage imgDst;
 			IppTranslate(imgSrc, imgDst, dlg.m_nNewSX, dlg.m_nNewSY);
 			CONVERT_IMAGE_TO_DIB(imgDst, dib)
-				AfxPrintInfo(_T("[이동 변환] 입력 영상 : %s, 가로 이동 : %d, 세로 이동 : %d"), GetTitle(), dlg.m_nNewSX, dlg.m_nNewSY);
+			AfxPrintInfo(_T("[이동 변환] 입력 영상 : %s, 가로 이동 : %d, 세로 이동 : %d"), GetTitle(), dlg.m_nNewSX, dlg.m_nNewSY);
 			AfxNewBitmap(dib);
 		}
 	
+	}
+}
+
+
+void CImageToolDoc::OnImageResize()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CResizeDlg dlg;
+	dlg.m_nOldWidth = m_Dib.GetWidth();
+	dlg.m_nOldHeight = m_Dib.GetHeight();
+	if (dlg.DoModal() == IDOK)
+	{
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+		IppByteImage imgDst;
+		switch (dlg.m_nInterpolation)
+		{
+		case 0: IppResizeNearest(imgSrc, imgDst, dlg.m_nNewWidth, dlg.m_nNewHeight); break;
+		case 1: IppResizeBilinear(imgSrc, imgDst, dlg.m_nNewWidth, dlg.m_nNewHeight); break;
+		case 2: IppResizeCubic(imgSrc, imgDst, dlg.m_nNewWidth, dlg.m_nNewHeight); break;
+		}
+		CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+		TCHAR* interpolation[] = { _T("최근방 이웃 보간법"), _T("양선형 보간법"), _T("3차 회선 보간법") };
+		AfxPrintInfo(_T("[크기 변환] 입력 영상 : %s, , 새 가로 크기 : %d, 새 세로 크기 : %d, 보간법 : %s")
+			, GetTitle(), dlg.m_nNewWidth, dlg.m_nNewHeight, interpolation[dlg.m_nInterpolation]);
+		AfxNewBitmap(dib);
 	}
 }
