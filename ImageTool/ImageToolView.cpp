@@ -18,7 +18,8 @@
 #define new DEBUG_NEW
 #endif
 
-
+#define ELLIPSE_MODE 1
+#define RECTANGLE_MODE 2
 // CImageToolView
 
 IMPLEMENT_DYNCREATE(CImageToolView, CScrollView)
@@ -40,6 +41,12 @@ BEGIN_MESSAGE_MAP(CImageToolView, CScrollView)
 	ON_COMMAND(ID_VIEW_ZOOM4, &CImageToolView::OnViewZoom4)
 	ON_UPDATE_COMMAND_UI(ID_VIEW_ZOOM4, &CImageToolView::OnUpdateViewZoom4)
 	ON_WM_MOUSEMOVE()
+	ON_COMMAND(ID_ELLIPSE, &CImageToolView::OnEllipse)
+	ON_COMMAND(ID_RECTANGLE, &CImageToolView::OnRectangle)
+	ON_WM_LBUTTONUP()
+	ON_WM_LBUTTONDOWN()
+	ON_UPDATE_COMMAND_UI(ID_ELLIPSE, &CImageToolView::OnUpdateEllipse)
+	ON_UPDATE_COMMAND_UI(ID_RECTANGLE, &CImageToolView::OnUpdateRectangle)
 END_MESSAGE_MAP()
 
 // CImageToolView 생성/소멸
@@ -47,7 +54,7 @@ END_MESSAGE_MAP()
 CImageToolView::CImageToolView() noexcept : m_nZoom(1)
 {
 	// TODO: 여기에 생성 코드를 추가합니다.
-
+	m_bPaint = FALSE;
 }
 
 CImageToolView::~CImageToolView()
@@ -243,6 +250,44 @@ void CImageToolView::OnUpdateViewZoom4(CCmdUI *pCmdUI)
 	pCmdUI->SetCheck(m_nZoom == 4);
 }
 
+void CImageToolView::OnEllipse()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CClientDC DC(this);
+	DC.Ellipse(m_nowP.x, m_nowP.y, m_nowP.x + 100, m_nowP.y + 100);
+	CString m_text;
+	AfxPrintInfo(_T("현재 위치는 %d, %d 입니다."), m_nowP.x, m_nowP.y);
+	m_nDrawMode = ELLIPSE_MODE;
+}
+
+
+void CImageToolView::OnRectangle()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CClientDC DC(this);
+	DC.Rectangle(m_nowP.x, m_nowP.y, m_nowP.x + 100, m_nowP.y + 100);
+	CString m_text;
+	AfxPrintInfo(_T("현재 위치는 %d, %d 입니다."), m_nowP.x, m_nowP.y);
+	m_nDrawMode = RECTANGLE_MODE;
+}
+
+void CImageToolView::OnLButtonUp(UINT nFlags, CPoint point)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	m_bPaint = FALSE;
+
+	CScrollView::OnLButtonUp(nFlags, point);
+}
+
+
+void CImageToolView::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	m_bPaint = TRUE;
+	m_nowP.x = point.x;
+	m_nowP.y = point.y;
+	CScrollView::OnLButtonDown(nFlags, point);
+}
 
 void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 {
@@ -251,6 +296,12 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 	pt.x /= m_nZoom;
 	pt.y /= m_nZoom;
 	ShowImageInfo(pt); // 포인터 위치를 매개변수로 전달
+
+	if (!m_bPaint) return;
+	CClientDC dc(this);
+	dc.MoveTo(m_nowP.x, m_nowP.y);
+	dc.LineTo(point.x, point.y);
+	m_nowP = point;
 
 	CScrollView::OnMouseMove(nFlags, point);
 }
@@ -285,4 +336,18 @@ void CImageToolView::ShowImageInfo(CPoint point)
 		strText.Format(_T("w:%d  h:%d  c:%d"), w, h, c);
 	}
 	pFrame->m_wndStatusBar.SetPaneText(1, strText); // 오른쪽에 출력
+}
+
+
+void CImageToolView::OnUpdateEllipse(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->SetCheck(m_nDrawMode == ELLIPSE_MODE ? 1 : 0);
+}
+
+
+void CImageToolView::OnUpdateRectangle(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->SetCheck(m_nDrawMode == RECTANGLE_MODE ? 1 : 0);
 }

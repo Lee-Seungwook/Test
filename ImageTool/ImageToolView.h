@@ -17,6 +17,9 @@ public:
 
 // 작업입니다.
 public:
+	CImageToolDoc* GetDocument() const;
+	CPoint m_nowP;
+	BOOL m_bPaint;
 
 // 재정의입니다.
 public:
@@ -61,6 +64,14 @@ public:
 	afx_msg void OnViewZoom4();
 	afx_msg void OnUpdateViewZoom4(CCmdUI *pCmdUI);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnEllipse();
+	afx_msg void OnRectangle();
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+
+	int m_nDrawMode;
+	afx_msg void OnUpdateEllipse(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateRectangle(CCmdUI *pCmdUI);
 };
 
 #ifndef _DEBUG  // ImageToolView.cpp의 디버그 버전
