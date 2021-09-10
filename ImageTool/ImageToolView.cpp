@@ -47,6 +47,7 @@ BEGIN_MESSAGE_MAP(CImageToolView, CScrollView)
 	ON_WM_LBUTTONDOWN()
 	ON_UPDATE_COMMAND_UI(ID_ELLIPSE, &CImageToolView::OnUpdateEllipse)
 	ON_UPDATE_COMMAND_UI(ID_RECTANGLE, &CImageToolView::OnUpdateRectangle)
+	ON_COMMAND(ID_DRAWLINE, &CImageToolView::OnDrawline)
 END_MESSAGE_MAP()
 
 // CImageToolView 생성/소멸
@@ -55,6 +56,7 @@ CImageToolView::CImageToolView() noexcept : m_nZoom(1)
 {
 	// TODO: 여기에 생성 코드를 추가합니다.
 	m_bPaint = FALSE;
+	m_nLine = FALSE;
 }
 
 CImageToolView::~CImageToolView()
@@ -350,4 +352,10 @@ void CImageToolView::OnUpdateRectangle(CCmdUI *pCmdUI)
 {
 	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
 	pCmdUI->SetCheck(m_nDrawMode == RECTANGLE_MODE ? 1 : 0);
+}
+
+
+void CImageToolView::OnDrawline()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 }

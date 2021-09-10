@@ -19,6 +19,7 @@ public:
 public:
 	CPoint m_nowP;
 	BOOL m_bPaint;
+	BOOL m_nLine;
 
 // 재정의입니다.
 public:
@@ -71,6 +72,7 @@ public:
 	int m_nDrawMode;
 	afx_msg void OnUpdateEllipse(CCmdUI *pCmdUI);
 	afx_msg void OnUpdateRectangle(CCmdUI *pCmdUI);
+	afx_msg void OnDrawline();
 };
 
 #ifndef _DEBUG  // ImageToolView.cpp의 디버그 버전
