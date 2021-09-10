@@ -26,7 +26,7 @@ END_MESSAGE_MAP()
 
 static UINT indicators[] =
 {
-	ID_INDICTOR_POINT,
+	ID_INDICATOR_POINT,
 	ID_SEPARATOR,           // 상태 줄 표시기
 	ID_SEPARATOR,
 };
