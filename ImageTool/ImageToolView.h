@@ -17,7 +17,6 @@ public:
 
 // 작업입니다.
 public:
-	CImageToolDoc* GetDocument() const;
 	CPoint m_nowP;
 	BOOL m_bPaint;
 
