@@ -14,6 +14,8 @@
 #include "ImageToolDoc.h"
 #include "ImageToolView.h"
 
+#include "ThickDlg.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -52,6 +54,9 @@ ON_COMMAND(ID_DRAW_LINE, &CImageToolView::OnDrawLine)
 ON_COMMAND(ID_END_LINE, &CImageToolView::OnEndLine)
 ON_UPDATE_COMMAND_UI(ID_DRAW_LINE, &CImageToolView::OnUpdateDrawLine)
 ON_UPDATE_COMMAND_UI(ID_END_LINE, &CImageToolView::OnUpdateEndLine)
+//ON_WM_PAINT()
+ON_COMMAND(ID_DRAW_COLOR, &CImageToolView::OnDrawColor)
+ON_COMMAND(ID_THICK, &CImageToolView::OnThick)
 END_MESSAGE_MAP()
 
 // CImageToolView 생성/소멸
@@ -61,6 +66,9 @@ CImageToolView::CImageToolView() noexcept : m_nZoom(1)
 	// TODO: 여기에 생성 코드를 추가합니다.
 	m_bPaint = FALSE;
 	m_nLine = FALSE;
+
+	m_color = RGB(0, 0, 0);
+	m_nWidth = 3;
 }
 
 CImageToolView::~CImageToolView()
@@ -194,7 +202,7 @@ CImageToolDoc* CImageToolView::GetDocument() const // 디버그되지 않은 버
 BOOL CImageToolView::OnEraseBkgnd(CDC* pDC)
 {
 	CBrush br; // 브러쉬 생성
-	br.CreateHatchBrush(HS_DIAGCROSS, RGB(200, 200, 200)); // 빗금 무늬 생성
+	br.CreateHatchBrush(HS_DIAGCROSS, RGB(255, 255, 255)); // 빗금 무늬 생성
 	FillOutsideRect(pDC, &br); // 스크롤되는 바깥 옆역을 채운다.
 
 	return TRUE;
@@ -282,6 +290,20 @@ void CImageToolView::OnLButtonUp(UINT nFlags, CPoint point)
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 	m_bPaint = FALSE;
 
+	/*CClientDC dc(this);
+	CPen pen(PS_SOLID, m_nWidth, m_color);
+	CPen* oldPen = dc.SelectObject(&pen);
+	dc.MoveTo(m_ptFrom);
+	dc.LineTo(point);
+	dc.SelectObject(oldPen);
+
+	Line line;
+	line.ptFrom = m_ptFrom;
+	line.ptTo = point;
+	line.color = m_color;
+	line.width = m_nWidth;
+	m_lines.Add(line);*/
+
 	CScrollView::OnLButtonUp(nFlags, point);
 }
 
@@ -292,6 +314,8 @@ void CImageToolView::OnLButtonDown(UINT nFlags, CPoint point)
 	m_bPaint = TRUE;
 	m_nowP.x = point.x;
 	m_nowP.y = point.y;
+
+	m_ptFrom = point;
 	CScrollView::OnLButtonDown(nFlags, point);
 }
 
@@ -305,12 +329,34 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 
 	if (m_nLine == TRUE)
 	{
+		if (nFlags & MK_LBUTTON)
+		{
+			CClientDC dc(this);
+
+			CPen pen(PS_SOLID, m_nWidth, m_color); // 색과 굴기
+			CPen* oldPen = dc.SelectObject(&pen);
+			dc.MoveTo(m_ptFrom);
+			dc.LineTo(point);
+			dc.SelectObject(oldPen);
+
+			Line line;
+			line.ptTo = point;
+			line.color = m_color;
+			line.width = m_nWidth;
+			m_lines.Add(line);
+
+			m_ptFrom = point;
+		}
+	}
+
+	/*if (m_nLine == TRUE)
+	{
 		if (!m_bPaint) return;
 		CPaintDC dc(this);
 		dc.MoveTo(m_nowP.x, m_nowP.y);
 		dc.LineTo(point.x, point.y);
 		m_nowP = point;
-	}
+	}*/
 
 	CScrollView::OnMouseMove(nFlags, point);
 }
@@ -394,4 +440,43 @@ void CImageToolView::OnUpdateEndLine(CCmdUI *pCmdUI)
 {
 	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
 	pCmdUI->SetCheck(m_nLine == 0);
+}
+
+
+//void CImageToolView::OnPaint()
+//{
+//	CPaintDC dc(this); // device context for painting
+//					   // TODO: 여기에 메시지 처리기 코드를 추가합니다.
+//					   // 그리기 메시지에 대해서는 CScrollView::OnPaint()을(를) 호출하지 마십시오.
+//	/*for (int i = 0; i < m_lines.GetSize(); i++) // Invalidate시에 복원해주는 루틴... 적
+//	{
+//		Line line = m_lines.GetAt(i);
+//		CPen pen(PS_SOLID, line.width, line.color);
+//		CPen* oldPen = dc.SelectObject(&pen);
+//		dc.MoveTo(line.ptFrom);
+//		dc.LineTo(line.ptTo);
+//		dc.SelectObject(oldPen);
+//	}*/
+//}
+
+
+void CImageToolView::OnDrawColor()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CColorDialog dlg(m_color, CC_FULLOPEN);
+	if (dlg.DoModal() == IDOK)
+	{
+		m_color = dlg.GetColor();
+	}
+}
+
+
+void CImageToolView::OnThick()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CThickDlg dlg;
+	if (dlg.DoModal() == IDOK)
+	{
+		m_nWidth = dlg.m_nThick;
+	}
 }

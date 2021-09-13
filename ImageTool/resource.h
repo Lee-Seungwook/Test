@@ -38,6 +38,7 @@
 #define IDD_TRANSLATE                   333
 #define IDD_RESIZE                      335
 #define IDD_ROTATE                      338
+#define IDD_THICK                       343
 #define IDC_WIDTH                       1000
 #define IDC_HEIGHT                      1001
 #define IDC_IMAGE_TYPE                  1002
@@ -59,6 +60,7 @@
 #define IDC_NEW_SX                      1010
 #define IDC_NEW_WIDTH                   1010
 #define IDC_ANGLE                       1010
+#define IDC_EDIT                        1010
 #define IDC_FUNCTION5                   1011
 #define IDC_ALPHA_SLIDER                1011
 #define IDC_DIFFUSION_ITER              1011
@@ -82,6 +84,7 @@
 #define IDC_ROTATE2                     1026
 #define IDC_ROTATE3                     1027
 #define IDC_ROTATE4                     1028
+#define IDC_LIST                        1029
 #define ID_32771                        32771
 #define ID_WINDOW_DUPLICATE             32772
 #define ID_32773                        32773
@@ -158,14 +161,20 @@
 #define ID_32849                        32849
 #define ID_DRAW_LINE                    32850
 #define ID_END_LINE                     32851
+#define ID_32852                        32852
+#define ID_DRAW_COLOR                   32853
+#define ID_32854                        32854
+#define ID_32855                        32855
+#define ID_32856                        32856
+#define ID_THICK                        32857
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        340
-#define _APS_NEXT_COMMAND_VALUE         32852
-#define _APS_NEXT_CONTROL_VALUE         1026
+#define _APS_NEXT_RESOURCE_VALUE        345
+#define _APS_NEXT_COMMAND_VALUE         32858
+#define _APS_NEXT_CONTROL_VALUE         1030
 #define _APS_NEXT_SYMED_VALUE           311
 #endif
 #endif

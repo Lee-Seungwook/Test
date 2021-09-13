@@ -4,6 +4,13 @@
 
 #pragma once
 
+struct Line
+{
+	CPoint ptFrom;
+	CPoint ptTo;
+	COLORREF color;
+	int width;
+};
 
 class CImageToolView : public CScrollView
 {
@@ -14,6 +21,11 @@ protected: // serialization에서만 만들어집니다.
 // 특성입니다.
 public:
 	CImageToolDoc* GetDocument() const;
+	CArray<Line> m_lines;
+	CPoint m_ptFrom;
+	CPoint m_ptTemp;
+	COLORREF m_color; // 색을 나타내는 타입
+	int m_nWidth; // 색의 굵기 
 
 // 작업입니다.
 public:
@@ -77,10 +89,14 @@ public:
 	afx_msg void OnEndLine();
 	afx_msg void OnUpdateDrawLine(CCmdUI *pCmdUI);
 	afx_msg void OnUpdateEndLine(CCmdUI *pCmdUI);
+//	afx_msg void OnPaint();
+	afx_msg void OnDrawColor();
+	afx_msg void OnThick();
 };
 
 #ifndef _DEBUG  // ImageToolView.cpp의 디버그 버전
 inline CImageToolDoc* CImageToolView::GetDocument() const
    { return reinterpret_cast<CImageToolDoc*>(m_pDocument); }
 #endif
+
 
