@@ -47,7 +47,11 @@ BEGIN_MESSAGE_MAP(CImageToolView, CScrollView)
 	ON_WM_LBUTTONDOWN()
 	ON_UPDATE_COMMAND_UI(ID_ELLIPSE, &CImageToolView::OnUpdateEllipse)
 	ON_UPDATE_COMMAND_UI(ID_RECTANGLE, &CImageToolView::OnUpdateRectangle)
-	ON_COMMAND(ID_DRAWLINE, &CImageToolView::OnDrawline)
+//	ON_COMMAND(ID_DRAWLINE, &CImageToolView::OnDrawline)
+ON_COMMAND(ID_DRAW_LINE, &CImageToolView::OnDrawLine)
+ON_COMMAND(ID_END_LINE, &CImageToolView::OnEndLine)
+ON_UPDATE_COMMAND_UI(ID_DRAW_LINE, &CImageToolView::OnUpdateDrawLine)
+ON_UPDATE_COMMAND_UI(ID_END_LINE, &CImageToolView::OnUpdateEndLine)
 END_MESSAGE_MAP()
 
 // CImageToolView 생성/소멸
@@ -299,11 +303,14 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 	pt.y /= m_nZoom;
 	ShowImageInfo(pt); // 포인터 위치를 매개변수로 전달
 
-	if (!m_bPaint) return;
-	CClientDC dc(this);
-	dc.MoveTo(m_nowP.x, m_nowP.y);
-	dc.LineTo(point.x, point.y);
-	m_nowP = point;
+	if (m_nLine == TRUE)
+	{
+		if (!m_bPaint) return;
+		CPaintDC dc(this);
+		dc.MoveTo(m_nowP.x, m_nowP.y);
+		dc.LineTo(point.x, point.y);
+		m_nowP = point;
+	}
 
 	CScrollView::OnMouseMove(nFlags, point);
 }
@@ -355,7 +362,36 @@ void CImageToolView::OnUpdateRectangle(CCmdUI *pCmdUI)
 }
 
 
-void CImageToolView::OnDrawline()
+//void CImageToolView::OnDrawline()
+//{
+//	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+//	m_nLine = TRUE;
+//}
+
+
+void CImageToolView::OnDrawLine()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_nLine = TRUE;
+}
+
+
+void CImageToolView::OnEndLine()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_nLine = FALSE;
+}
+
+
+void CImageToolView::OnUpdateDrawLine(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->SetCheck(m_nLine == 1);
+}
+
+
+void CImageToolView::OnUpdateEndLine(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->SetCheck(m_nLine == 0);
 }

@@ -72,7 +72,11 @@ public:
 	int m_nDrawMode;
 	afx_msg void OnUpdateEllipse(CCmdUI *pCmdUI);
 	afx_msg void OnUpdateRectangle(CCmdUI *pCmdUI);
-	afx_msg void OnDrawline();
+//	afx_msg void OnDrawline();
+	afx_msg void OnDrawLine();
+	afx_msg void OnEndLine();
+	afx_msg void OnUpdateDrawLine(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateEndLine(CCmdUI *pCmdUI);
 };
 
 #ifndef _DEBUG  // ImageToolView.cpp의 디버그 버전
