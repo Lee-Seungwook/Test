@@ -25,18 +25,13 @@ public:
 	CPoint m_ptFrom;
 	CPoint m_ptTemp;
 	COLORREF m_color; // 색을 나타내는 타입
-	int m_nWidth; // 선의 굵기 
-	int m_nStyle;
-	int select;
+	int m_nWidth; // 색의 굵기 
 
 // 작업입니다.
 public:
 	CPoint m_nowP;
-	CPoint m_afterP;
 	BOOL m_bPaint;
 	BOOL m_nLine;
-	BOOL m_bStick;
-	BOOL m_bPartErase;
 
 // 재정의입니다.
 public:
@@ -69,8 +64,6 @@ public:
 	int m_nZoom; // 확대를 위한 변수
 	void SetScrollSizeToFit();
 
-	void DrawLine(CDC *pDC, CPoint point);
-
 	// 상태바에 영상 정보 표시
 	void ShowImageInfo(CPoint point);
 
@@ -99,8 +92,6 @@ public:
 //	afx_msg void OnPaint();
 	afx_msg void OnDrawColor();
 	afx_msg void OnThick();
-	afx_msg void OnAllerase();
-	afx_msg void OnParterase();
 };
 
 #ifndef _DEBUG  // ImageToolView.cpp의 디버그 버전
