@@ -4,6 +4,13 @@
 
 #pragma once
 
+struct Line
+{
+	CPoint ptFrom;
+	CPoint ptTo;
+	COLORREF color; 
+	int width; 
+};
 
 class CImageToolView : public CScrollView
 {
@@ -14,9 +21,25 @@ protected: // serialization에서만 만들어집니다.
 // 특성입니다.
 public:
 	CImageToolDoc* GetDocument() const;
+	CArray<Line> m_lines;
+	CPoint m_ptFrom;
+	CPoint m_ptTemp;
+	COLORREF m_color; // 선의 색상 설정
+	COLORREF m_FillColor; // 채우기 색 설정
+	int m_nWidth; // 선의 굵기 
+	int m_nStyle; // 선 스타일
 
 // 작업입니다.
 public:
+	CPoint m_nowP; // 시작 좌표
+	CPoint m_afterP; // 마지막 좌표
+	BOOL m_bPaint;
+	BOOL m_nLine; // 펜 그리기
+	BOOL m_bStick; // 직선
+	BOOL m_bPartErase; // 지우개 (부분 지우기)
+	BOOL m_bRect; // 사각형
+	BOOL m_bEllipse; // 원
+	BOOL m_bRoundRect; // 둥근 사각형
 
 // 재정의입니다.
 public:
@@ -49,6 +72,8 @@ public:
 	int m_nZoom; // 확대를 위한 변수
 	void SetScrollSizeToFit();
 
+	
+
 	// 상태바에 영상 정보 표시
 	void ShowImageInfo(CPoint point);
 
@@ -61,10 +86,34 @@ public:
 	afx_msg void OnViewZoom4();
 	afx_msg void OnUpdateViewZoom4(CCmdUI *pCmdUI);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	afx_msg void OnEllipse();
+	afx_msg void OnRectangle();
+	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
+	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
+
+	int m_nDrawMode;
+	afx_msg void OnUpdateEllipse(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateRectangle(CCmdUI *pCmdUI);
+//	afx_msg void OnDrawline();
+	afx_msg void OnDrawLine();
+	afx_msg void OnEndLine();
+	afx_msg void OnUpdateDrawLine(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateEndLine(CCmdUI *pCmdUI);
+//	afx_msg void OnPaint();
+	afx_msg void OnDrawColor();
+	afx_msg void OnThick();
+	afx_msg void OnAllerase();
+	afx_msg void OnParterase();
+//	afx_msg void OnPaint();
+	afx_msg void OnStraightline();
+	afx_msg void OnLineStyle();
+	afx_msg void OnFillColor();
+	afx_msg void OnRoundRect();
 };
 
 #ifndef _DEBUG  // ImageToolView.cpp의 디버그 버전
 inline CImageToolDoc* CImageToolView::GetDocument() const
    { return reinterpret_cast<CImageToolDoc*>(m_pDocument); }
 #endif
+
 

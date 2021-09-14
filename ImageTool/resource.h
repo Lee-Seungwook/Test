@@ -4,6 +4,7 @@
 //
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             100
+#define ID_INDICATOR_POINT              101
 #define IDR_POPUP_EDIT                  119
 #define ID_STATUSBAR_PANE1              120
 #define ID_STATUSBAR_PANE2              121
@@ -37,6 +38,8 @@
 #define IDD_TRANSLATE                   333
 #define IDD_RESIZE                      335
 #define IDD_ROTATE                      338
+#define IDD_THICK                       343
+#define IDD_LINE_STYLE                  345
 #define IDC_WIDTH                       1000
 #define IDC_HEIGHT                      1001
 #define IDC_IMAGE_TYPE                  1002
@@ -58,6 +61,7 @@
 #define IDC_NEW_SX                      1010
 #define IDC_NEW_WIDTH                   1010
 #define IDC_ANGLE                       1010
+#define IDC_EDIT                        1010
 #define IDC_FUNCTION5                   1011
 #define IDC_ALPHA_SLIDER                1011
 #define IDC_DIFFUSION_ITER              1011
@@ -81,6 +85,13 @@
 #define IDC_ROTATE2                     1026
 #define IDC_ROTATE3                     1027
 #define IDC_ROTATE4                     1028
+#define IDC_LIST                        1029
+#define IDC_RADIO_SOLID                 1031
+#define IDC_RADIO_DASH                  1032
+#define IDC_RADIO_DOT                   1033
+#define IDC_RADIO_DASHDOT               1034
+#define IDC_RADIO_DASHDOTDOT            1035
+#define IDC_RADIO_NULL                  1036
 #define ID_32771                        32771
 #define ID_WINDOW_DUPLICATE             32772
 #define ID_32773                        32773
@@ -145,14 +156,46 @@
 #define ID_32837                        32837
 #define ID_IMAGE_MIRROR                 32838
 #define ID_IMAGE_FLIP                   32839
+#define ID_32840                        32840
+#define ID_32841                        32841
+#define ID_ELLIPSE                      32842
+#define ID_RECTANGLE                    32843
+#define ID_32844                        32844
+#define ID_32845                        32845
+#define ID_32846                        32846
+#define ID_DRAWLINE                     32847
+#define ID_32848                        32848
+#define ID_32849                        32849
+#define ID_DRAW_LINE                    32850
+#define ID_END_LINE                     32851
+#define ID_32852                        32852
+#define ID_DRAW_COLOR                   32853
+#define ID_32854                        32854
+#define ID_32855                        32855
+#define ID_32856                        32856
+#define ID_THICK                        32857
+#define ID_32860                        32860
+#define ID_BUTTON32861                  32861
+#define ID_ALLERASE                     32861
+#define ID_32862                        32862
+#define ID_32863                        32863
+#define ID_                             32864
+#define ID_PARTERASE                    32865
+#define ID_32866                        32866
+#define ID_STRAIGHTLINE                 32867
+#define ID_LINE_STYLE                   32868
+#define ID_32869                        32869
+#define ID_FILL_COLOR                   32870
+#define ID_32871                        32871
+#define ID_ROUND_RECT                   32872
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        340
-#define _APS_NEXT_COMMAND_VALUE         32840
-#define _APS_NEXT_CONTROL_VALUE         1026
-#define _APS_NEXT_SYMED_VALUE           310
+#define _APS_NEXT_RESOURCE_VALUE        347
+#define _APS_NEXT_COMMAND_VALUE         32873
+#define _APS_NEXT_CONTROL_VALUE         1032
+#define _APS_NEXT_SYMED_VALUE           311
 #endif
 #endif

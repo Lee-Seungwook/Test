@@ -67,7 +67,7 @@ BOOL IppDib::CreateGrayBitmap(LONG nWidth, LONG nHeight)
 
 	// 픽셀 데이터 초기화
 	BYTE* pData = GetDIBitsAddr();
-	memset(pData, 0, dwSizeImage); // 픽셀 값을 0으로 초기화(0으로 초기화 할때만 사용한다.)
+	memset(pData, 255, dwSizeImage); // 픽셀 값을 0으로 초기화(0으로 초기화 할때만 사용한다.)
 
 	return TRUE;
 }
@@ -105,7 +105,7 @@ BOOL IppDib::CreateRgbBitmap(LONG nWidth, LONG nHeight)
 
 	// 픽셀 데이터 초기화
 	BYTE* pData = GetDIBitsAddr();
-	memset(pData, 0, dwSizeImage);
+	memset(pData, 255, dwSizeImage);
 
 	return TRUE;
 }
