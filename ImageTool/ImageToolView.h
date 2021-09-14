@@ -25,16 +25,24 @@ public:
 	CPoint m_ptFrom;
 	CPoint m_ptTemp;
 	COLORREF m_color; // 색을 나타내는 타입
+<<<<<<< HEAD
 	int m_nWidth; // 선의 굵기 
 	int m_nStyle;
+	int select;
+=======
+	int m_nWidth; // 색의 굵기 
+>>>>>>> parent of f2bb425 (전체 지우기까지 구현)
 
 // 작업입니다.
 public:
 	CPoint m_nowP;
-	CPoint m_afterP;
 	BOOL m_bPaint;
 	BOOL m_nLine;
+<<<<<<< HEAD
 	BOOL m_bStick;
+	BOOL m_bPartErase;
+=======
+>>>>>>> parent of f2bb425 (전체 지우기까지 구현)
 
 // 재정의입니다.
 public:
@@ -67,8 +75,6 @@ public:
 	int m_nZoom; // 확대를 위한 변수
 	void SetScrollSizeToFit();
 
-	void DrawLine(CDC *pDC, CPoint point);
-
 	// 상태바에 영상 정보 표시
 	void ShowImageInfo(CPoint point);
 
@@ -97,7 +103,11 @@ public:
 //	afx_msg void OnPaint();
 	afx_msg void OnDrawColor();
 	afx_msg void OnThick();
+<<<<<<< HEAD
 	afx_msg void OnAllerase();
+	afx_msg void OnParterase();
+=======
+>>>>>>> parent of f2bb425 (전체 지우기까지 구현)
 };
 
 #ifndef _DEBUG  // ImageToolView.cpp의 디버그 버전
