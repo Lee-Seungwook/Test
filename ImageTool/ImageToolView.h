@@ -40,6 +40,7 @@ public:
 	BOOL m_bRect; // 사각형
 	BOOL m_bEllipse; // 원
 	BOOL m_bRoundRect; // 둥근 사각형
+	BOOL m_bTriangle; // 삼각형
 
 // 재정의입니다.
 public:
@@ -109,6 +110,7 @@ public:
 	afx_msg void OnLineStyle();
 	afx_msg void OnFillColor();
 	afx_msg void OnRoundRect();
+	afx_msg void OnTriangle();
 };
 
 #ifndef _DEBUG  // ImageToolView.cpp의 디버그 버전
