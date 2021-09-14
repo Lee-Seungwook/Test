@@ -167,16 +167,13 @@
 #define ID_32855                        32855
 #define ID_32856                        32856
 #define ID_THICK                        32857
-#define ID_32860                        32860
-#define ID_BUTTON32861                  32861
-#define ID_ALLERASE                     32861
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        345
-#define _APS_NEXT_COMMAND_VALUE         32862
+#define _APS_NEXT_COMMAND_VALUE         32858
 #define _APS_NEXT_CONTROL_VALUE         1030
 #define _APS_NEXT_SYMED_VALUE           311
 #endif
