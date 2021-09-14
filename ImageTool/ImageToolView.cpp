@@ -65,6 +65,7 @@ ON_COMMAND(ID_PARTERASE, &CImageToolView::OnParterase)
 ON_COMMAND(ID_STRAIGHTLINE, &CImageToolView::OnStraightline)
 ON_COMMAND(ID_LINE_STYLE, &CImageToolView::OnLineStyle)
 ON_COMMAND(ID_FILL_COLOR, &CImageToolView::OnFillColor)
+ON_COMMAND(ID_ROUND_RECT, &CImageToolView::OnRoundRect)
 END_MESSAGE_MAP()
 
 // CImageToolView 생성/소멸
@@ -73,11 +74,15 @@ CImageToolView::CImageToolView() noexcept : m_nZoom(1)
 {
 	// TODO: 여기에 생성 코드를 추가합니다.
 	m_bPaint = FALSE;
+
 	m_nLine = FALSE;
+
 	m_bStick = FALSE;
-	m_bPartErase = FALSE;
 	m_bRect = FALSE;
 	m_bEllipse = FALSE;
+	m_bRoundRect = FALSE;
+
+	m_bPartErase = FALSE;
 
 	m_color = RGB(0, 0, 0);
 	m_FillColor = RGB(255, 255, 255);
@@ -221,7 +226,7 @@ CImageToolDoc* CImageToolView::GetDocument() const // 디버그되지 않은 버
 BOOL CImageToolView::OnEraseBkgnd(CDC* pDC)
 {
 	CBrush br; // 브러쉬 생성
-	br.CreateHatchBrush(HS_DIAGCROSS, RGB(255, 255, 255)); // 빗금 무늬 생성
+	br.CreateHatchBrush(HS_DIAGCROSS, RGB(255, 255, 255)); // 흰색으로 설정
 	FillOutsideRect(pDC, &br); // 스크롤되는 바깥 옆역을 채운다.
 
 	return TRUE;
@@ -377,6 +382,31 @@ void CImageToolView::OnLButtonUp(UINT nFlags, CPoint point)
 		/*dc.MoveTo(m_nowP);
 		dc.LineTo(m_afterP);*/
 		dc.Ellipse(m_nowP.x, m_nowP.y, m_afterP.x, m_afterP.y);
+
+		dc.SelectObject(oldBrush);
+		dc.SelectObject(oldPen);
+	}
+
+	if (m_bRoundRect == TRUE)
+	{
+		CClientDC dc(this);
+		// CPen pen;
+		LOGBRUSH lbr;
+		lbr.lbStyle = BS_SOLID;
+		lbr.lbColor = m_color;
+		lbr.lbHatch = 0;
+
+		CPen pen(PS_GEOMETRIC | m_nStyle, m_nWidth, &lbr, 0, 0);// 선의 스타일, 굵기, 색상
+		CPen* oldPen = dc.SelectObject(&pen);
+
+		CBrush brush;
+		brush.CreateSolidBrush(m_FillColor);
+		CBrush* oldBrush = dc.SelectObject(&brush);
+
+		dc.SetROP2(R2_COPYPEN);
+		/*dc.MoveTo(m_nowP);
+		dc.LineTo(m_afterP);*/
+		dc.RoundRect(m_nowP.x, m_nowP.y, m_afterP.x, m_afterP.y, 50, 50);
 
 		dc.SelectObject(oldBrush);
 		dc.SelectObject(oldPen);
@@ -545,6 +575,40 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 			/*dc.MoveTo(m_nowP);
 			dc.LineTo(point);*/
 			dc.Ellipse(m_nowP.x, m_nowP.y, point.x, point.y);
+			dc.SelectObject(oldBrush);
+			dc.SelectObject(oldPen);
+			// 직선의 끝점의 좌표를 갱신
+			m_afterP = point;
+		}
+	}
+
+	if (m_bRoundRect == TRUE)
+	{
+		if (nFlags & MK_LBUTTON)
+		{
+			CClientDC dc(this);
+			// CPen pen;
+			LOGBRUSH lbr;
+			lbr.lbStyle = BS_SOLID;
+			lbr.lbColor = m_color;
+			lbr.lbHatch = 0;
+
+			CPen pen(PS_GEOMETRIC | m_nStyle, m_nWidth, &lbr, 0, 0);// 선의 스타일, 굵기, 색상
+			CPen* oldPen = dc.SelectObject(&pen);
+
+			CBrush brush;
+			brush.CreateSolidBrush(m_FillColor);
+			CBrush* oldBrush = dc.SelectObject(&brush);
+			// 이전에 그린 직선을 지우기 위해서 레스터 오퍼레이션을 R2_NOT으로 지정
+			dc.SetROP2(R2_NOT);
+			/*dc.MoveTo(m_nowP);
+			dc.LineTo(m_afterP);*/
+			dc.RoundRect(m_nowP.x, m_nowP.y, m_afterP.x, m_afterP.y, 50, 50);
+			// 새로운 직선을 그린다.
+			dc.SetROP2(R2_NOT);
+			/*dc.MoveTo(m_nowP);
+			dc.LineTo(point);*/
+			dc.RoundRect(m_nowP.x, m_nowP.y, point.x, point.y, 50, 50);
 			dc.SelectObject(oldBrush);
 			dc.SelectObject(oldPen);
 			// 직선의 끝점의 좌표를 갱신
@@ -743,4 +807,16 @@ void CImageToolView::OnFillColor()
 	{
 		m_FillColor = dlg.GetColor();
 	}
+}
+
+
+void CImageToolView::OnRoundRect()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_bRoundRect = !m_bRoundRect;
+	m_bRect = FALSE;
+	m_bEllipse = FALSE;
+	m_bStick = FALSE;
+	m_nLine = FALSE;
+	m_bPartErase = FALSE;
 }
