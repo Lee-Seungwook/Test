@@ -24,7 +24,8 @@ public:
 	CArray<Line> m_lines;
 	CPoint m_ptFrom;
 	CPoint m_ptTemp;
-	COLORREF m_color; // 색을 나타내는 타입
+	COLORREF m_color; // 선의 색상 설정
+	COLORREF m_FillColor; // 채우기 색 설정
 	int m_nWidth; // 선의 굵기 
 	int m_nStyle; // 선 스타일
 
@@ -36,6 +37,8 @@ public:
 	BOOL m_nLine; // 펜 그리기
 	BOOL m_bStick; // 직선
 	BOOL m_bPartErase; // 지우개 (부분 지우기)
+	BOOL m_bRect; // 사각형
+	BOOL m_bEllipse; // 원
 
 // 재정의입니다.
 public:
@@ -103,6 +106,7 @@ public:
 //	afx_msg void OnPaint();
 	afx_msg void OnStraightline();
 	afx_msg void OnLineStyle();
+	afx_msg void OnFillColor();
 };
 
 #ifndef _DEBUG  // ImageToolView.cpp의 디버그 버전
