@@ -27,6 +27,7 @@ public:
 	COLORREF m_color; // 색을 나타내는 타입
 	int m_nWidth; // 선의 굵기 
 	int m_nStyle;
+	int select;
 
 // 작업입니다.
 public:
@@ -35,6 +36,7 @@ public:
 	BOOL m_bPaint;
 	BOOL m_nLine;
 	BOOL m_bStick;
+	BOOL m_bPartErase;
 
 // 재정의입니다.
 public:
@@ -98,6 +100,7 @@ public:
 	afx_msg void OnDrawColor();
 	afx_msg void OnThick();
 	afx_msg void OnAllerase();
+	afx_msg void OnParterase();
 };
 
 #ifndef _DEBUG  // ImageToolView.cpp의 디버그 버전
