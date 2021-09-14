@@ -39,6 +39,7 @@
 #define IDD_RESIZE                      335
 #define IDD_ROTATE                      338
 #define IDD_THICK                       343
+#define IDD_LINE_STYLE                  345
 #define IDC_WIDTH                       1000
 #define IDC_HEIGHT                      1001
 #define IDC_IMAGE_TYPE                  1002
@@ -85,6 +86,12 @@
 #define IDC_ROTATE3                     1027
 #define IDC_ROTATE4                     1028
 #define IDC_LIST                        1029
+#define IDC_RADIO_SOLID                 1031
+#define IDC_RADIO_DASH                  1032
+#define IDC_RADIO_DOT                   1033
+#define IDC_RADIO_DASHDOT               1034
+#define IDC_RADIO_DASHDOTDOT            1035
+#define IDC_RADIO_NULL                  1036
 #define ID_32771                        32771
 #define ID_WINDOW_DUPLICATE             32772
 #define ID_32773                        32773
@@ -174,14 +181,17 @@
 #define ID_32863                        32863
 #define ID_                             32864
 #define ID_PARTERASE                    32865
+#define ID_32866                        32866
+#define ID_STRAIGHTLINE                 32867
+#define ID_LINE_STYLE                   32868
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        345
-#define _APS_NEXT_COMMAND_VALUE         32866
-#define _APS_NEXT_CONTROL_VALUE         1030
+#define _APS_NEXT_RESOURCE_VALUE        347
+#define _APS_NEXT_COMMAND_VALUE         32869
+#define _APS_NEXT_CONTROL_VALUE         1032
 #define _APS_NEXT_SYMED_VALUE           311
 #endif
 #endif

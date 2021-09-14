@@ -15,6 +15,7 @@
 #include "ImageToolView.h"
 
 #include "ThickDlg.h"
+#include "LineStyleDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -60,6 +61,9 @@ ON_COMMAND(ID_DRAW_COLOR, &CImageToolView::OnDrawColor)
 ON_COMMAND(ID_THICK, &CImageToolView::OnThick)
 ON_COMMAND(ID_ALLERASE, &CImageToolView::OnAllerase)
 ON_COMMAND(ID_PARTERASE, &CImageToolView::OnParterase)
+//ON_WM_PAINT()
+ON_COMMAND(ID_STRAIGHTLINE, &CImageToolView::OnStraightline)
+ON_COMMAND(ID_LINE_STYLE, &CImageToolView::OnLineStyle)
 END_MESSAGE_MAP()
 
 // CImageToolView 생성/소멸
@@ -74,7 +78,7 @@ CImageToolView::CImageToolView() noexcept : m_nZoom(1)
 
 	m_color = RGB(0, 0, 0);
 	m_nWidth = 3;
-	m_nStyle = 1;
+	m_nStyle = 0;
 }
 
 CImageToolView::~CImageToolView()
@@ -105,6 +109,11 @@ void CImageToolView::OnDraw(CDC* pDC)
 		int h = pDoc->m_Dib.GetHeight(); // 영상의 세로
 		pDoc->m_Dib.Draw(pDC->m_hDC, 0, 0, w * m_nZoom, h * m_nZoom); // 확대 및 영상의 가로, 세로를 반영하여 그린다.
 	}
+
+	/* pDC->MoveTo(m_nowP);
+	pDC->LineTo(m_afterP);*/ // 각각 배열로 값들을 저장해서 draw함수에서 다시 설정해주면 창의 크기를 변경해도 그림이 남아있는다!! (배열을 생성해서 각각의 답을 저장)
+
+
 
 }
 
@@ -286,7 +295,7 @@ void CImageToolView::OnEllipse()
 	AfxPrintInfo(_T("현재 위치는 %d, %d 입니다."), m_nowP.x, m_nowP.y);
 	m_nDrawMode = ELLIPSE_MODE;*/
 
-	m_bStick = TRUE;
+	m_bStick = !m_bStick;
 
 }
 
@@ -304,25 +313,32 @@ void CImageToolView::OnRectangle()
 void CImageToolView::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	
 	m_bPaint = FALSE;
 	
 
 	m_afterP.x = point.x;
 	m_afterP.y = point.y;
 
-	/*CClientDC dc(this);
-	CPen pen(PS_SOLID, m_nWidth, m_color);
-	CPen* oldPen = dc.SelectObject(&pen);
-	dc.MoveTo(m_ptFrom);
-	dc.LineTo(point);
-	dc.SelectObject(oldPen);
+	if (m_bStick == TRUE)
+	{
+		CClientDC dc(this);
+		// CPen pen;
+		LOGBRUSH lbr;
+		lbr.lbStyle = BS_SOLID;
+		lbr.lbColor = m_color;
+		lbr.lbHatch = 0;
 
-	Line line;
-	line.ptFrom = m_ptFrom;
-	line.ptTo = point;
-	line.color = m_color;
-	line.width = m_nWidth;
-	m_lines.Add(line);*/
+		CPen pen(PS_GEOMETRIC | m_nStyle, m_nWidth, &lbr, 0, 0); // 색과 굴기
+		CPen* oldPen = dc.SelectObject(&pen);
+		dc.SetROP2(R2_COPYPEN);
+		dc.MoveTo(m_nowP);
+		dc.LineTo(m_afterP);
+		dc.SelectObject(oldPen);
+	}
+
+	ReleaseCapture();
+	
 
 	CScrollView::OnLButtonUp(nFlags, point);
 }
@@ -331,9 +347,9 @@ void CImageToolView::OnLButtonUp(UINT nFlags, CPoint point)
 void CImageToolView::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	SetCapture();
 	m_bPaint = TRUE;
-	m_nowP.x = point.x;
-	m_nowP.y = point.y;
+	m_nowP = m_afterP = point;
 
 	m_ptFrom = point;
 
@@ -396,20 +412,38 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 		}
 	}
 
-	/*if (m_nLine == TRUE)
+	if (m_bStick == TRUE)
 	{
-		if (!m_bPaint) return;
-		CPaintDC dc(this);
-		dc.MoveTo(m_nowP.x, m_nowP.y);
-		dc.LineTo(point.x, point.y);
-		m_nowP = point;
-	}*/
+		if (nFlags & MK_LBUTTON)
+		{
+			CClientDC dc(this);
+			// CPen pen;
+			LOGBRUSH lbr;
+			lbr.lbStyle = BS_SOLID;
+			lbr.lbColor = m_color;
+			lbr.lbHatch = 0;
+
+			CPen pen(PS_GEOMETRIC | m_nStyle, m_nWidth, &lbr, 0, 0);// 색과 굴기
+			CPen* oldPen = dc.SelectObject(&pen);
+			// 이전에 그린 직선을 지우기 위해서 레스터 오퍼레이션을 R2_NOT으로 지정
+			dc.SetROP2(R2_NOT);
+			dc.MoveTo(m_nowP);
+			dc.LineTo(m_afterP);
+			// 새로운 직선을 그린다.
+			dc.SetROP2(R2_NOT);
+			dc.MoveTo(m_nowP);
+			dc.LineTo(point);
+			dc.SelectObject(oldPen);
+			// 직선의 끝점의 좌표를 갱신
+			m_afterP = point;
+		}
+	}
 
 	CScrollView::OnMouseMove(nFlags, point);
 }
 
 
-void CImageToolView::ShowImageInfo(CPoint point)
+void CImageToolView::ShowImageInfo(CPoint point) 
 {
 	CMainFrame* pFrame = (CMainFrame *)AfxGetMainWnd();
 	CImageToolDoc* pDoc = GetDocument();
@@ -466,6 +500,8 @@ void CImageToolView::OnDrawLine()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	m_nLine = !m_nLine;
+	m_bStick = FALSE;
+	m_bPartErase = FALSE;
 }
 
 
@@ -528,15 +564,15 @@ void CImageToolView::OnThick()
 	}
 }
 
-void CImageToolView::DrawLine(CDC *pDC, CPoint point)
-{
-	CPen pen;
-	pen.CreatePen(PS_SOLID, 1, m_color);
-	CPen * pOldPen = (CPen *)pDC->SelectObject(&pen);
-
-	pDC->MoveTo(m_nowP.x, m_nowP.y);
-	pDC->LineTo(m_afterP.x, m_afterP.y);
-}
+//void CImageToolView::DrawLine(CDC *pDC, CPoint point)
+//{
+//	CPen pen;
+//	pen.CreatePen(PS_SOLID, 1, m_color);
+//	CPen * pOldPen = (CPen *)pDC->SelectObject(&pen);
+//
+//	pDC->MoveTo(m_nowP.x, m_nowP.y);
+//	pDC->LineTo(m_afterP.x, m_afterP.y);
+//}
 
 
 void CImageToolView::OnAllerase()
@@ -551,4 +587,36 @@ void CImageToolView::OnParterase()
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	m_bPartErase = !m_bPartErase;
 	m_nLine = FALSE;
+	m_bStick = FALSE;
+}
+
+
+//void CImageToolView::OnPaint()
+//{
+//	CPaintDC dc(this); // device context for painting
+//					   // TODO: 여기에 메시지 처리기 코드를 추가합니다.
+//					   // 그리기 메시지에 대해서는 CScrollView::OnPaint()을(를) 호출하지 마십시오.
+//
+//	dc.MoveTo(m_nowP);
+//	dc.LineTo(m_afterP);
+//}
+
+
+void CImageToolView::OnStraightline()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_bStick = !m_bStick;
+	m_nLine = FALSE;
+	m_bPartErase = FALSE;
+}
+
+
+void CImageToolView::OnLineStyle()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CLineStyleDlg dlg;
+	if (dlg.DoModal() == IDOK)
+	{
+		m_nStyle = dlg.m_nLineStyle;
+	}
 }
