@@ -22,6 +22,7 @@
 
 #define ELLIPSE_MODE 1
 #define RECTANGLE_MODE 2
+
 // CImageToolView
 
 IMPLEMENT_DYNCREATE(CImageToolView, CScrollView)
@@ -57,11 +58,8 @@ ON_UPDATE_COMMAND_UI(ID_END_LINE, &CImageToolView::OnUpdateEndLine)
 //ON_WM_PAINT()
 ON_COMMAND(ID_DRAW_COLOR, &CImageToolView::OnDrawColor)
 ON_COMMAND(ID_THICK, &CImageToolView::OnThick)
-<<<<<<< HEAD
 ON_COMMAND(ID_ALLERASE, &CImageToolView::OnAllerase)
 ON_COMMAND(ID_PARTERASE, &CImageToolView::OnParterase)
-=======
->>>>>>> parent of f2bb425 (전체 지우기까지 구현)
 END_MESSAGE_MAP()
 
 // CImageToolView 생성/소멸
@@ -71,14 +69,12 @@ CImageToolView::CImageToolView() noexcept : m_nZoom(1)
 	// TODO: 여기에 생성 코드를 추가합니다.
 	m_bPaint = FALSE;
 	m_nLine = FALSE;
-<<<<<<< HEAD
 	m_bStick = FALSE;
 	m_bPartErase = FALSE;
-=======
->>>>>>> parent of f2bb425 (전체 지우기까지 구현)
 
 	m_color = RGB(0, 0, 0);
 	m_nWidth = 3;
+	m_nStyle = 1;
 }
 
 CImageToolView::~CImageToolView()
@@ -277,11 +273,21 @@ void CImageToolView::OnUpdateViewZoom4(CCmdUI *pCmdUI)
 void CImageToolView::OnEllipse()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	CClientDC DC(this);
-	DC.Ellipse(m_nowP.x, m_nowP.y, m_nowP.x + 100, m_nowP.y + 100);
+	/*CClientDC dc(this);
+
+	CPen pen;
+	pen.CreatePen(PS_SOLID, 1, m_color);
+	CPen* oldPen = dc.SelectObject(&pen);
+	dc.MoveTo(m_nowP.x, m_nowP.y);
+	dc.LineTo(m_afterP.x, m_afterP.y);
+	dc.SelectObject(oldPen);
+
 	CString m_text;
 	AfxPrintInfo(_T("현재 위치는 %d, %d 입니다."), m_nowP.x, m_nowP.y);
-	m_nDrawMode = ELLIPSE_MODE;
+	m_nDrawMode = ELLIPSE_MODE;*/
+
+	m_bStick = TRUE;
+
 }
 
 
@@ -300,6 +306,9 @@ void CImageToolView::OnLButtonUp(UINT nFlags, CPoint point)
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
 	m_bPaint = FALSE;
 	
+
+	m_afterP.x = point.x;
+	m_afterP.y = point.y;
 
 	/*CClientDC dc(this);
 	CPen pen(PS_SOLID, m_nWidth, m_color);
@@ -518,7 +527,6 @@ void CImageToolView::OnThick()
 		m_nWidth = dlg.m_nThick;
 	}
 }
-<<<<<<< HEAD
 
 void CImageToolView::DrawLine(CDC *pDC, CPoint point)
 {
@@ -544,5 +552,3 @@ void CImageToolView::OnParterase()
 	m_bPartErase = !m_bPartErase;
 	m_nLine = FALSE;
 }
-=======
->>>>>>> parent of f2bb425 (전체 지우기까지 구현)
