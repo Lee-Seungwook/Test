@@ -66,6 +66,7 @@ ON_COMMAND(ID_STRAIGHTLINE, &CImageToolView::OnStraightline)
 ON_COMMAND(ID_LINE_STYLE, &CImageToolView::OnLineStyle)
 ON_COMMAND(ID_FILL_COLOR, &CImageToolView::OnFillColor)
 ON_COMMAND(ID_ROUND_RECT, &CImageToolView::OnRoundRect)
+ON_COMMAND(ID_TRIANGLE, &CImageToolView::OnTriangle)
 END_MESSAGE_MAP()
 
 // CImageToolView 생성/소멸
@@ -81,6 +82,7 @@ CImageToolView::CImageToolView() noexcept : m_nZoom(1)
 	m_bRect = FALSE;
 	m_bEllipse = FALSE;
 	m_bRoundRect = FALSE;
+	m_bTriangle = FALSE;
 
 	m_bPartErase = FALSE;
 
@@ -412,6 +414,43 @@ void CImageToolView::OnLButtonUp(UINT nFlags, CPoint point)
 		dc.SelectObject(oldPen);
 	}
 
+	if (m_bTriangle == TRUE)
+	{
+		CClientDC dc(this);
+		// CPen pen;
+		CPoint m_point1, m_point2, m_point3;
+		m_point1 = m_point2 = m_point3 = point;
+
+		m_point1.x = m_nowP.x - (m_afterP.x - m_nowP.x);
+		m_point2 = m_nowP;
+		POINT ar1[] = { m_nowP.x, m_nowP.y, m_afterP.x, m_afterP.y, m_point1.x, m_afterP.y };
+		LOGBRUSH lbr;
+		lbr.lbStyle = BS_SOLID;
+		lbr.lbColor = m_color;
+		lbr.lbHatch = 0;
+
+		CPen pen(PS_GEOMETRIC | m_nStyle | PS_ENDCAP_FLAT | PS_JOIN_MITER, m_nWidth, &lbr);// 선의 스타일, 굵기, 색상
+		CPen* oldPen = dc.SelectObject(&pen);
+
+		CBrush brush;
+		brush.CreateSolidBrush(m_FillColor);
+		CBrush* oldBrush = dc.SelectObject(&brush);
+		// 이전에 그린 직선을 지우기 위해서 레스터 오퍼레이션을 R2_NOT으로 지정
+		
+		dc.SetROP2(R2_COPYPEN);
+		dc.BeginPath(); // 요거랑
+		dc.MoveTo(m_nowP);
+		dc.LineTo(m_afterP);
+		dc.LineTo(m_point1.x, m_afterP.y);
+		dc.LineTo(m_point2);
+		dc.EndPath(); // 이거랑
+		dc.StrokeAndFillPath(); // 이 친구가 없으면 도형으로 그려지지 않는다. 없으면 각각의 직선으로 그려지기 때문이다.
+		dc.SelectObject(oldBrush);
+		dc.SelectObject(oldPen);
+		// 직선의 끝점의 좌표를 갱신
+		
+	}
+
 	ReleaseCapture();
 	
 
@@ -609,6 +648,60 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 			/*dc.MoveTo(m_nowP);
 			dc.LineTo(point);*/
 			dc.RoundRect(m_nowP.x, m_nowP.y, point.x, point.y, 50, 50);
+			dc.SelectObject(oldBrush);
+			dc.SelectObject(oldPen);
+			// 직선의 끝점의 좌표를 갱신
+			m_afterP = point;
+		}
+	}
+
+	if (m_bTriangle == TRUE)
+	{
+		if (nFlags & MK_LBUTTON)
+		{
+			CClientDC dc(this);
+			// CPen pen;
+			CPoint m_point1, m_point2, m_point3;
+			m_point1 = m_point2 = m_point3 = point;
+			
+			m_point1.x = m_nowP.x - (m_afterP.x - m_nowP.x);
+			m_point2 = m_nowP;
+			m_point3.x = m_nowP.x - (point.x - m_nowP.x);
+			POINT ar1[] = { m_nowP.x, m_nowP.y, m_afterP.x, m_afterP.y, m_point1.x, m_afterP.y };
+			POINT ar2[] = { m_nowP.x, m_nowP.y, point.x, point.y, m_point3.x, point.y };
+
+			LOGBRUSH lbr;
+			lbr.lbStyle = BS_SOLID;
+			lbr.lbColor = m_color;
+			lbr.lbHatch = 0;
+
+			CPen pen(PS_GEOMETRIC | m_nStyle | PS_ENDCAP_FLAT | PS_JOIN_MITER, m_nWidth, &lbr);// 선의 스타일, 굵기, 색상
+			CPen* oldPen = dc.SelectObject(&pen);
+
+			CBrush brush;
+			brush.CreateSolidBrush(m_FillColor);
+			CBrush* oldBrush = dc.SelectObject(&brush);
+			// 이전에 그린 직선을 지우기 위해서 레스터 오퍼레이션을 R2_NOT으로 지정
+			dc.SetROP2(R2_NOT);
+			dc.Polygon(ar1, 3); // 배열을 통해 좌표를 설정하고, 꼭짓점 수를 넣는다.
+			/*dc.BeginPath();
+			dc.MoveTo(m_nowP);
+			dc.LineTo(m_afterP);
+			dc.LineTo(m_point1.x, m_afterP.y);
+			dc.LineTo(m_point2);
+			dc.EndPath();
+			dc.StrokeAndFillPath();*/
+			// 새로운 직선을 그린다.
+			dc.SetROP2(R2_NOT);
+			dc.Polygon(ar2, 3);
+			/*dc.BeginPath();
+			dc.MoveTo(m_nowP);
+			dc.LineTo(point);
+			dc.LineTo(m_point3.x, point.y);
+			dc.LineTo(m_point2);
+			dc.EndPath();
+			dc.StrokeAndFillPath();*/
+
 			dc.SelectObject(oldBrush);
 			dc.SelectObject(oldPen);
 			// 직선의 끝점의 좌표를 갱신
@@ -814,6 +907,19 @@ void CImageToolView::OnRoundRect()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	m_bRoundRect = !m_bRoundRect;
+	m_bRect = FALSE;
+	m_bEllipse = FALSE;
+	m_bStick = FALSE;
+	m_nLine = FALSE;
+	m_bPartErase = FALSE;
+}
+
+
+void CImageToolView::OnTriangle()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_bTriangle = !m_bTriangle;
+	m_bRoundRect = FALSE;
 	m_bRect = FALSE;
 	m_bEllipse = FALSE;
 	m_bStick = FALSE;
