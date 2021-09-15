@@ -41,6 +41,9 @@ public:
 	BOOL m_bEllipse; // 원
 	BOOL m_bRoundRect; // 둥근 사각형
 	BOOL m_bTriangle; // 삼각형
+	BOOL m_bRightTriangle; // 직각 삼각형
+	BOOL m_bRhombus; // 마름모
+	BOOL m_bPentagon; // 오각형
 
 // 재정의입니다.
 public:
@@ -111,6 +114,9 @@ public:
 	afx_msg void OnFillColor();
 	afx_msg void OnRoundRect();
 	afx_msg void OnTriangle();
+	afx_msg void OnRighttri();
+	afx_msg void OnRhombus();
+	afx_msg void OnPentagon();
 };
 
 #ifndef _DEBUG  // ImageToolView.cpp의 디버그 버전
