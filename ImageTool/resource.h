@@ -5,6 +5,8 @@
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             100
 #define ID_INDICATOR_POINT              101
+#define IDC_POINTER                     104
+#define IDC_CURSOR_DEFAULT              104
 #define IDR_POPUP_EDIT                  119
 #define ID_STATUSBAR_PANE1              120
 #define ID_STATUSBAR_PANE2              121
@@ -40,6 +42,8 @@
 #define IDD_ROTATE                      338
 #define IDD_THICK                       343
 #define IDD_LINE_STYLE                  345
+#define IDC_CURSOR_COLORFILL            347
+#define IDC_CURSOR_DRAW                 348
 #define IDC_WIDTH                       1000
 #define IDC_HEIGHT                      1001
 #define IDC_IMAGE_TYPE                  1002
@@ -199,7 +203,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        347
+#define _APS_NEXT_RESOURCE_VALUE        349
 #define _APS_NEXT_COMMAND_VALUE         32879
 #define _APS_NEXT_CONTROL_VALUE         1032
 #define _APS_NEXT_SYMED_VALUE           311

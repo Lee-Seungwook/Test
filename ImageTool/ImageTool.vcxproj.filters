@@ -200,6 +200,15 @@
     <None Include="res\ImageTool.rc2">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="res\cur00002.cur">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\cursor1.cur">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="POINTER.cur">
+      <Filter>리소스 파일</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ImageTool.rc">

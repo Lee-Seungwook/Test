@@ -51,26 +51,29 @@ BEGIN_MESSAGE_MAP(CImageToolView, CScrollView)
 	ON_WM_LBUTTONDOWN()
 	ON_UPDATE_COMMAND_UI(ID_ELLIPSE, &CImageToolView::OnUpdateEllipse)
 	ON_UPDATE_COMMAND_UI(ID_RECTANGLE, &CImageToolView::OnUpdateRectangle)
-//	ON_COMMAND(ID_DRAWLINE, &CImageToolView::OnDrawline)
-ON_COMMAND(ID_DRAW_LINE, &CImageToolView::OnDrawLine)
-ON_COMMAND(ID_END_LINE, &CImageToolView::OnEndLine)
-ON_UPDATE_COMMAND_UI(ID_DRAW_LINE, &CImageToolView::OnUpdateDrawLine)
-ON_UPDATE_COMMAND_UI(ID_END_LINE, &CImageToolView::OnUpdateEndLine)
-//ON_WM_PAINT()
-ON_COMMAND(ID_DRAW_COLOR, &CImageToolView::OnDrawColor)
-ON_COMMAND(ID_THICK, &CImageToolView::OnThick)
-ON_COMMAND(ID_ALLERASE, &CImageToolView::OnAllerase)
-ON_COMMAND(ID_PARTERASE, &CImageToolView::OnParterase)
-//ON_WM_PAINT()
-ON_COMMAND(ID_STRAIGHTLINE, &CImageToolView::OnStraightline)
-ON_COMMAND(ID_LINE_STYLE, &CImageToolView::OnLineStyle)
-ON_COMMAND(ID_FILL_COLOR, &CImageToolView::OnFillColor)
-ON_COMMAND(ID_ROUND_RECT, &CImageToolView::OnRoundRect)
-ON_COMMAND(ID_TRIANGLE, &CImageToolView::OnTriangle)
-ON_COMMAND(ID_RIGHTTRI, &CImageToolView::OnRighttri)
-ON_COMMAND(ID_RHOMBUS, &CImageToolView::OnRhombus)
-ON_COMMAND(ID_PENTAGON, &CImageToolView::OnPentagon)
-ON_COMMAND(ID_COLORFILL, &CImageToolView::OnColorfill)
+	//	ON_COMMAND(ID_DRAWLINE, &CImageToolView::OnDrawline)
+	ON_COMMAND(ID_DRAW_LINE, &CImageToolView::OnDrawLine)
+	ON_COMMAND(ID_END_LINE, &CImageToolView::OnEndLine)
+	ON_UPDATE_COMMAND_UI(ID_DRAW_LINE, &CImageToolView::OnUpdateDrawLine)
+	ON_UPDATE_COMMAND_UI(ID_END_LINE, &CImageToolView::OnUpdateEndLine)
+	//ON_WM_PAINT()
+	ON_COMMAND(ID_DRAW_COLOR, &CImageToolView::OnDrawColor)
+	ON_COMMAND(ID_THICK, &CImageToolView::OnThick)
+	ON_COMMAND(ID_ALLERASE, &CImageToolView::OnAllerase)
+	ON_COMMAND(ID_PARTERASE, &CImageToolView::OnParterase)
+	//ON_WM_PAINT()
+	ON_COMMAND(ID_STRAIGHTLINE, &CImageToolView::OnStraightline)
+	ON_COMMAND(ID_LINE_STYLE, &CImageToolView::OnLineStyle)
+	ON_COMMAND(ID_FILL_COLOR, &CImageToolView::OnFillColor)
+	ON_COMMAND(ID_ROUND_RECT, &CImageToolView::OnRoundRect)
+	ON_COMMAND(ID_TRIANGLE, &CImageToolView::OnTriangle)
+	ON_COMMAND(ID_RIGHTTRI, &CImageToolView::OnRighttri)
+	ON_COMMAND(ID_RHOMBUS, &CImageToolView::OnRhombus)
+	ON_COMMAND(ID_PENTAGON, &CImageToolView::OnPentagon)
+	ON_COMMAND(ID_COLORFILL, &CImageToolView::OnColorfill)
+	//ON_WM_SETCURSOR()
+	//ON_WM_DESTROY()
+	ON_WM_SETCURSOR()
 END_MESSAGE_MAP()
 
 // CImageToolView 생성/소멸
@@ -93,6 +96,8 @@ CImageToolView::CImageToolView() noexcept : m_nZoom(1)
 	m_bColorFill = FALSE;
 
 	m_bPartErase = FALSE;
+	m_bMouseDraw = FALSE;
+	m_bMouseFill = FALSE;
 
 	m_color = RGB(0, 0, 0);
 	m_FillColor = RGB(255, 255, 255);
@@ -141,8 +146,11 @@ void CImageToolView::OnInitialUpdate()
 	CScrollView::OnInitialUpdate();
 
 	SetScrollSizeToFit();
+	m_hCursorDe = AfxGetApp()->LoadCursorW(IDC_CURSOR_DEFAULT);
+	m_hCursorDraw = AfxGetApp()->LoadCursorW(IDC_CURSOR_DRAW);
+	m_hCursorFill = AfxGetApp()->LoadCursorW(IDC_CURSOR_COLORFILL);
 
-	
+
 }
 
 void CImageToolView::SetScrollSizeToFit(void)
@@ -303,9 +311,9 @@ void CImageToolView::OnUpdateViewZoom4(CCmdUI *pCmdUI)
 void CImageToolView::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
-	
+
 	m_bPaint = FALSE;
-	
+
 
 	m_afterP.x = point.x;
 	m_afterP.y = point.y;
@@ -342,12 +350,12 @@ void CImageToolView::OnLButtonUp(UINT nFlags, CPoint point)
 		CBrush brush;
 		brush.CreateSolidBrush(m_FillColor);
 		CBrush* oldBrush = dc.SelectObject(&brush);
-		
+
 		dc.SetROP2(R2_COPYPEN);
 		/*dc.MoveTo(m_nowP);
 		dc.LineTo(m_afterP);*/
 		dc.Rectangle(m_nowP.x, m_nowP.y, m_afterP.x, m_afterP.y);
-		
+
 		dc.SelectObject(oldBrush);
 		dc.SelectObject(oldPen);
 	}
@@ -424,7 +432,7 @@ void CImageToolView::OnLButtonUp(UINT nFlags, CPoint point)
 		brush.CreateSolidBrush(m_FillColor);
 		CBrush* oldBrush = dc.SelectObject(&brush);
 		// 이전에 그린 직선을 지우기 위해서 레스터 오퍼레이션을 R2_NOT으로 지정
-		
+
 		dc.SetROP2(R2_COPYPEN);
 		dc.BeginPath(); // 요거랑
 		dc.MoveTo(m_nowP);
@@ -436,14 +444,14 @@ void CImageToolView::OnLButtonUp(UINT nFlags, CPoint point)
 		dc.SelectObject(oldBrush);
 		dc.SelectObject(oldPen);
 		// 직선의 끝점의 좌표를 갱신
-		
+
 	}
 
 	if (m_bRightTriangle == TRUE)
 	{
 		CClientDC dc(this);
 		// CPen pen;
-		
+
 		LOGBRUSH lbr;
 		lbr.lbStyle = BS_SOLID;
 		lbr.lbColor = m_color;
@@ -459,10 +467,10 @@ void CImageToolView::OnLButtonUp(UINT nFlags, CPoint point)
 
 		dc.SetROP2(R2_COPYPEN);
 		dc.BeginPath(); // 요거랑
-			dc.MoveTo(m_nowP);
-			dc.LineTo(m_afterP);
-			dc.LineTo(m_nowP.x, m_afterP.y);
-			dc.LineTo(m_nowP);
+		dc.MoveTo(m_nowP);
+		dc.LineTo(m_afterP);
+		dc.LineTo(m_nowP.x, m_afterP.y);
+		dc.LineTo(m_nowP);
 		dc.EndPath(); // 이거랑
 		dc.StrokeAndFillPath(); // 이 친구가 없으면 도형으로 그려지지 않는다. 없으면 각각의 직선으로 그려지기 때문이다.
 
@@ -493,11 +501,11 @@ void CImageToolView::OnLButtonUp(UINT nFlags, CPoint point)
 
 		dc.SetROP2(R2_COPYPEN);
 		dc.BeginPath(); // 요거랑
-			dc.MoveTo(m_temp.x, m_nowP.y);
-			dc.LineTo(m_afterP.x, m_temp.y);
-			dc.LineTo(m_temp.x, m_afterP.y);
-			dc.LineTo(m_nowP.x, m_temp.y);
-			dc.LineTo(m_temp.x, m_nowP.y);
+		dc.MoveTo(m_temp.x, m_nowP.y);
+		dc.LineTo(m_afterP.x, m_temp.y);
+		dc.LineTo(m_temp.x, m_afterP.y);
+		dc.LineTo(m_nowP.x, m_temp.y);
+		dc.LineTo(m_temp.x, m_nowP.y);
 		dc.EndPath(); // 이거랑
 		dc.StrokeAndFillPath(); // 이 친구가 없으면 도형으로 그려지지 않는다. 없으면 각각의 직선으로 그려지기 때문이다.
 
@@ -547,7 +555,7 @@ void CImageToolView::OnLButtonUp(UINT nFlags, CPoint point)
 		dc.SelectObject(oldPen);
 	}
 	ReleaseCapture();
-	
+
 
 	CScrollView::OnLButtonUp(nFlags, point);
 }
@@ -583,6 +591,8 @@ void CImageToolView::OnLButtonDown(UINT nFlags, CPoint point)
 		dc.ExtFloodFill(point.x, point.y, dc.GetPixel(point), FLOODFILLSURFACE);
 		dc.SelectObject(oldBrush);
 		m_bColorFill = FALSE;
+		m_bMouseFill = FALSE;
+		m_bMouseDraw = !m_bMouseDraw;
 	}
 	CScrollView::OnLButtonDown(nFlags, point);
 }
@@ -769,7 +779,7 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 			// CPen pen;
 			CPoint m_point1, m_point2, m_point3;
 			m_point1 = m_point2 = m_point3 = point;
-			
+
 			m_point1.x = m_nowP.x - (m_afterP.x - m_nowP.x);
 			m_point2 = m_nowP;
 			m_point3.x = m_nowP.x - (point.x - m_nowP.x);
@@ -790,11 +800,11 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 			// 이전에 그린 직선을 지우기 위해서 레스터 오퍼레이션을 R2_NOT으로 지정
 			dc.SetROP2(R2_NOT);
 			dc.Polygon(ar1, 3); // 배열을 통해 좌표를 설정하고, 꼭짓점 수를 넣는다.
-			
+
 			// 새로운 직선을 그린다.
 			dc.SetROP2(R2_NOT);
 			dc.Polygon(ar2, 3);
-			
+
 
 			dc.SelectObject(oldBrush);
 			dc.SelectObject(oldPen);
@@ -809,7 +819,7 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 		{
 			CClientDC dc(this);
 			// CPen pen;
-			
+
 			POINT ar1[] = { m_nowP.x, m_nowP.y, m_afterP.x, m_afterP.y, m_nowP.x, m_afterP.y };
 			POINT ar2[] = { m_nowP.x, m_nowP.y, point.x, point.y, m_nowP.x, point.y };
 
@@ -827,11 +837,11 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 			// 이전에 그린 직선을 지우기 위해서 레스터 오퍼레이션을 R2_NOT으로 지정
 			dc.SetROP2(R2_NOT);
 			dc.Polygon(ar1, 3); // 배열을 통해 좌표를 설정하고, 꼭짓점 수를 넣는다.
-			
+
 			// 새로운 직선을 그린다.
 			dc.SetROP2(R2_NOT);
 			dc.Polygon(ar2, 3);
-		
+
 
 			dc.SelectObject(oldBrush);
 			dc.SelectObject(oldPen);
@@ -905,7 +915,7 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 			m_temp6.x = m_temp4.x + (point.x - m_temp4.x) / 2;
 
 
-			
+
 			POINT ar1[] = { m_temp1.x, m_nowP.y, m_afterP.x, m_temp1.y, m_temp3.x, m_afterP.y, m_temp2.x, m_afterP.y, m_nowP.x, m_temp1.y };
 			POINT ar2[] = { m_temp4.x, m_nowP.y, point.x, m_temp4.y, m_temp6.x, point.y, m_temp5.x, point.y, m_nowP.x, m_temp4.y };
 
@@ -939,7 +949,7 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 }
 
 
-void CImageToolView::ShowImageInfo(CPoint point) 
+void CImageToolView::ShowImageInfo(CPoint point)
 {
 	CMainFrame* pFrame = (CMainFrame *)AfxGetMainWnd();
 	CImageToolDoc* pDoc = GetDocument();
@@ -981,6 +991,7 @@ void CImageToolView::OnDrawLine()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	m_nLine = !m_nLine;
+	m_bMouseDraw = !m_bMouseDraw;
 	m_bPentagon = FALSE;
 	m_bRhombus = FALSE;
 	m_bRightTriangle = FALSE;
@@ -990,6 +1001,8 @@ void CImageToolView::OnDrawLine()
 	m_bEllipse = FALSE;
 	m_bStick = FALSE;
 	m_bPartErase = FALSE;
+
+
 }
 
 
@@ -1262,9 +1275,37 @@ void CImageToolView::OnColorfill()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	m_bColorFill = !m_bColorFill;
+	m_bMouseFill = !m_bMouseFill;
+	m_bMouseDraw = FALSE;
 	CColorDialog dlg(m_ColorFill, CC_FULLOPEN);
 	if (dlg.DoModal() == IDOK)
 	{
 		m_ColorFill = dlg.GetColor();
 	}
+}
+
+
+
+
+
+BOOL CImageToolView::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
+{
+	// TODO: 여기에 메시지 처리기 코드를 추가 및/또는 기본값을 호출합니다.
+	if (m_bMouseDraw == TRUE)
+	{
+		::SetCursor(m_hCursorDraw);
+		return TRUE;
+	}
+	else if (m_bMouseFill == TRUE)
+	{
+		::SetCursor(m_hCursorFill);
+		return TRUE;
+	}
+	else
+	{
+		::SetCursor(m_hCursorDe);
+		return TRUE;
+	}
+
+	return CScrollView::OnSetCursor(pWnd, nHitTest, message);
 }
