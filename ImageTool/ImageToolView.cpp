@@ -70,6 +70,7 @@ ON_COMMAND(ID_TRIANGLE, &CImageToolView::OnTriangle)
 ON_COMMAND(ID_RIGHTTRI, &CImageToolView::OnRighttri)
 ON_COMMAND(ID_RHOMBUS, &CImageToolView::OnRhombus)
 ON_COMMAND(ID_PENTAGON, &CImageToolView::OnPentagon)
+ON_COMMAND(ID_COLORFILL, &CImageToolView::OnColorfill)
 END_MESSAGE_MAP()
 
 // CImageToolView 생성/소멸
@@ -89,6 +90,7 @@ CImageToolView::CImageToolView() noexcept : m_nZoom(1)
 	m_bRightTriangle = FALSE;
 	m_bRhombus = FALSE;
 	m_bPentagon = FALSE;
+	m_bColorFill = FALSE;
 
 	m_bPartErase = FALSE;
 
@@ -570,6 +572,17 @@ void CImageToolView::OnLButtonDown(UINT nFlags, CPoint point)
 		dc.SelectObject(&pen);
 		dc.SelectObject(&brush);
 		dc.Rectangle(point.x - 15, point.y - 15, point.x + 15, point.y + 15);
+	}
+
+	if (m_bColorFill == TRUE)
+	{
+		CClientDC dc(this);
+		CBrush brush(m_ColorFill);
+		CBrush* oldBrush = dc.SelectObject(&brush);
+
+		dc.ExtFloodFill(point.x, point.y, dc.GetPixel(point), FLOODFILLSURFACE);
+		dc.SelectObject(oldBrush);
+		m_bColorFill = FALSE;
 	}
 	CScrollView::OnLButtonDown(nFlags, point);
 }
@@ -1242,4 +1255,16 @@ void CImageToolView::OnPentagon()
 	m_bStick = FALSE;
 	m_nLine = FALSE;
 	m_bPartErase = FALSE;
+}
+
+
+void CImageToolView::OnColorfill()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_bColorFill = !m_bColorFill;
+	CColorDialog dlg(m_ColorFill, CC_FULLOPEN);
+	if (dlg.DoModal() == IDOK)
+	{
+		m_ColorFill = dlg.GetColor();
+	}
 }

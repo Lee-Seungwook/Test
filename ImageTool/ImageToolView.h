@@ -26,8 +26,10 @@ public:
 	CPoint m_ptTemp;
 	COLORREF m_color; // 선의 색상 설정
 	COLORREF m_FillColor; // 채우기 색 설정
+	COLORREF m_ColorFill; // 눌러서 채우기 설정
 	int m_nWidth; // 선의 굵기 
 	int m_nStyle; // 선 스타일
+	int m_nCheck; // 항목 선택 여부 확인
 
 // 작업입니다.
 public:
@@ -44,6 +46,7 @@ public:
 	BOOL m_bRightTriangle; // 직각 삼각형
 	BOOL m_bRhombus; // 마름모
 	BOOL m_bPentagon; // 오각형
+	BOOL m_bColorFill; // 색상 채우기 
 
 // 재정의입니다.
 public:
@@ -117,6 +120,7 @@ public:
 	afx_msg void OnRighttri();
 	afx_msg void OnRhombus();
 	afx_msg void OnPentagon();
+	afx_msg void OnColorfill();
 };
 
 #ifndef _DEBUG  // ImageToolView.cpp의 디버그 버전
