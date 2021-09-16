@@ -202,13 +202,14 @@
 #define ID_RHOMBUS                      32876
 #define ID_PENTAGON                     32877
 #define ID_COLORFILL                    32878
+#define ID_BUTTON32893                  32893
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        355
-#define _APS_NEXT_COMMAND_VALUE         32888
+#define _APS_NEXT_COMMAND_VALUE         32894
 #define _APS_NEXT_CONTROL_VALUE         1032
 #define _APS_NEXT_SYMED_VALUE           311
 #endif
