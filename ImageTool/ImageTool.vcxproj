@@ -257,7 +257,9 @@
   <ItemGroup>
     <None Include="ImageTool.reg" />
     <None Include="POINTER.cur" />
+    <None Include="res\cur00001.cur" />
     <None Include="res\cur00002.cur" />
+    <None Include="res\cur00003.cur" />
     <None Include="res\cursor1.cur" />
     <None Include="res\ImageTool.rc2" />
   </ItemGroup>

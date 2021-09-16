@@ -209,6 +209,12 @@
     <None Include="POINTER.cur">
       <Filter>리소스 파일</Filter>
     </None>
+    <None Include="res\cur00001.cur">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\cur00003.cur">
+      <Filter>리소스 파일</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ImageTool.rc">

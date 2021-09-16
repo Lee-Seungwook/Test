@@ -45,6 +45,9 @@
 #define IDC_CURSOR_COLORFILL            347
 #define IDC_CURSOR_DRAW                 348
 #define IDR_TOOLBAR1                    351
+#define IDC_CURSOR_ERASE                353
+#define IDC_CURSOR1                     354
+#define IDC_CURSOR_POLY                 354
 #define IDC_WIDTH                       1000
 #define IDC_HEIGHT                      1001
 #define IDC_IMAGE_TYPE                  1002
@@ -204,7 +207,7 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        353
+#define _APS_NEXT_RESOURCE_VALUE        355
 #define _APS_NEXT_COMMAND_VALUE         32888
 #define _APS_NEXT_CONTROL_VALUE         1032
 #define _APS_NEXT_SYMED_VALUE           311

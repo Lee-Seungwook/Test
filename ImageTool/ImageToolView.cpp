@@ -96,13 +96,17 @@ CImageToolView::CImageToolView() noexcept : m_nZoom(1)
 	m_bColorFill = FALSE;
 
 	m_bPartErase = FALSE;
+
 	m_bMouseDraw = FALSE;
 	m_bMouseFill = FALSE;
-
+	m_bMouseErase = FALSE;
+	m_bMousePoly = FALSE;
+	
 	m_color = RGB(0, 0, 0);
 	m_FillColor = RGB(255, 255, 255);
 	m_nWidth = 3;
 	m_nStyle = 0;
+	m_nMousetempPoly = 0;
 }
 
 CImageToolView::~CImageToolView()
@@ -135,7 +139,7 @@ void CImageToolView::OnDraw(CDC* pDC)
 	}
 
 	/* pDC->MoveTo(m_nowP);
-	pDC->LineTo(m_afterP);*/ // 각각 배열로 값들을 저장해서 draw함수에서 다시 설정해주면 창의 크기를 변경해도 그림이 남아있는다!! (배열을 생성해서 각각의 답을 저장)
+	pDC->LineTo(m_afterP);*/ // 각각 배열로 값들을 저장해서 draw함수에서 다시 설정해주면 창의 크기를 변경해도 그림이 남아있는다!! (배열을 생성해서 각각의 값을 저장)
 
 
 
@@ -149,6 +153,8 @@ void CImageToolView::OnInitialUpdate()
 	m_hCursorDe = AfxGetApp()->LoadCursorW(IDC_CURSOR_DEFAULT);
 	m_hCursorDraw = AfxGetApp()->LoadCursorW(IDC_CURSOR_DRAW);
 	m_hCursorFill = AfxGetApp()->LoadCursorW(IDC_CURSOR_COLORFILL);
+	m_hCursorErase = AfxGetApp()->LoadCursorW(IDC_CURSOR_ERASE);
+	m_hCursorPoly = AfxGetApp()->LoadCursorW(IDC_CURSOR_POLY);
 
 
 }
@@ -579,7 +585,9 @@ void CImageToolView::OnLButtonDown(UINT nFlags, CPoint point)
 		pen.CreatePen(PS_SOLID, 2, RGB(255, 255, 255));
 		dc.SelectObject(&pen);
 		dc.SelectObject(&brush);
-		dc.Rectangle(point.x - 15, point.y - 15, point.x + 15, point.y + 15);
+		dc.Ellipse(point.x - 10, point.y + 30, point.x + 10, point.y + 10);
+		m_bMouseFill = FALSE;
+		m_bMouseDraw = FALSE;
 	}
 
 	if (m_bColorFill == TRUE)
@@ -592,7 +600,6 @@ void CImageToolView::OnLButtonDown(UINT nFlags, CPoint point)
 		dc.SelectObject(oldBrush);
 		m_bColorFill = FALSE;
 		m_bMouseFill = FALSE;
-		m_bMouseDraw = !m_bMouseDraw;
 	}
 	CScrollView::OnLButtonDown(nFlags, point);
 }
@@ -638,7 +645,7 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 			pen.CreatePen(PS_SOLID, 1, RGB(255, 255, 255));
 			dc.SelectObject(&pen);
 			dc.SelectObject(&brush);
-			dc.Rectangle(point.x - 15, point.y - 15, point.x + 15, point.y + 15);
+			dc.Ellipse(point.x - 10, point.y + 30, point.x + 10, point.y + 10);
 		}
 	}
 
@@ -990,8 +997,12 @@ void CImageToolView::ShowImageInfo(CPoint point)
 void CImageToolView::OnDrawLine()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	m_nLine = !m_nLine;
 	m_bMouseDraw = !m_bMouseDraw;
+	m_bMousePoly = FALSE;
+	m_bMouseErase = FALSE;
+	m_bMouseFill = FALSE;
+	
+	m_nLine = !m_nLine;
 	m_bPentagon = FALSE;
 	m_bRhombus = FALSE;
 	m_bRightTriangle = FALSE;
@@ -1044,7 +1055,17 @@ void CImageToolView::OnUpdateEndLine(CCmdUI *pCmdUI)
 //}
 
 void CImageToolView::OnEllipse()
-{
+{	
+	if (m_nMousetempPoly != 2)
+	{
+		m_nMousetempPoly = 2;
+		m_bMousePoly = FALSE;
+	}
+	m_bMousePoly = !m_bMousePoly;
+	m_bMouseErase = FALSE;
+	m_bMouseFill = FALSE;
+	m_bMouseDraw = FALSE;
+
 	m_bEllipse = !m_bEllipse;
 	m_bPentagon = FALSE;
 	m_bRhombus = FALSE;
@@ -1062,6 +1083,16 @@ void CImageToolView::OnEllipse()
 void CImageToolView::OnRectangle()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	if (m_nMousetempPoly != 3)
+	{
+		m_nMousetempPoly = 3;
+		m_bMousePoly = FALSE;
+	}
+	m_bMousePoly = !m_bMousePoly;
+	m_bMouseErase = FALSE;
+	m_bMouseFill = FALSE;
+	m_bMouseDraw = FALSE;
+
 	m_bRect = !m_bRect;
 	m_bPentagon = FALSE;
 	m_bRhombus = FALSE;
@@ -1130,6 +1161,11 @@ void CImageToolView::OnAllerase()
 void CImageToolView::OnParterase()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_bMouseErase = !m_bMouseErase;
+	m_bMousePoly = FALSE;
+	m_bMouseFill = FALSE;
+	m_bMouseDraw = FALSE;
+
 	m_bPartErase = !m_bPartErase;
 	m_bPentagon = FALSE;
 	m_bRhombus = FALSE;
@@ -1157,6 +1193,16 @@ void CImageToolView::OnParterase()
 void CImageToolView::OnStraightline()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	if (m_nMousetempPoly != 1)
+	{
+		m_nMousetempPoly = 1;
+		m_bMousePoly = FALSE;
+	}
+	m_bMousePoly = !m_bMousePoly;
+	m_bMouseFill = FALSE;
+	m_bMouseDraw = FALSE;
+	m_bMouseErase = FALSE;
+
 	m_bStick = !m_bStick;
 	m_bPentagon = FALSE;
 	m_bRhombus = FALSE;
@@ -1195,6 +1241,16 @@ void CImageToolView::OnFillColor()
 void CImageToolView::OnRoundRect()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	if (m_nMousetempPoly != 4)
+	{
+		m_nMousetempPoly = 4;
+		m_bMousePoly = FALSE;
+	}
+	m_bMousePoly = !m_bMousePoly;
+	m_bMouseFill = FALSE;
+	m_bMouseDraw = FALSE;
+	m_bMouseErase = FALSE;
+
 	m_bRoundRect = !m_bRoundRect;
 	m_bPentagon = FALSE;
 	m_bRhombus = FALSE;
@@ -1211,6 +1267,16 @@ void CImageToolView::OnRoundRect()
 void CImageToolView::OnTriangle()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	if (m_nMousetempPoly != 5)
+	{
+		m_nMousetempPoly = 5;
+		m_bMousePoly = FALSE;
+	}
+	m_bMousePoly = !m_bMousePoly;
+	m_bMouseFill = FALSE;
+	m_bMouseDraw = FALSE;
+	m_bMouseErase = FALSE;
+
 	m_bTriangle = !m_bTriangle;
 	m_bPentagon = FALSE;
 	m_bRhombus = FALSE;
@@ -1227,7 +1293,17 @@ void CImageToolView::OnTriangle()
 void CImageToolView::OnRighttri()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	if (m_nMousetempPoly != 6)
+	{
+		m_nMousetempPoly = 6;
+		m_bMousePoly = FALSE;
+	}
 	m_bRightTriangle = !m_bRightTriangle;
+	m_bMousePoly = !m_bMousePoly;
+	m_bMouseFill = FALSE;
+	m_bMouseDraw = FALSE;
+	m_bMouseErase = FALSE;
+
 	m_bPentagon = FALSE;
 	m_bRhombus = FALSE;
 	m_bTriangle = FALSE;
@@ -1242,6 +1318,16 @@ void CImageToolView::OnRighttri()
 void CImageToolView::OnRhombus()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	if (m_nMousetempPoly != 7)
+	{
+		m_nMousetempPoly = 7;
+		m_bMousePoly = FALSE;
+	}
+	m_bMousePoly = !m_bMousePoly;
+	m_bMouseFill = FALSE;
+	m_bMouseDraw = FALSE;
+	m_bMouseErase = FALSE;
+
 	m_bRhombus = !m_bRhombus;
 	m_bPentagon = FALSE;
 	m_bRightTriangle = FALSE;
@@ -1258,6 +1344,16 @@ void CImageToolView::OnRhombus()
 void CImageToolView::OnPentagon()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	if (m_nMousetempPoly != 8)
+	{
+		m_nMousetempPoly = 8;
+		m_bMousePoly = FALSE;
+	}
+	m_bMousePoly = !m_bMousePoly;
+	m_bMouseFill = FALSE;
+	m_bMouseDraw = FALSE;
+	m_bMouseErase = FALSE;
+
 	m_bPentagon = !m_bPentagon;
 	m_bRhombus = FALSE;
 	m_bRightTriangle = FALSE;
@@ -1274,9 +1370,23 @@ void CImageToolView::OnPentagon()
 void CImageToolView::OnColorfill()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	m_bColorFill = !m_bColorFill;
 	m_bMouseFill = !m_bMouseFill;
 	m_bMouseDraw = FALSE;
+	m_bMouseErase = FALSE;
+	m_bMousePoly = FALSE;
+
+	m_bColorFill = !m_bColorFill;
+	m_bPentagon = FALSE;
+	m_bRhombus = FALSE;
+	m_bRightTriangle = FALSE;
+	m_bTriangle = FALSE;
+	m_bRoundRect = FALSE;
+	m_bRect = FALSE;
+	m_bEllipse = FALSE;
+	m_bStick = FALSE;
+	m_nLine = FALSE;
+	m_bPartErase = FALSE;
+
 	CColorDialog dlg(m_ColorFill, CC_FULLOPEN);
 	if (dlg.DoModal() == IDOK)
 	{
@@ -1299,6 +1409,16 @@ BOOL CImageToolView::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 	else if (m_bMouseFill == TRUE)
 	{
 		::SetCursor(m_hCursorFill);
+		return TRUE;
+	}
+	else if (m_bMouseErase == TRUE)
+	{
+		::SetCursor(m_hCursorErase);
+		return TRUE;
+	}
+	else if (m_bMousePoly == TRUE)
+	{
+		::SetCursor(m_hCursorPoly);
 		return TRUE;
 	}
 	else

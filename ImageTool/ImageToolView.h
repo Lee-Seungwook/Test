@@ -30,10 +30,13 @@ public:
 	HCURSOR m_hCursorDe; // 기본 마우스 포인터
 	HCURSOR m_hCursorDraw; // 그리가 펜 모양 포인터
 	HCURSOR m_hCursorFill; // 색 채우기 페인트 모양 포인터
+	HCURSOR m_hCursorErase; // 지우개 모양 포인터
+	HCURSOR m_hCursorPoly; // 도형 그리기 포인터
 
 	int m_nWidth; // 선의 굵기 
 	int m_nStyle; // 선 스타일
 	int m_nCheck; // 항목 선택 여부 확인
+	int m_nMousetempPoly; // 도형 커서의 이전 명령을 저장하기 위함
 
 // 작업입니다.
 public:
@@ -54,6 +57,9 @@ public:
 	BOOL m_bMouseDraw; // 그리기 조건
 	BOOL m_bMouseFill; // 색 채우기 조건
 	BOOL m_bPartErase; // 지우개 (부분 지우기)
+	BOOL m_bMouseErase; // 지우개 커서
+	BOOL m_bMousePoly; // 도형 커서
+	
 
 // 재정의입니다.
 public:
