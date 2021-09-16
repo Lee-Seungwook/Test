@@ -16,6 +16,7 @@
 
 #include "ThickDlg.h"
 #include "LineStyleDlg.h"
+#include "MyData.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -107,6 +108,8 @@ CImageToolView::CImageToolView() noexcept : m_nZoom(1)
 	m_nWidth = 3;
 	m_nStyle = 0;
 	m_nMousetempPoly = 0;
+
+	m_pCurrentMyData = NULL;
 }
 
 CImageToolView::~CImageToolView()
@@ -138,8 +141,16 @@ void CImageToolView::OnDraw(CDC* pDC)
 		pDoc->m_Dib.Draw(pDC->m_hDC, 0, 0, w * m_nZoom, h * m_nZoom); // 확대 및 영상의 가로, 세로를 반영하여 그린다.
 	}
 
-	/* pDC->MoveTo(m_nowP);
-	pDC->LineTo(m_afterP);*/ // 각각 배열로 값들을 저장해서 draw함수에서 다시 설정해주면 창의 크기를 변경해도 그림이 남아있는다!! (배열을 생성해서 각각의 값을 저장)
+	// GetHeadPosition() 함수는 while 문안의 GetNext() 함수와 쌍으로 리스트의 모든 항목을 참조하도록 해준다.
+	POSITION pos = pDoc->m_MyDataList.GetHeadPosition();
+	while (pos != NULL)
+	{
+		CMyData *pMyData = pDoc->m_MyDataList.GetNext(pos);
+		// CMyData의 Draw() 함수에 곡선을 출력하는 로직이 완벽하게 구현되어 있으므로
+		// OnDraw() 함수에서는 단순히 Draw() 함수를 호출해 주기만 하면 곡선이 그려진다.
+		pMyData->Draw(pDC);
+	}
+
 
 
 
@@ -575,6 +586,20 @@ void CImageToolView::OnLButtonDown(UINT nFlags, CPoint point)
 	m_nowP = m_afterP = point;
 
 	m_ptFrom = point;
+	if (m_nLine == TRUE)
+	{
+		CImageToolDoc *pDoc = GetDocument();
+		// 마우스가 눌린 순간에 new 연산자를 이용하여 새로운 곡선을 저장할 CMyData 객체를 생성
+		m_pCurrentMyData = new CMyData(m_color, m_nWidth);
+		// CTypedPtrList 클래스의 AddTai() 함수를 호출하여 CMyData 객체 추가
+		pDoc->m_MyDataList.AddTail(m_pCurrentMyData);
+		// 도큐먼트 데이터가 변경되었음을 알리기 위한 SetmodifiedFlag() 함수 호출
+		pDoc->SetModifiedFlag();
+		// 마우스 커서가 다른 윈도우 위로 이동해도 메시지를 계속 잡아 올 수 있도록 함
+		SetCapture();
+
+		m_nowP = point;
+	}
 
 	if (m_bPartErase == TRUE)
 	{
@@ -618,19 +643,14 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 		{
 			CClientDC dc(this);
 
-			CPen pen(PS_SOLID, m_nWidth, m_color); // 색과 굴기
+			m_pCurrentMyData->m_ptArray.Add(point);
+
+			CPen pen(PS_SOLID, m_nWidth, m_color); // 색과 굵기
 			CPen* oldPen = dc.SelectObject(&pen);
-			dc.MoveTo(m_ptFrom);
+			dc.MoveTo(m_nowP);
 			dc.LineTo(point);
 			dc.SelectObject(oldPen);
-
-			Line line;
-			line.ptTo = point;
-			line.color = m_color;
-			line.width = m_nWidth;
-			m_lines.Add(line);
-
-			m_ptFrom = point;
+			m_nowP = point;
 		}
 	}
 

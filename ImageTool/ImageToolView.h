@@ -38,6 +38,8 @@ public:
 	int m_nCheck; // 항목 선택 여부 확인
 	int m_nMousetempPoly; // 도형 커서의 이전 명령을 저장하기 위함
 
+	CMyData *m_pCurrentMyData;
+
 // 작업입니다.
 public:
 	CPoint m_nowP; // 시작 좌표

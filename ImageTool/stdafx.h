@@ -51,4 +51,4 @@
 #endif
 #endif
 
-
+#include <afxtempl.h>
