@@ -35,6 +35,11 @@ void CMyStick::Serialize(CArchive& ar)
 	}
 }
 
+void CMyStick :: Setend(CPoint& end) // 이거로 그려주는 것이 간단한 것이라 판단됨
+{
+	m_end = end;
+}
+
 void CMyStick::Draw(CDC *pDC)
 {
 	LOGBRUSH lbr;
@@ -45,10 +50,12 @@ void CMyStick::Draw(CDC *pDC)
 	CPen pen(PS_GEOMETRIC | m_nStyle, m_nWidth, &lbr, 0, 0); // 색과 굴기
 	CPen *pOldPen = pDC->SelectObject(&pen);
 
+	int m_nend = m_ptArray.GetSize() - 1;
 	pDC->MoveTo(m_ptArray[0]);
-	for (int i = 1; i < 2; i++)
+	pDC->LineTo(m_ptArray[m_nend]);
+	/*for (int i = 1; i < m_ptArray.GetSize(); i++)
 	{
 		pDC->LineTo(m_ptArray[i]);
-	}
+	}*/
 	pDC->SelectObject(pOldPen);
 }

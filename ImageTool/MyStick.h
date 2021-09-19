@@ -16,7 +16,7 @@ public:
 	virtual ~CMyStick();
 	CMyStick(COLORREF PenColor, int PenWidth, int PenStyle);
 	void Serialize(CArchive& ar);
-	
+	void Setend(CPoint& end);
 	void Draw(CDC *pDC);
 };
 
