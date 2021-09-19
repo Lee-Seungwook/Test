@@ -38,6 +38,7 @@
 #include "RotateDlg.h"
 
 #include "MyData.h"
+#include "MyStick.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -149,6 +150,7 @@ BOOL CImageToolDoc::OnNewDocument()
 void CImageToolDoc::Serialize(CArchive& ar)
 {
 	m_MyDataList.Serialize(ar);
+	m_MyStickList.Serialize(ar);
 }
 
 #ifdef SHARED_HANDLERS
@@ -741,6 +743,11 @@ void CImageToolDoc::DeleteContents()
 	while (!m_MyDataList.IsEmpty())
 	{
 		m_MyDataList.RemoveHead();
+	}
+
+	while (!m_MyStickList.IsEmpty())
+	{
+		m_MyStickList.RemoveHead();
 	}
 
 	UpdateAllViews(NULL);

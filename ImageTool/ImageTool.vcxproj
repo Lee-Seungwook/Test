@@ -211,6 +211,7 @@
     <ClInclude Include="LineStyleDlg.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MyData.h" />
+    <ClInclude Include="MyStick.h" />
     <ClInclude Include="OutputWnd.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ResizeDlg.h" />
@@ -244,6 +245,7 @@
     <ClCompile Include="LineStyleDlg.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MyData.cpp" />
+    <ClCompile Include="MyStick.cpp" />
     <ClCompile Include="OutputWnd.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

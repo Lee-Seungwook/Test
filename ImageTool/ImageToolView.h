@@ -39,6 +39,7 @@ public:
 	int m_nMousetempPoly; // 도형 커서의 이전 명령을 저장하기 위함
 
 	CMyData *m_pCurrentMyData;
+	CMyStick *m_pCurrentMyStick;
 
 // 작업입니다.
 public:

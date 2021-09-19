@@ -17,6 +17,7 @@
 #include "ThickDlg.h"
 #include "LineStyleDlg.h"
 #include "MyData.h"
+#include "MyStick.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -151,7 +152,12 @@ void CImageToolView::OnDraw(CDC* pDC)
 		pMyData->Draw(pDC);
 	}
 
-
+	POSITION posstick = pDoc->m_MyStickList.GetHeadPosition();
+	while (posstick != NULL)
+	{
+		CMyStick *pMyStick = pDoc->m_MyStickList.GetNext(posstick);
+		pMyStick->Draw(pDC);
+	}
 
 
 }
@@ -596,7 +602,22 @@ void CImageToolView::OnLButtonDown(UINT nFlags, CPoint point)
 		// 도큐먼트 데이터가 변경되었음을 알리기 위한 SetmodifiedFlag() 함수 호출
 		pDoc->SetModifiedFlag();
 		// 마우스 커서가 다른 윈도우 위로 이동해도 메시지를 계속 잡아 올 수 있도록 함
-		SetCapture();
+		
+
+		m_nowP = point;
+	}
+
+	if (m_bStick == TRUE)
+	{
+		CImageToolDoc *pDoc = GetDocument();
+		// 마우스가 눌린 순간에 new 연산자를 이용하여 새로운 곡선을 저장할 CMyData 객체를 생성
+		m_pCurrentMyStick = new CMyStick(m_color, m_nWidth, m_nStyle);
+		// CTypedPtrList 클래스의 AddTai() 함수를 호출하여 CMyData 객체 추가
+		pDoc->m_MyStickList.AddTail(m_pCurrentMyStick);
+		// 도큐먼트 데이터가 변경되었음을 알리기 위한 SetmodifiedFlag() 함수 호출
+		pDoc->SetModifiedFlag();
+		// 마우스 커서가 다른 윈도우 위로 이동해도 메시지를 계속 잡아 올 수 있도록 함
+		
 
 		m_nowP = point;
 	}
@@ -674,6 +695,7 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 		if (nFlags & MK_LBUTTON)
 		{
 			CClientDC dc(this);
+			m_pCurrentMyStick->m_ptArray.Add(point);
 			// CPen pen;
 			LOGBRUSH lbr;
 			lbr.lbStyle = BS_SOLID;
