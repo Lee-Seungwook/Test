@@ -33,8 +33,10 @@ public:
 public:  // 컨트롤 모음이 포함된 멤버입니다.
 	CMFCMenuBar       m_wndMenuBar;
 	CMFCToolBar       m_wndToolBar;
+	CMFCToolBar		  m_wndToolBar2;
 	CMFCStatusBar     m_wndStatusBar;
 	COutputWnd        m_wndOutput;
+	
 
 // 생성된 메시지 맵 함수
 protected:

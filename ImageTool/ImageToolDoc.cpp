@@ -3,6 +3,7 @@
 //
 
 #include "pch.h"
+#include "stdafx.h"
 #include "framework.h"
 // SHARED_HANDLERS는 미리 보기, 축소판 그림 및 검색 필터 처리기를 구현하는 ATL 프로젝트에서 정의할 수 있으며
 // 해당 프로젝트와 문서 코드를 공유하도록 해 줍니다.
@@ -35,6 +36,8 @@
 
 #include "ResizeDlg.h"
 #include "RotateDlg.h"
+
+#include "MyData.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -145,14 +148,7 @@ BOOL CImageToolDoc::OnNewDocument()
 
 void CImageToolDoc::Serialize(CArchive& ar)
 {
-	if (ar.IsStoring())
-	{
-		// TODO: 여기에 저장 코드를 추가합니다.
-	}
-	else
-	{
-		// TODO: 여기에 로딩 코드를 추가합니다.
-	}
+	m_MyDataList.Serialize(ar);
 }
 
 #ifdef SHARED_HANDLERS
@@ -734,4 +730,19 @@ void CImageToolDoc::OnImageFlip()
 	CONVERT_IMAGE_TO_DIB(imgDst, dib)
 	AfxPrintInfo(_T("[상하 대칭] 입력 영상 : %s"), GetTitle());
 	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::DeleteContents()
+{
+	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+	// IsEmpty() 함수를 호출하여 리스트가 비었을 때까지 while 루프를 돌면서
+	// RemoveHead() 함수를 호출한다.
+	while (!m_MyDataList.IsEmpty())
+	{
+		m_MyDataList.RemoveHead();
+	}
+
+	UpdateAllViews(NULL);
+	CDocument::DeleteContents();
 }

@@ -111,6 +111,9 @@
     <ClInclude Include="LineStyleDlg.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="MyData.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ImageTool.cpp">
@@ -194,10 +197,28 @@
     <ClCompile Include="LineStyleDlg.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="MyData.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ImageTool.reg" />
     <None Include="res\ImageTool.rc2">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\cur00002.cur">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\cursor1.cur">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="POINTER.cur">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\cur00001.cur">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="res\cur00003.cur">
       <Filter>리소스 파일</Filter>
     </None>
   </ItemGroup>
@@ -226,6 +247,9 @@
       <Filter>리소스 파일</Filter>
     </Image>
     <Image Include="res\Toolbar256.bmp">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="res\toolbar1.bmp">
       <Filter>리소스 파일</Filter>
     </Image>
   </ItemGroup>
