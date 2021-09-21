@@ -8,6 +8,13 @@
 
 class CMyData;
 class CMyStick;
+class CMyEllipse;
+class CMyRect;
+class CMyRoundRect;
+class CMyTriangle;
+class CMyRightTriangle;
+class CMyRhombus;
+class CMyPentagon;
 class CImageToolDoc : public CDocument
 {
 protected: // serialization에서만 만들어집니다.
@@ -18,6 +25,13 @@ protected: // serialization에서만 만들어집니다.
 public:
 	CTypedPtrList<CObList, CMyData*> m_MyDataList;
 	CTypedPtrList<CObList, CMyStick*> m_MyStickList;
+	CTypedPtrList<CObList, CMyEllipse*> m_MyEllipseList;
+	CTypedPtrList<CObList, CMyRect*> m_MyRectList;
+	CTypedPtrList<CObList, CMyRoundRect*> m_MyRoundRectList;
+	CTypedPtrList<CObList, CMyTriangle*> m_MyTriangleList;
+	CTypedPtrList<CObList, CMyRightTriangle*> m_MyRightTriangleList;
+	CTypedPtrList<CObList, CMyRhombus*> m_MyRhombusList;
+	CTypedPtrList<CObList, CMyPentagon*> m_MyPentagonList;
 // 작업입니다.
 public:
 

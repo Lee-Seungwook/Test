@@ -40,6 +40,13 @@ public:
 
 	CMyData *m_pCurrentMyData;
 	CMyStick *m_pCurrentMyStick;
+	CMyEllipse *m_pCurrentMyEllipse;
+	CMyRect *m_pCurrentMyRect;
+	CMyRoundRect *m_pCurrentMyRoundRect;
+	CMyTriangle *m_pCurrentMyTriangle;
+	CMyRightTriangle *m_pCurrentMyRightTriangle;
+	CMyRhombus *m_pCurrentMyRhombus;
+	CMyPentagon *m_pCurrentMyPentagon;
 
 // 작업입니다.
 public:
