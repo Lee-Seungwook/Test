@@ -38,6 +38,14 @@
 #include "RotateDlg.h"
 
 #include "MyData.h"
+#include "MyStick.h"
+#include "MyEllipse.h"
+#include "MyRect.h"
+#include "MyRoundRect.h"
+#include "MyTriangle.h"
+#include "MyRightTriangle.h"
+#include "MyRhombus.h"
+#include "MyPentagon.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -149,6 +157,13 @@ BOOL CImageToolDoc::OnNewDocument()
 void CImageToolDoc::Serialize(CArchive& ar)
 {
 	m_MyDataList.Serialize(ar);
+	m_MyStickList.Serialize(ar);
+	m_MyEllipseList.Serialize(ar);
+	m_MyRectList.Serialize(ar);
+	m_MyRoundRectList.Serialize(ar);
+	m_MyTriangleList.Serialize(ar);
+	m_MyRightTriangleList.Serialize(ar);
+	m_MyRhombusList.Serialize(ar);
 }
 
 #ifdef SHARED_HANDLERS
@@ -741,6 +756,46 @@ void CImageToolDoc::DeleteContents()
 	while (!m_MyDataList.IsEmpty())
 	{
 		m_MyDataList.RemoveHead();
+	}
+
+	while (!m_MyStickList.IsEmpty())
+	{
+		m_MyStickList.RemoveHead();
+	}
+
+	while (!m_MyEllipseList.IsEmpty())
+	{
+		m_MyEllipseList.RemoveHead();
+	}
+
+	while (!m_MyRectList.IsEmpty())
+	{
+		m_MyRectList.RemoveHead();
+	}
+
+	while (!m_MyRoundRectList.IsEmpty())
+	{
+		m_MyRoundRectList.RemoveHead();
+	}
+
+	while (!m_MyTriangleList.IsEmpty())
+	{
+		m_MyTriangleList.RemoveHead();
+	}
+
+	while (!m_MyRightTriangleList.IsEmpty())
+	{
+		m_MyRightTriangleList.RemoveHead();
+	}
+
+	while (!m_MyRhombusList.IsEmpty())
+	{
+		m_MyRhombusList.RemoveHead();
+	}
+
+	while (!m_MyPentagonList.IsEmpty())
+	{
+		m_MyPentagonList.RemoveHead();
 	}
 
 	UpdateAllViews(NULL);

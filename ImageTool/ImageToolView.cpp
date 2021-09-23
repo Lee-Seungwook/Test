@@ -17,6 +17,14 @@
 #include "ThickDlg.h"
 #include "LineStyleDlg.h"
 #include "MyData.h"
+#include "MyStick.h"
+#include "MyEllipse.h"
+#include "MyRect.h"
+#include "MyRoundRect.h"
+#include "MyTriangle.h"
+#include "MyRightTriangle.h"
+#include "MyRhombus.h"
+#include "MyPentagon.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -151,9 +159,61 @@ void CImageToolView::OnDraw(CDC* pDC)
 		pMyData->Draw(pDC);
 	}
 
+	POSITION posstick = pDoc->m_MyStickList.GetHeadPosition();
+	while (posstick != NULL)
+	{
+		CMyStick *pMyStick = pDoc->m_MyStickList.GetNext(posstick);
+		pMyStick->Draw(pDC);
+	}
 
+	POSITION posellipse = pDoc->m_MyEllipseList.GetHeadPosition();
+	while (posellipse != NULL)
+	{
+		CMyEllipse *pMyEllipse = pDoc->m_MyEllipseList.GetNext(posellipse);
+		pMyEllipse->Draw(pDC);
+	}
 
+	POSITION posrect = pDoc->m_MyRectList.GetHeadPosition();
+	while (posrect != NULL)
+	{
+		CMyRect *pMyRect = pDoc->m_MyRectList.GetNext(posrect);
+		pMyRect->Draw(pDC);
+	}
 
+	POSITION posroundrect = pDoc->m_MyRoundRectList.GetHeadPosition();
+	while (posroundrect != NULL)
+	{
+		CMyRoundRect *pMyRoundRect = pDoc->m_MyRoundRectList.GetNext(posroundrect);
+		pMyRoundRect->Draw(pDC);
+	}
+
+	POSITION postriangle = pDoc->m_MyTriangleList.GetHeadPosition();
+	while (postriangle != NULL)
+	{
+		CMyTriangle *pMyTriangle = pDoc->m_MyTriangleList.GetNext(postriangle);
+		pMyTriangle->Draw(pDC);
+	}
+
+	POSITION posrighttriangle = pDoc->m_MyRightTriangleList.GetHeadPosition();
+	while (posrighttriangle != NULL)
+	{
+		CMyRightTriangle *pMyRightTriangle = pDoc->m_MyRightTriangleList.GetNext(posrighttriangle);
+		pMyRightTriangle->Draw(pDC);
+	}
+
+	POSITION posrhombus = pDoc->m_MyRhombusList.GetHeadPosition();
+	while (posrhombus != NULL)
+	{
+		CMyRhombus *pMyRhombus = pDoc->m_MyRhombusList.GetNext(posrhombus);
+		pMyRhombus->Draw(pDC);
+	}
+
+	POSITION pospentagon = pDoc->m_MyPentagonList.GetHeadPosition();
+	while (pospentagon != NULL)
+	{
+		CMyPentagon *pMyPentagon = pDoc->m_MyPentagonList.GetNext(pospentagon);
+		pMyPentagon->Draw(pDC);
+	}
 }
 
 void CImageToolView::OnInitialUpdate()
@@ -596,7 +656,127 @@ void CImageToolView::OnLButtonDown(UINT nFlags, CPoint point)
 		// 도큐먼트 데이터가 변경되었음을 알리기 위한 SetmodifiedFlag() 함수 호출
 		pDoc->SetModifiedFlag();
 		// 마우스 커서가 다른 윈도우 위로 이동해도 메시지를 계속 잡아 올 수 있도록 함
-		SetCapture();
+		
+
+		m_nowP = point;
+	}
+
+	if (m_bStick == TRUE)
+	{
+		CImageToolDoc *pDoc = GetDocument();
+		// 마우스가 눌린 순간에 new 연산자를 이용하여 새로운 곡선을 저장할 CMyData 객체를 생성
+		m_pCurrentMyStick = new CMyStick(m_color, m_nWidth, m_nStyle);
+		// CTypedPtrList 클래스의 AddTai() 함수를 호출하여 CMyData 객체 추가
+		pDoc->m_MyStickList.AddTail(m_pCurrentMyStick);
+		// 도큐먼트 데이터가 변경되었음을 알리기 위한 SetmodifiedFlag() 함수 호출
+		pDoc->SetModifiedFlag();
+		// 마우스 커서가 다른 윈도우 위로 이동해도 메시지를 계속 잡아 올 수 있도록 함
+		
+
+		m_nowP = point;
+	}
+
+	if (m_bEllipse == TRUE)
+	{
+		CImageToolDoc *pDoc = GetDocument();
+		// 마우스가 눌린 순간에 new 연산자를 이용하여 새로운 곡선을 저장할 CMyData 객체를 생성
+		m_pCurrentMyEllipse = new CMyEllipse(m_color, m_nWidth, m_nStyle, m_FillColor);
+		// CTypedPtrList 클래스의 AddTai() 함수를 호출하여 CMyData 객체 추가
+		pDoc->m_MyEllipseList.AddTail(m_pCurrentMyEllipse);
+		// 도큐먼트 데이터가 변경되었음을 알리기 위한 SetmodifiedFlag() 함수 호출
+		pDoc->SetModifiedFlag();
+		// 마우스 커서가 다른 윈도우 위로 이동해도 메시지를 계속 잡아 올 수 있도록 함
+
+
+		m_nowP = point;
+	}
+
+	if (m_bRect == TRUE)
+	{
+		CImageToolDoc *pDoc = GetDocument();
+		// 마우스가 눌린 순간에 new 연산자를 이용하여 새로운 곡선을 저장할 CMyData 객체를 생성
+		m_pCurrentMyRect = new CMyRect(m_color, m_nWidth, m_nStyle, m_FillColor);
+		// CTypedPtrList 클래스의 AddTai() 함수를 호출하여 CMyData 객체 추가
+		pDoc->m_MyRectList.AddTail(m_pCurrentMyRect);
+		// 도큐먼트 데이터가 변경되었음을 알리기 위한 SetmodifiedFlag() 함수 호출
+		pDoc->SetModifiedFlag();
+		// 마우스 커서가 다른 윈도우 위로 이동해도 메시지를 계속 잡아 올 수 있도록 함
+
+
+		m_nowP = point;
+	}
+
+	if (m_bRoundRect == TRUE)
+	{
+		CImageToolDoc *pDoc = GetDocument();
+		// 마우스가 눌린 순간에 new 연산자를 이용하여 새로운 곡선을 저장할 CMyData 객체를 생성
+		m_pCurrentMyRoundRect = new CMyRoundRect(m_color, m_nWidth, m_nStyle, m_FillColor);
+		// CTypedPtrList 클래스의 AddTai() 함수를 호출하여 CMyData 객체 추가
+		pDoc->m_MyRoundRectList.AddTail(m_pCurrentMyRoundRect);
+		// 도큐먼트 데이터가 변경되었음을 알리기 위한 SetmodifiedFlag() 함수 호출
+		pDoc->SetModifiedFlag();
+		// 마우스 커서가 다른 윈도우 위로 이동해도 메시지를 계속 잡아 올 수 있도록 함
+
+
+		m_nowP = point;
+	}
+
+	if (m_bTriangle == TRUE)
+	{
+		CImageToolDoc *pDoc = GetDocument();
+		// 마우스가 눌린 순간에 new 연산자를 이용하여 새로운 곡선을 저장할 CMyData 객체를 생성
+		m_pCurrentMyTriangle = new CMyTriangle(m_color, m_nWidth, m_nStyle, m_FillColor);
+		// CTypedPtrList 클래스의 AddTai() 함수를 호출하여 CMyData 객체 추가
+		pDoc->m_MyTriangleList.AddTail(m_pCurrentMyTriangle);
+		// 도큐먼트 데이터가 변경되었음을 알리기 위한 SetmodifiedFlag() 함수 호출
+		pDoc->SetModifiedFlag();
+		// 마우스 커서가 다른 윈도우 위로 이동해도 메시지를 계속 잡아 올 수 있도록 함
+
+
+		m_nowP = point;
+	}
+
+	if (m_bRightTriangle == TRUE)
+	{
+		CImageToolDoc *pDoc = GetDocument();
+		// 마우스가 눌린 순간에 new 연산자를 이용하여 새로운 곡선을 저장할 CMyData 객체를 생성
+		m_pCurrentMyRightTriangle = new CMyRightTriangle(m_color, m_nWidth, m_nStyle, m_FillColor);
+		// CTypedPtrList 클래스의 AddTai() 함수를 호출하여 CMyData 객체 추가
+		pDoc->m_MyRightTriangleList.AddTail(m_pCurrentMyRightTriangle);
+		// 도큐먼트 데이터가 변경되었음을 알리기 위한 SetmodifiedFlag() 함수 호출
+		pDoc->SetModifiedFlag();
+		// 마우스 커서가 다른 윈도우 위로 이동해도 메시지를 계속 잡아 올 수 있도록 함
+
+
+		m_nowP = point;
+	}
+
+	if (m_bRhombus == TRUE)
+	{
+		CImageToolDoc *pDoc = GetDocument();
+		// 마우스가 눌린 순간에 new 연산자를 이용하여 새로운 곡선을 저장할 CMyData 객체를 생성
+		m_pCurrentMyRhombus = new CMyRhombus(m_color, m_nWidth, m_nStyle, m_FillColor);
+		// CTypedPtrList 클래스의 AddTai() 함수를 호출하여 CMyData 객체 추가
+		pDoc->m_MyRhombusList.AddTail(m_pCurrentMyRhombus);
+		// 도큐먼트 데이터가 변경되었음을 알리기 위한 SetmodifiedFlag() 함수 호출
+		pDoc->SetModifiedFlag();
+		// 마우스 커서가 다른 윈도우 위로 이동해도 메시지를 계속 잡아 올 수 있도록 함
+
+
+		m_nowP = point;
+	}
+
+	if (m_bPentagon == TRUE)
+	{
+		CImageToolDoc *pDoc = GetDocument();
+		// 마우스가 눌린 순간에 new 연산자를 이용하여 새로운 곡선을 저장할 CMyData 객체를 생성
+		m_pCurrentMyPentagon = new CMyPentagon(m_color, m_nWidth, m_nStyle, m_FillColor);
+		// CTypedPtrList 클래스의 AddTai() 함수를 호출하여 CMyData 객체 추가
+		pDoc->m_MyPentagonList.AddTail(m_pCurrentMyPentagon);
+		// 도큐먼트 데이터가 변경되었음을 알리기 위한 SetmodifiedFlag() 함수 호출
+		pDoc->SetModifiedFlag();
+		// 마우스 커서가 다른 윈도우 위로 이동해도 메시지를 계속 잡아 올 수 있도록 함
+
 
 		m_nowP = point;
 	}
@@ -674,6 +854,7 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 		if (nFlags & MK_LBUTTON)
 		{
 			CClientDC dc(this);
+			m_pCurrentMyStick->m_ptArray.Add(point);
 			// CPen pen;
 			LOGBRUSH lbr;
 			lbr.lbStyle = BS_SOLID;
@@ -701,6 +882,7 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 		if (nFlags & MK_LBUTTON)
 		{
 			CClientDC dc(this);
+			m_pCurrentMyRect->m_ptArray.Add(point);
 			// CPen pen;
 			LOGBRUSH lbr;
 			lbr.lbStyle = BS_SOLID;
@@ -735,6 +917,7 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 		if (nFlags & MK_LBUTTON)
 		{
 			CClientDC dc(this);
+			m_pCurrentMyEllipse->m_ptArray.Add(point);
 			// CPen pen;
 			LOGBRUSH lbr;
 			lbr.lbStyle = BS_SOLID;
@@ -769,6 +952,7 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 		if (nFlags & MK_LBUTTON)
 		{
 			CClientDC dc(this);
+			m_pCurrentMyRoundRect->m_ptArray.Add(point);
 			// CPen pen;
 			LOGBRUSH lbr;
 			lbr.lbStyle = BS_SOLID;
@@ -803,6 +987,7 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 		if (nFlags & MK_LBUTTON)
 		{
 			CClientDC dc(this);
+			m_pCurrentMyTriangle->m_ptArray.Add(point);
 			// CPen pen;
 			CPoint m_point1, m_point2, m_point3;
 			m_point1 = m_point2 = m_point3 = point;
@@ -845,6 +1030,7 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 		if (nFlags & MK_LBUTTON)
 		{
 			CClientDC dc(this);
+			m_pCurrentMyRightTriangle->m_ptArray.Add(point);
 			// CPen pen;
 
 			POINT ar1[] = { m_nowP.x, m_nowP.y, m_afterP.x, m_afterP.y, m_nowP.x, m_afterP.y };
@@ -882,6 +1068,7 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 		if (nFlags & MK_LBUTTON)
 		{
 			CClientDC dc(this);
+			m_pCurrentMyRhombus->m_ptArray.Add(point);
 			// CPen pen;
 			CPoint m_temp1, m_temp2;
 			m_temp1.x = m_nowP.x + (m_afterP.x - m_nowP.x) / 2;
@@ -925,6 +1112,7 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 		if (nFlags & MK_LBUTTON)
 		{
 			CClientDC dc(this);
+			m_pCurrentMyPentagon->m_ptArray.Add(point);
 			// CPen pen;
 			CPoint m_temp1, m_temp2, m_temp3, m_temp4, m_temp5, m_temp6;
 			m_temp1.x = m_nowP.x + (m_afterP.x - m_nowP.x) / 2;
