@@ -15,6 +15,8 @@ class CMyTriangle;
 class CMyRightTriangle;
 class CMyRhombus;
 class CMyPentagon;
+class CMyErase;
+class CMyFill;
 class CImageToolDoc : public CDocument
 {
 protected: // serialization에서만 만들어집니다.
@@ -32,6 +34,8 @@ public:
 	CTypedPtrList<CObList, CMyRightTriangle*> m_MyRightTriangleList;
 	CTypedPtrList<CObList, CMyRhombus*> m_MyRhombusList;
 	CTypedPtrList<CObList, CMyPentagon*> m_MyPentagonList;
+	CTypedPtrList<CObList, CMyErase*> m_MyEraseList;
+	CTypedPtrList<CObList, CMyFill* > m_MyFillList;
 // 작업입니다.
 public:
 

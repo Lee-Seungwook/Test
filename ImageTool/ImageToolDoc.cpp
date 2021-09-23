@@ -46,6 +46,8 @@
 #include "MyRightTriangle.h"
 #include "MyRhombus.h"
 #include "MyPentagon.h"
+#include "MyErase.h"
+#include "MyFill.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -164,6 +166,8 @@ void CImageToolDoc::Serialize(CArchive& ar)
 	m_MyTriangleList.Serialize(ar);
 	m_MyRightTriangleList.Serialize(ar);
 	m_MyRhombusList.Serialize(ar);
+	m_MyEraseList.Serialize(ar);
+	m_MyFillList.Serialize(ar);
 }
 
 #ifdef SHARED_HANDLERS
@@ -798,6 +802,15 @@ void CImageToolDoc::DeleteContents()
 		m_MyPentagonList.RemoveHead();
 	}
 
+	while (!m_MyEraseList.IsEmpty())
+	{
+		m_MyEraseList.RemoveHead();
+	}
+
+	while (!m_MyFillList.IsEmpty())
+	{
+		m_MyFillList.RemoveHead();
+	}
 	UpdateAllViews(NULL);
 	CDocument::DeleteContents();
 }

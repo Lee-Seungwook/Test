@@ -212,6 +212,8 @@
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MyData.h" />
     <ClInclude Include="MyEllipse.h" />
+    <ClInclude Include="MyErase.h" />
+    <ClInclude Include="MyFill.h" />
     <ClInclude Include="MyPentagon.h" />
     <ClInclude Include="MyRect.h" />
     <ClInclude Include="MyRhombus.h" />
@@ -253,6 +255,8 @@
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MyData.cpp" />
     <ClCompile Include="MyEllipse.cpp" />
+    <ClCompile Include="MyErase.cpp" />
+    <ClCompile Include="MyFill.cpp" />
     <ClCompile Include="MyPentagon.cpp" />
     <ClCompile Include="MyRect.cpp" />
     <ClCompile Include="MyRhombus.cpp" />
