@@ -23,10 +23,6 @@ protected:
 
 public:
 	int m_Histogram[256];
-	int m_HistogramB[256];
-	int m_HistogramG[256];
-	int m_HistogramR[256];
-
 	void SetImage(IppDib* pDib);
 	afx_msg void OnPaint();
 };
