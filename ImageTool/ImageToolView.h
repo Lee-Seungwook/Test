@@ -47,6 +47,8 @@ public:
 	CMyRightTriangle *m_pCurrentMyRightTriangle;
 	CMyRhombus *m_pCurrentMyRhombus;
 	CMyPentagon *m_pCurrentMyPentagon;
+	CMyErase *m_pCurrentMyErase;
+	CMyColorFill *m_pCurrentMyColorFill;
 
 // 작업입니다.
 public:

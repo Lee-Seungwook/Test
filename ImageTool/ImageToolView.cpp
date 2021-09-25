@@ -25,6 +25,8 @@
 #include "MyRightTriangle.h"
 #include "MyRhombus.h"
 #include "MyPentagon.h"
+#include "MyErase.h"
+#include "MyColorFill.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -159,6 +161,13 @@ void CImageToolView::OnDraw(CDC* pDC)
 		pMyData->Draw(pDC);
 	}
 
+	POSITION poserase = pDoc->m_MyEraseList.GetHeadPosition();
+	while (poserase != NULL)
+	{
+		CMyErase *pMyErase = pDoc->m_MyEraseList.GetNext(poserase);
+		pMyErase->Draw(pDC);
+	}
+
 	POSITION posstick = pDoc->m_MyStickList.GetHeadPosition();
 	while (posstick != NULL)
 	{
@@ -213,6 +222,13 @@ void CImageToolView::OnDraw(CDC* pDC)
 	{
 		CMyPentagon *pMyPentagon = pDoc->m_MyPentagonList.GetNext(pospentagon);
 		pMyPentagon->Draw(pDC);
+	}
+
+	POSITION poscolorfill = pDoc->m_MyColorFillList.GetHeadPosition();
+	while (poscolorfill != NULL)
+	{
+		CMyColorFill *pMyColorFill = pDoc->m_MyColorFillList.GetNext(poscolorfill);
+		pMyColorFill->Draw(pDC);
 	}
 }
 
@@ -783,16 +799,17 @@ void CImageToolView::OnLButtonDown(UINT nFlags, CPoint point)
 
 	if (m_bPartErase == TRUE)
 	{
-		CClientDC dc(this);
-		CPen pen;
-		CBrush brush(RGB(255, 255, 255));
+		CImageToolDoc *pDoc = GetDocument();
+		// 마우스가 눌린 순간에 new 연산자를 이용하여 새로운 곡선을 저장할 CMyData 객체를 생성
+		m_pCurrentMyErase = new CMyErase();
+		// CTypedPtrList 클래스의 AddTai() 함수를 호출하여 CMyData 객체 추가
+		pDoc->m_MyEraseList.AddTail(m_pCurrentMyErase);
+		// 도큐먼트 데이터가 변경되었음을 알리기 위한 SetmodifiedFlag() 함수 호출
+		pDoc->SetModifiedFlag();
+		// 마우스 커서가 다른 윈도우 위로 이동해도 메시지를 계속 잡아 올 수 있도록 함
 
-		pen.CreatePen(PS_SOLID, 2, RGB(255, 255, 255));
-		dc.SelectObject(&pen);
-		dc.SelectObject(&brush);
-		dc.Ellipse(point.x - 10, point.y + 30, point.x + 10, point.y + 10);
-		m_bMouseFill = FALSE;
-		m_bMouseDraw = FALSE;
+
+		m_nowP = point;
 	}
 
 	if (m_bColorFill == TRUE)
@@ -800,11 +817,24 @@ void CImageToolView::OnLButtonDown(UINT nFlags, CPoint point)
 		CClientDC dc(this);
 		CBrush brush(m_ColorFill);
 		CBrush* oldBrush = dc.SelectObject(&brush);
+	
 
 		dc.ExtFloodFill(point.x, point.y, dc.GetPixel(point), FLOODFILLSURFACE);
 		dc.SelectObject(oldBrush);
 		m_bColorFill = FALSE;
 		m_bMouseFill = FALSE;
+
+		CImageToolDoc *pDoc = GetDocument();
+		// 마우스가 눌린 순간에 new 연산자를 이용하여 새로운 곡선을 저장할 CMyData 객체를 생성
+		m_pCurrentMyColorFill = new CMyColorFill(point, m_ColorFill);
+		// CTypedPtrList 클래스의 AddTai() 함수를 호출하여 CMyData 객체 추가
+		pDoc->m_MyColorFillList.AddTail(m_pCurrentMyColorFill);
+		// 도큐먼트 데이터가 변경되었음을 알리기 위한 SetmodifiedFlag() 함수 호출
+		pDoc->SetModifiedFlag();
+		// 마우스 커서가 다른 윈도우 위로 이동해도 메시지를 계속 잡아 올 수 있도록 함
+
+
+		m_nowP = point;
 	}
 	CScrollView::OnLButtonDown(nFlags, point);
 }
@@ -839,13 +869,15 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 		if (nFlags & MK_LBUTTON)
 		{
 			CClientDC dc(this);
-			CPen pen;
-			CBrush brush(RGB(255, 255, 255));
 
-			pen.CreatePen(PS_SOLID, 1, RGB(255, 255, 255));
-			dc.SelectObject(&pen);
-			dc.SelectObject(&brush);
-			dc.Ellipse(point.x - 10, point.y + 30, point.x + 10, point.y + 10);
+			m_pCurrentMyErase->m_ptArray.Add(point);
+
+			CPen pen(PS_SOLID, 15, RGB(255, 255, 255)); // 색과 굵기
+			CPen* oldPen = dc.SelectObject(&pen);
+			dc.MoveTo(m_nowP);
+			dc.LineTo(point);
+			dc.SelectObject(oldPen);
+			m_nowP = point;
 		}
 	}
 

@@ -15,6 +15,8 @@ class CMyTriangle;
 class CMyRightTriangle;
 class CMyRhombus;
 class CMyPentagon;
+class CMyErase;
+class CMyColorFill;
 class CImageToolDoc : public CDocument
 {
 protected: // serialization에서만 만들어집니다.
@@ -32,6 +34,8 @@ public:
 	CTypedPtrList<CObList, CMyRightTriangle*> m_MyRightTriangleList;
 	CTypedPtrList<CObList, CMyRhombus*> m_MyRhombusList;
 	CTypedPtrList<CObList, CMyPentagon*> m_MyPentagonList;
+	CTypedPtrList<CObList, CMyErase*> m_MyEraseList;
+	CTypedPtrList<CObList, CMyColorFill*> m_MyColorFillList;
 // 작업입니다.
 public:
 
@@ -100,4 +104,8 @@ public:
 	afx_msg void OnImageMirror();
 	afx_msg void OnImageFlip();
 	virtual void DeleteContents();
+	afx_msg void OnFourierDft();
+	afx_msg void OnFourierDftrc();
+	afx_msg void OnFourierFft();
+	afx_msg void OnFreqFiltering();
 };

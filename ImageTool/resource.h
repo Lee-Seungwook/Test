@@ -48,6 +48,7 @@
 #define IDC_CURSOR_ERASE                353
 #define IDC_CURSOR1                     354
 #define IDC_CURSOR_POLY                 354
+#define IDD_FREQUENCY_FILTERING         355
 #define IDC_WIDTH                       1000
 #define IDC_HEIGHT                      1001
 #define IDC_IMAGE_TYPE                  1002
@@ -70,6 +71,7 @@
 #define IDC_NEW_WIDTH                   1010
 #define IDC_ANGLE                       1010
 #define IDC_EDIT                        1010
+#define IDC_CUTOFF_FREQ                 1010
 #define IDC_FUNCTION5                   1011
 #define IDC_ALPHA_SLIDER                1011
 #define IDC_DIFFUSION_ITER              1011
@@ -96,8 +98,11 @@
 #define IDC_LIST                        1029
 #define IDC_RADIO_SOLID                 1031
 #define IDC_RADIO_DASH                  1032
+#define IDC_FILTER_TYPE                 1032
 #define IDC_RADIO_DOT                   1033
+#define IDC_FILTER_SHAPE                1033
 #define IDC_RADIO_DASHDOT               1034
+#define IDC_RADIUS_RANGE                1034
 #define IDC_RADIO_DASHDOTDOT            1035
 #define IDC_RADIO_NULL                  1036
 #define ID_32771                        32771
@@ -203,14 +208,24 @@
 #define ID_PENTAGON                     32877
 #define ID_COLORFILL                    32878
 #define ID_BUTTON32893                  32893
+#define ID_32894                        32894
+#define ID_32895                        32895
+#define ID_32896                        32896
+#define ID_FOURIER_DFT                  32897
+#define ID_FOURIER_DFTRC                32898
+#define ID_32899                        32899
+#define ID_FOURIER_FFT                  32900
+#define ID_32901                        32901
+#define ID_FREQ_FILTERIMG               32902
+#define ID_FREQ_FILTERING               32903
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        355
-#define _APS_NEXT_COMMAND_VALUE         32894
-#define _APS_NEXT_CONTROL_VALUE         1032
+#define _APS_NEXT_RESOURCE_VALUE        358
+#define _APS_NEXT_COMMAND_VALUE         32904
+#define _APS_NEXT_CONTROL_VALUE         1035
 #define _APS_NEXT_SYMED_VALUE           311
 #endif
 #endif
