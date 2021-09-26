@@ -43,6 +43,8 @@
 #include "IppFourier.h"
 #include "FreqFilteringDlg.h"
 
+#include "IppFeature.h"
+
 #include "MyData.h"
 #include "MyStick.h"
 #include "MyEllipse.h"
@@ -119,6 +121,9 @@ ON_COMMAND(ID_FOURIER_DFT, &CImageToolDoc::OnFourierDft)
 ON_COMMAND(ID_FOURIER_DFTRC, &CImageToolDoc::OnFourierDftrc)
 ON_COMMAND(ID_FOURIER_FFT, &CImageToolDoc::OnFourierFft)
 ON_COMMAND(ID_FREQ_FILTERING, &CImageToolDoc::OnFreqFiltering)
+ON_COMMAND(ID_EDGE_ROBERTS, &CImageToolDoc::OnEdgeRoberts)
+ON_COMMAND(ID_EDGE_PREWITT, &CImageToolDoc::OnEdgePrewitt)
+ON_COMMAND(ID_EDGE_SOBEL, &CImageToolDoc::OnEdgeSobel)
 END_MESSAGE_MAP()
 
 
@@ -1046,4 +1051,43 @@ void CImageToolDoc::OnFreqFiltering()
 			GetTitle(), type[dlg.m_nFilterType], shape[dlg.m_nFilterShape], dlg.m_nCutoff);
 		AfxNewBitmap(dib);
 	}
+}
+
+
+void CImageToolDoc::OnEdgeRoberts()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+	IppByteImage imgEdge;
+	IppEdgeRoberts(img, imgEdge);
+	CONVERT_IMAGE_TO_DIB(imgEdge, dib)
+
+	AfxPrintInfo(_T("[마스크 기반 엣지 검출/로버츠] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnEdgePrewitt()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+	IppByteImage imgEdge;
+	IppEdgePrewitt(img, imgEdge);
+	CONVERT_IMAGE_TO_DIB(imgEdge, dib)
+
+	AfxPrintInfo(_T("[마스크 기반 엣지 검출/프리윗] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnEdgeSobel()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+	IppByteImage imgEdge;
+	IppEdgeSobel(img, imgEdge);
+	CONVERT_IMAGE_TO_DIB(imgEdge, dib)
+
+	AfxPrintInfo(_T("[마스크 기반 엣지 검출/소벨] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
 }

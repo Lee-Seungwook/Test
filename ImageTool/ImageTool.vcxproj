@@ -202,6 +202,7 @@
     <ClInclude Include="ImageTool.h" />
     <ClInclude Include="ImageToolDoc.h" />
     <ClInclude Include="ImageToolView.h" />
+    <ClInclude Include="IppFeature.h" />
     <ClInclude Include="IppFilter.h" />
     <ClInclude Include="IppFourier.h" />
     <ClInclude Include="IppGeometry.h" />
@@ -249,6 +250,7 @@
     <ClCompile Include="ImageTool.cpp" />
     <ClCompile Include="ImageToolDoc.cpp" />
     <ClCompile Include="ImageToolView.cpp" />
+    <ClCompile Include="IppFeature.cpp" />
     <ClCompile Include="IppFilter.cpp" />
     <ClCompile Include="IppFourier.cpp" />
     <ClCompile Include="IppGeometry.cpp" />
