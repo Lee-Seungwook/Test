@@ -111,4 +111,8 @@ public:
 	afx_msg void OnEdgeRoberts();
 	afx_msg void OnEdgePrewitt();
 	afx_msg void OnEdgeSobel();
+	afx_msg void OnEdgeCanny();
+	//afx_msg void OnHoughLine();
+	afx_msg void OnHoughLine();
+	afx_msg void OnHarrisCorner();
 };
