@@ -26,7 +26,7 @@
 #include "MyRhombus.h"
 #include "MyPentagon.h"
 #include "MyErase.h"
-#include "MyFill.h"
+#include "MyColorFill.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -168,17 +168,17 @@ void CImageToolView::OnDraw(CDC* pDC)
 		pMyErase->Draw(pDC);
 	}
 
-	 pos = pDoc->m_MyStickList.GetHeadPosition();
-	while (pos != NULL)
+	POSITION posstick = pDoc->m_MyStickList.GetHeadPosition();
+	while (posstick != NULL)
 	{
-		CMyStick *pMyStick = pDoc->m_MyStickList.GetNext(pos);
+		CMyStick *pMyStick = pDoc->m_MyStickList.GetNext(posstick);
 		pMyStick->Draw(pDC);
 	}
 
-	pos = pDoc->m_MyEllipseList.GetHeadPosition();
-	while (pos != NULL)
+	POSITION posellipse = pDoc->m_MyEllipseList.GetHeadPosition();
+	while (posellipse != NULL)
 	{
-		CMyEllipse *pMyEllipse = pDoc->m_MyEllipseList.GetNext(pos);
+		CMyEllipse *pMyEllipse = pDoc->m_MyEllipseList.GetNext(posellipse);
 		pMyEllipse->Draw(pDC);
 	}
 
@@ -224,13 +224,12 @@ void CImageToolView::OnDraw(CDC* pDC)
 		pMyPentagon->Draw(pDC);
 	}
 
-	POSITION posfill = pDoc->m_MyFillList.GetHeadPosition();
-	while (posfill != NULL)
+	POSITION poscolorfill = pDoc->m_MyColorFillList.GetHeadPosition();
+	while (poscolorfill != NULL)
 	{
-		CMyFill *pMyFill = pDoc->m_MyFillList.GetNext(posfill);
-		pMyFill->Draw(pDC);
+		CMyColorFill *pMyColorFill = pDoc->m_MyColorFillList.GetNext(poscolorfill);
+		pMyColorFill->Draw(pDC);
 	}
-	
 }
 
 void CImageToolView::OnInitialUpdate()
@@ -818,23 +817,24 @@ void CImageToolView::OnLButtonDown(UINT nFlags, CPoint point)
 		CClientDC dc(this);
 		CBrush brush(m_ColorFill);
 		CBrush* oldBrush = dc.SelectObject(&brush);
+	
 
 		dc.ExtFloodFill(point.x, point.y, dc.GetPixel(point), FLOODFILLSURFACE);
 		dc.SelectObject(oldBrush);
+		m_bColorFill = FALSE;
+		m_bMouseFill = FALSE;
 
 		CImageToolDoc *pDoc = GetDocument();
 		// 마우스가 눌린 순간에 new 연산자를 이용하여 새로운 곡선을 저장할 CMyData 객체를 생성
-		m_pCurrentMyFill = new CMyFill(point, m_ColorFill);
+		m_pCurrentMyColorFill = new CMyColorFill(point, m_ColorFill);
 		// CTypedPtrList 클래스의 AddTai() 함수를 호출하여 CMyData 객체 추가
-		pDoc->m_MyFillList.AddTail(m_pCurrentMyFill);
+		pDoc->m_MyColorFillList.AddTail(m_pCurrentMyColorFill);
 		// 도큐먼트 데이터가 변경되었음을 알리기 위한 SetmodifiedFlag() 함수 호출
 		pDoc->SetModifiedFlag();
 		// 마우스 커서가 다른 윈도우 위로 이동해도 메시지를 계속 잡아 올 수 있도록 함
 
 
 		m_nowP = point;
-		m_bColorFill = FALSE;
-		m_bMouseFill = FALSE;
 	}
 	CScrollView::OnLButtonDown(nFlags, point);
 }

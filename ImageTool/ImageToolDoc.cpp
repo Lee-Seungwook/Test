@@ -15,6 +15,9 @@
 #include "FileNewDlg.h"
 #include <propkey.h>
 
+#include <mmsystem.h>
+#pragma comment(lib, "winmm.lib")
+
 #include "IppImage\IppImage.h"
 #include "IppImage\IppConvert.h"
 #include "IppImage\IppEnhance.h"
@@ -37,6 +40,11 @@
 #include "ResizeDlg.h"
 #include "RotateDlg.h"
 
+#include "IppFourier.h"
+#include "FreqFilteringDlg.h"
+
+#include "IppFeature.h"
+
 #include "MyData.h"
 #include "MyStick.h"
 #include "MyEllipse.h"
@@ -47,7 +55,13 @@
 #include "MyRhombus.h"
 #include "MyPentagon.h"
 #include "MyErase.h"
-#include "MyFill.h"
+#include "MyColorFill.h"
+
+
+
+
+#define SHOW_SPECTRUM_PHASE_IMAGE
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -103,6 +117,13 @@ ON_COMMAND(ID_IMAGE_RESIZE, &CImageToolDoc::OnImageResize)
 ON_COMMAND(ID_IMAGE_ROTATE, &CImageToolDoc::OnImageRotate)
 ON_COMMAND(ID_IMAGE_MIRROR, &CImageToolDoc::OnImageMirror)
 ON_COMMAND(ID_IMAGE_FLIP, &CImageToolDoc::OnImageFlip)
+ON_COMMAND(ID_FOURIER_DFT, &CImageToolDoc::OnFourierDft)
+ON_COMMAND(ID_FOURIER_DFTRC, &CImageToolDoc::OnFourierDftrc)
+ON_COMMAND(ID_FOURIER_FFT, &CImageToolDoc::OnFourierFft)
+ON_COMMAND(ID_FREQ_FILTERING, &CImageToolDoc::OnFreqFiltering)
+ON_COMMAND(ID_EDGE_ROBERTS, &CImageToolDoc::OnEdgeRoberts)
+ON_COMMAND(ID_EDGE_PREWITT, &CImageToolDoc::OnEdgePrewitt)
+ON_COMMAND(ID_EDGE_SOBEL, &CImageToolDoc::OnEdgeSobel)
 END_MESSAGE_MAP()
 
 
@@ -161,21 +182,22 @@ void CImageToolDoc::Serialize(CArchive& ar)
 	if (ar.IsStoring())
 	{
 		// TODO: 여기에 저장 코드를 추가합니다.
+		m_MyDataList.Serialize(ar);
+		m_MyStickList.Serialize(ar);
+		m_MyEllipseList.Serialize(ar);
+		m_MyRectList.Serialize(ar);
+		m_MyRoundRectList.Serialize(ar);
+		m_MyTriangleList.Serialize(ar);
+		m_MyRightTriangleList.Serialize(ar);
+		m_MyRhombusList.Serialize(ar);
+		m_MyEraseList.Serialize(ar);
+		m_MyColorFillList.Serialize(ar);
 	}
 	else
 	{
 		// TODO: 여기에 로딩 코드를 추가합니다.
 	}
-	/*m_MyDataList.Serialize(ar);
-	m_MyStickList.Serialize(ar);
-	m_MyEllipseList.Serialize(ar);
-	m_MyRectList.Serialize(ar);
-	m_MyRoundRectList.Serialize(ar);
-	m_MyTriangleList.Serialize(ar);
-	m_MyRightTriangleList.Serialize(ar);
-	m_MyRhombusList.Serialize(ar);
-	m_MyEraseList.Serialize(ar);
-	m_MyFillList.Serialize(ar);*/
+
 }
 
 #ifdef SHARED_HANDLERS
@@ -760,65 +782,312 @@ void CImageToolDoc::OnImageFlip()
 }
 
 
-//void CImageToolDoc::DeleteContents()
-//{
-//	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
-//	// IsEmpty() 함수를 호출하여 리스트가 비었을 때까지 while 루프를 돌면서
-//	// RemoveHead() 함수를 호출한다.
-//	while (!m_MyDataList.IsEmpty())
-//	{
-//		m_MyDataList.RemoveHead();
-//	}
-//
-//	while (!m_MyStickList.IsEmpty())
-//	{
-//		m_MyStickList.RemoveHead();
-//	}
-//
-//	while (!m_MyEllipseList.IsEmpty())
-//	{
-//		m_MyEllipseList.RemoveHead();
-//	}
-//
-//	while (!m_MyRectList.IsEmpty())
-//	{
-//		m_MyRectList.RemoveHead();
-//	}
-//
-//	while (!m_MyRoundRectList.IsEmpty())
-//	{
-//		m_MyRoundRectList.RemoveHead();
-//	}
-//
-//	while (!m_MyTriangleList.IsEmpty())
-//	{
-//		m_MyTriangleList.RemoveHead();
-//	}
-//
-//	while (!m_MyRightTriangleList.IsEmpty())
-//	{
-//		m_MyRightTriangleList.RemoveHead();
-//	}
-//
-//	while (!m_MyRhombusList.IsEmpty())
-//	{
-//		m_MyRhombusList.RemoveHead();
-//	}
-//
-//	while (!m_MyPentagonList.IsEmpty())
-//	{
-//		m_MyPentagonList.RemoveHead();
-//	}
-//
-//	while (!m_MyEraseList.IsEmpty())
-//	{
-//		m_MyEraseList.RemoveHead();
-//	}
-//
-//	while (!m_MyFillList.IsEmpty())
-//	{
-//		m_MyFillList.RemoveHead();
-//	}
-//	UpdateAllViews(NULL);
-//	CDocument::DeleteContents();
-//}
+void CImageToolDoc::DeleteContents()
+{
+	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+	// IsEmpty() 함수를 호출하여 리스트가 비었을 때까지 while 루프를 돌면서
+	// RemoveHead() 함수를 호출한다.
+	while (!m_MyDataList.IsEmpty())
+	{
+		m_MyDataList.RemoveHead();
+	}
+
+	while (!m_MyStickList.IsEmpty())
+	{
+		m_MyStickList.RemoveHead();
+	}
+
+	while (!m_MyEllipseList.IsEmpty())
+	{
+		m_MyEllipseList.RemoveHead();
+	}
+
+	while (!m_MyRectList.IsEmpty())
+	{
+		m_MyRectList.RemoveHead();
+	}
+
+	while (!m_MyRoundRectList.IsEmpty())
+	{
+		m_MyRoundRectList.RemoveHead();
+	}
+
+	while (!m_MyTriangleList.IsEmpty())
+	{
+		m_MyTriangleList.RemoveHead();
+	}
+
+	while (!m_MyRightTriangleList.IsEmpty())
+	{
+		m_MyRightTriangleList.RemoveHead();
+	}
+
+	while (!m_MyRhombusList.IsEmpty())
+	{
+		m_MyRhombusList.RemoveHead();
+	}
+
+	while (!m_MyPentagonList.IsEmpty())
+	{
+		m_MyPentagonList.RemoveHead();
+	}
+
+	while (!m_MyEraseList.IsEmpty())
+	{
+		m_MyEraseList.RemoveHead();
+	}
+	
+	while (!m_MyColorFillList.IsEmpty())
+	{
+		m_MyColorFillList.RemoveHead();
+	}
+
+	UpdateAllViews(NULL);
+	CDocument::DeleteContents();
+}
+
+
+void CImageToolDoc::OnFourierDft()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	int w = m_Dib.GetWidth();
+	int h = m_Dib.GetHeight();
+
+	if (w * h > 128 * 128)
+	{
+		CString msg = _T("영상의 크기가 커서 시간이 오래 걸릴 수 있습니다.\n계속 하시겠습니까?");
+		if (AfxMessageBox(msg, MB_OKCANCEL) != IDOK)
+			return;
+	}
+
+	CWaitCursor wait;
+
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+
+		IppFourier fourier;
+	fourier.SetImage(img);
+
+	DWORD t1 = timeGetTime();
+	fourier.DFT(1);
+
+#ifdef SHOW_SPECTRUM_PHASE_IMAGE
+	IppByteImage imgSpec;
+	fourier.GetSpectrumImage(imgSpec);
+
+	CONVERT_IMAGE_TO_DIB(imgSpec, dibSpec)
+		AfxNewBitmap(dibSpec);
+
+	IppByteImage imgPhase;
+	fourier.GetPhaseImage(imgPhase);
+
+	CONVERT_IMAGE_TO_DIB(imgPhase, dibPhase)
+		AfxNewBitmap(dibPhase);
+#endif
+
+	fourier.DFT(-1);
+	DWORD t2 = timeGetTime();
+
+	IppByteImage img2;
+	fourier.GetImage(img2);
+
+	CONVERT_IMAGE_TO_DIB(img2, dib)
+		AfxPrintInfo(_T("[푸리에변환/DFT] 입력 영상: %s, 처리 시간: %dmsec"), GetTitle(), t2 - t1);
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnFourierDftrc()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	int w = m_Dib.GetWidth();
+	int h = m_Dib.GetHeight();
+
+	// 영상의 크기가 큰 경우 경고 메시지 출력
+	if (w * h > 256 * 256)
+	{
+		CString msg = _T("영상의 크기가 커서 시간이 오래 걸릴 수 있습니다.\n계속 하시겠습니까?");
+		if (AfxMessageBox(msg, MB_OKCANCEL) != IDOK)
+			return;
+	}
+
+	// 모래시계 커서로 설정
+	CWaitCursor wait;
+
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+
+	IppFourier fourier;
+	fourier.SetImage(img); // 영상 설정
+
+	DWORD t1 = timeGetTime(); // 연산 시간을 측정하기 위함
+	fourier.DFTRC(1);
+
+#ifdef SHOW_SPECTRUM_PHASE_IMAGE
+	IppByteImage imgSpec;
+	fourier.GetSpectrumImage(imgSpec);
+
+	CONVERT_IMAGE_TO_DIB(imgSpec, dibSpec)
+	AfxNewBitmap(dibSpec); // 스펙트럼 영상 출력
+
+	IppByteImage imgPhase;
+	fourier.GetPhaseImage(imgPhase);
+
+	CONVERT_IMAGE_TO_DIB(imgPhase, dibPhase)
+	AfxNewBitmap(dibPhase); // 위상각 영상 출력
+#endif
+
+	fourier.DFTRC(-1);
+	DWORD t2 = timeGetTime();
+
+	IppByteImage img2;
+	fourier.GetImage(img2); // 푸리에 변환된 영상을 복사 받는다.
+
+	CONVERT_IMAGE_TO_DIB(img2, dib)
+	AfxPrintInfo(_T("[푸리에변환/DFTRC] 입력 영상: %s, 처리 시간: %dmsec"), GetTitle(), t2 - t1);
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnFourierFft()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	int w = m_Dib.GetWidth();
+	int h = m_Dib.GetHeight();
+
+	// 영상의 가로 세로 크기가 2의 승수인지를 검사
+	if (!IsPowerOf2(w) || !IsPowerOf2(h))
+	{
+		AfxMessageBox(_T("가로 또는 세로의 크기가 2의 승수가 아닙니다."));
+		return;
+	}
+
+	CWaitCursor wait;
+
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+
+	IppFourier fourier;
+	fourier.SetImage(img);
+
+	DWORD t1 = timeGetTime();
+	fourier.FFT(1);
+
+#ifdef SHOW_SPECTRUM_PHASE_IMAGE
+	IppByteImage imgSpec;
+	fourier.GetSpectrumImage(imgSpec);
+
+	CONVERT_IMAGE_TO_DIB(imgSpec, dibSpec)
+	AfxNewBitmap(dibSpec); // 스펙트럼 영상 출력
+
+	IppByteImage imgPhase;
+	fourier.GetPhaseImage(imgPhase);
+
+	CONVERT_IMAGE_TO_DIB(imgPhase, dibPhase)
+	AfxNewBitmap(dibPhase); // 위상각 영상 출력
+#endif
+
+	fourier.FFT(-1);
+	DWORD t2 = timeGetTime();
+
+	IppByteImage img2;
+	fourier.GetImage(img2);
+
+	CONVERT_IMAGE_TO_DIB(img2, dib)
+
+	AfxPrintInfo(_T("[푸리에변환/FFT] 입력 영상 : %s, 입력 영상 크기 : %dx%d, 처리 시간 : %dmsec"), GetTitle(), w, h, t2 - t1);
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnFreqFiltering()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	int w = m_Dib.GetWidth();
+	int h = m_Dib.GetHeight();
+
+	if (!IsPowerOf2(w) || !IsPowerOf2(h))
+	{
+		AfxMessageBox(_T("가로 또는 세로의 크기가 2의 승수가 아닙니다."));
+		return;
+	}
+
+	CFreqFilteringDlg dlg;
+	dlg.m_strRange.Format(_T("(0 ~ %d)"), __min(w / 2, h / 2));
+	if (dlg.DoModal() == IDOK)
+	{
+		CWaitCursor wait;
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+
+		IppFourier fourier;
+		fourier.SetImage(img);
+		fourier.FFT(1);
+
+		// 저역 통과 필터 선택
+		if (dlg.m_nFilterType == 0)
+		{
+			// 이상적 필터 선택
+			if (dlg.m_nFilterShape == 0)
+				fourier.LowPassIdeal(dlg.m_nCutoff);
+			// 가우시안 필터 선택
+			else
+				fourier.LowPassGaussian(dlg.m_nCutoff);
+		}
+		// 고역 통과 필터 선택
+		else
+		{
+			if (dlg.m_nFilterShape == 0)
+				fourier.HighPassIdeal(dlg.m_nCutoff);
+			else
+				fourier.HighPassGaussian(dlg.m_nCutoff);
+		}
+
+		fourier.FFT(-1);
+
+		IppByteImage img2;
+		fourier.GetImage(img2);
+		CONVERT_IMAGE_TO_DIB(img2, dib)
+
+		TCHAR* type[] = { _T("저역 통과 필터"), _T("고역 통과 필터") };
+		TCHAR* shape[] = { _T("이상적(Ideal)"), _T("가우시안(Gaussian") };
+		AfxPrintInfo(_T("[주파수 공간 필터링] 입력 영상 : %s, 필터 종류 : %s, 필터 모양 : %s, 차단 주파수 : %d"), 
+			GetTitle(), type[dlg.m_nFilterType], shape[dlg.m_nFilterShape], dlg.m_nCutoff);
+		AfxNewBitmap(dib);
+	}
+}
+
+
+void CImageToolDoc::OnEdgeRoberts()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+	IppByteImage imgEdge;
+	IppEdgeRoberts(img, imgEdge);
+	CONVERT_IMAGE_TO_DIB(imgEdge, dib)
+
+	AfxPrintInfo(_T("[마스크 기반 엣지 검출/로버츠] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnEdgePrewitt()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+	IppByteImage imgEdge;
+	IppEdgePrewitt(img, imgEdge);
+	CONVERT_IMAGE_TO_DIB(imgEdge, dib)
+
+	AfxPrintInfo(_T("[마스크 기반 엣지 검출/프리윗] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnEdgeSobel()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+	IppByteImage imgEdge;
+	IppEdgeSobel(img, imgEdge);
+	CONVERT_IMAGE_TO_DIB(imgEdge, dib)
+
+	AfxPrintInfo(_T("[마스크 기반 엣지 검출/소벨] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}

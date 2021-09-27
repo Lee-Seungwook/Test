@@ -141,7 +141,16 @@
     <ClInclude Include="MyErase.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="MyFill.h">
+    <ClInclude Include="MyColorFill.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="IppFourier.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="FreqFilteringDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="IppFeature.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -257,7 +266,16 @@
     <ClCompile Include="MyErase.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="MyFill.cpp">
+    <ClCompile Include="MyColorFill.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="IppFourier.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="FreqFilteringDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="IppFeature.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

@@ -24,7 +24,6 @@ public:
 	CArray<Line> m_lines;
 	CPoint m_ptFrom;
 	CPoint m_ptTemp;
-	CPoint m_ptColor;
 	COLORREF m_color; // 선의 색상 설정
 	COLORREF m_FillColor; // 채우기 색 설정
 	COLORREF m_ColorFill; // 눌러서 채우기 설정
@@ -49,7 +48,7 @@ public:
 	CMyRhombus *m_pCurrentMyRhombus;
 	CMyPentagon *m_pCurrentMyPentagon;
 	CMyErase *m_pCurrentMyErase;
-	CMyFill *m_pCurrentMyFill;
+	CMyColorFill *m_pCurrentMyColorFill;
 
 // 작업입니다.
 public:
@@ -72,9 +71,6 @@ public:
 	BOOL m_bPartErase; // 지우개 (부분 지우기)
 	BOOL m_bMouseErase; // 지우개 커서
 	BOOL m_bMousePoly; // 도형 커서
-
-	BOOL m_bInvalidate; // 화면 전체 초기화
-	
 	
 
 // 재정의입니다.

@@ -5,9 +5,8 @@ class CMyErase :
 {
 	DECLARE_SERIAL(CMyErase)
 public:
-	COLORREF m_EraseColor;
-	int m_nWidth; // 선의 굵기 
-	//int m_nStyle; // 선 스타일
+	int m_PenColor;
+	int m_nWidth;
 	CArray<CPoint, CPoint&> m_ptArray;
 public:
 	CMyErase();
