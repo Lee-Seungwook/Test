@@ -17,21 +17,21 @@ void IppInverse(IppByteImage& img)
 }
 
 // 트루 컬러 영상 반전
-void IppInverse(IppRgbImage& img)
-{
-	int size = img.GetSize() * 3; // 트루 컬러 영상은 비트수가 3배 많아서 곱해주었다.
-	RGBBYTE *p = img.GetPixels(); // 이미지를 1차적으로 저장한다. (트루 컬러 영상이기 때문이다.)
-	BYTE *b = &p->b; // 각각의 픽셀 색상에 맞는 1차원 배열 선언
-	BYTE *g = &p->g;
-	BYTE *r = &p->r;
-
-	for (int i = 0; i < size; i++) // 각각의 픽셀 색상을 반전
-	{
-		b[i] = 255 - b[i];
-		g[i] = 255 - g[i];
-		r[i] = 255 - r[i];
-	}
-}
+//void IppInverse(IppRgbImage& img)
+//{
+//	int size = img.GetSize() * 3; // 트루 컬러 영상은 비트수가 3배 많아서 곱해주었다.
+//	RGBBYTE *p = img.GetPixels(); // 이미지를 1차적으로 저장한다. (트루 컬러 영상이기 때문이다.)
+//	BYTE *b = &p->b; // 각각의 픽셀 색상에 맞는 1차원 배열 선언
+//	BYTE *g = &p->g;
+//	BYTE *r = &p->r;
+//
+//	for (int i = 0; i < size; i++) // 각각의 픽셀 색상을 반전
+//	{
+//		b[i] = 255 - b[i];
+//		g[i] = 255 - g[i];
+//		r[i] = 255 - r[i];
+//	}
+//}
 
 
 // 그레이 스케일 영상 밝기 조절
@@ -164,33 +164,6 @@ void IppHistogram(IppByteImage& img, float histo[256])
 	for (int i = 0; i < 256; i++)
 	{
 		histo[i] = static_cast<float>(cnt[i]) / size; // cnt 배열에 저장된 값을 전체 픽셀의 개수로 나누어 정규화된 히스토그램 값을 histo 배열에 저장
-	}
-}
-
-void IppHistogramRgb(IppRgbImage& img, float histoB[256], float histoG[256], float histoR[256])
-{
-	int size = img.GetSize();
-	RGBBYTE* p = img.GetPixels();
-
-	// 히스토그램 계산
-	int cntB[256];
-	int cntG[256];
-	int cntR[256];
-	memset(cntB, 0, sizeof(int) * 256);
-	memset(cntG, 0, sizeof(int) * 256);
-	memset(cntR, 0, sizeof(int) * 256);
-	for (int i = 0; i < size; i++) // 픽셀의 개수를 계산
-	{
-		cntB[p[i].b]++;
-		cntG[p[i].g]++;
-		cntR[p[i].r]++;
-	}
-	// 히스토그램 정규화(histogram normalization)
-	for (int i = 0; i < 256; i++)
-	{
-		histoB[i] = static_cast<float>(cntB[i]) / size; // cnt 배열에 저장된 값을 전체 픽셀의 개수로 나누어 정규화된 히스토그램 값을 histo 배열에 저장
-		histoG[i] = static_cast<float>(cntG[i]) / size;
-		histoR[i] = static_cast<float>(cntR[i]) / size;
 	}
 }
 

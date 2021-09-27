@@ -4,7 +4,7 @@
 
 // 색상 반전
 void IppInverse(IppByteImage& img);
-void IppInverse(IppRgbImage& img);
+//void IppInverse(IppRgbImage& img);
 
 
 // 밝기 변화
@@ -23,7 +23,6 @@ void IppGammaCorrection(IppRgbImage& img, float gamma);
 
 // 히스토그램
 void IppHistogram(IppByteImage& img, float histo[256]);
-void IppHistogramRgb(IppRgbImage& img, float histoB[256], float histoG[256], float histoR[256]);
 
 // 히스토그램 스트레칭
 void IppHistogramStretching(IppByteImage& img);

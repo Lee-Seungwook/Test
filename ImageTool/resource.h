@@ -49,6 +49,8 @@
 #define IDC_CURSOR1                     354
 #define IDC_CURSOR_POLY                 354
 #define IDD_FREQUENCY_FILTERING         355
+#define IDD_CANNY_EDGE                  358
+#define IDD_HARRIS_CORNER               360
 #define IDC_WIDTH                       1000
 #define IDC_HEIGHT                      1001
 #define IDC_IMAGE_TYPE                  1002
@@ -72,13 +74,17 @@
 #define IDC_ANGLE                       1010
 #define IDC_EDIT                        1010
 #define IDC_CUTOFF_FREQ                 1010
+#define IDC_CANNY_SIGMA                 1010
+#define IDC_HARRIS_THRESHOLD            1010
 #define IDC_FUNCTION5                   1011
 #define IDC_ALPHA_SLIDER                1011
 #define IDC_DIFFUSION_ITER              1011
 #define IDC_NEW_HEIGHT                  1011
+#define IDC_HIGH_THRESHOLD              1011
 #define IDC_FUNCTION4                   1012
 #define IDC_ALPHA_EDIT                  1012
 #define IDC_DIFFUSION_LAMBDA            1012
+#define IDC_LOW_THRESHOLD               1012
 #define IDC_FUNCTION6                   1013
 #define IDC_NOISE_RADIO1                1013
 #define IDC_FUNCTION3                   1014
@@ -225,13 +231,21 @@
 #define ID_EDGE_ROBERTS                 32908
 #define ID_EDGE_PREWITT                 32909
 #define ID_EDGE_SOBEL                   32910
+#define ID_32911                        32911
+#define ID_EDGE_CANNY                   32912
+#define ID_32913                        32913
+#define ID_HOUGH_LINE                   32914
+#define ID_32915                        32915
+#define ID_HARRIS_CORNER                32916
+#define ID_32917                        32917
+#define ID_COLOR_GRAYSCALE              32918
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        358
-#define _APS_NEXT_COMMAND_VALUE         32911
+#define _APS_NEXT_RESOURCE_VALUE        362
+#define _APS_NEXT_COMMAND_VALUE         32919
 #define _APS_NEXT_CONTROL_VALUE         1035
 #define _APS_NEXT_SYMED_VALUE           311
 #endif

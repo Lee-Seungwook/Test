@@ -5,6 +5,7 @@
 #include "pch.h"
 #include "stdafx.h"
 #include "framework.h"
+
 // SHARED_HANDLERS는 미리 보기, 축소판 그림 및 검색 필터 처리기를 구현하는 ATL 프로젝트에서 정의할 수 있으며
 // 해당 프로젝트와 문서 코드를 공유하도록 해 줍니다.
 #ifndef SHARED_HANDLERS
@@ -18,9 +19,15 @@
 #include <mmsystem.h>
 #pragma comment(lib, "winmm.lib")
 
+#include <algorithm>
+#include <functional>
+
+#include <propkey.h>
+
 #include "IppImage\IppImage.h"
 #include "IppImage\IppConvert.h"
 #include "IppImage\IppEnhance.h"
+#include "IppColor.h"
 
 #include "BrightnessContrastDlg.h"
 #include "GammaCorrectionDlg.h"
@@ -44,6 +51,8 @@
 #include "FreqFilteringDlg.h"
 
 #include "IppFeature.h"
+#include "CannyEdgeDlg.h"
+#include "HarrisCornerDlg.h"
 
 #include "MyData.h"
 #include "MyStick.h"
@@ -124,6 +133,12 @@ ON_COMMAND(ID_FREQ_FILTERING, &CImageToolDoc::OnFreqFiltering)
 ON_COMMAND(ID_EDGE_ROBERTS, &CImageToolDoc::OnEdgeRoberts)
 ON_COMMAND(ID_EDGE_PREWITT, &CImageToolDoc::OnEdgePrewitt)
 ON_COMMAND(ID_EDGE_SOBEL, &CImageToolDoc::OnEdgeSobel)
+ON_COMMAND(ID_EDGE_CANNY, &CImageToolDoc::OnEdgeCanny)
+// ON_COMMAND(ID_HOUGH_LINE, &CImageToolDoc::OnHoughLine)
+ON_COMMAND(ID_HOUGH_LINE, &CImageToolDoc::OnHoughLine)
+ON_COMMAND(ID_HARRIS_CORNER, &CImageToolDoc::OnHarrisCorner)
+ON_COMMAND(ID_COLOR_GRAYSCALE, &CImageToolDoc::OnColorGrayscale)
+ON_UPDATE_COMMAND_UI(ID_COLOR_GRAYSCALE, &CImageToolDoc::OnUpdateColorGrayscale)
 END_MESSAGE_MAP()
 
 
@@ -318,22 +333,35 @@ void CImageToolDoc::OnImageInverse()
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	//IppByteImage img;
 	//IppDibToImage(m_Dib, img); // 객체 변환
-	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img) // 매크로 사용 (주석문 내용과 동일)
-	IppInverse(img);
+	if (m_Dib.GetBitCount() == 8)
+	{
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img) // 매크로 사용 (주석문 내용과 동일)
+			IppInverse(img);
 
-	//IppDib dib;
-	//IppImageToDib(img, dib); // 객체 변환
-	CONVERT_IMAGE_TO_DIB(img, dib) // 매크로 사용 (주석문 내용과 동일)
+		//IppDib dib;
+		//IppImageToDib(img, dib); // 객체 변환
+		CONVERT_IMAGE_TO_DIB(img, dib) // 매크로 사용 (주석문 내용과 동일)
 
-	AfxPrintInfo(_T("[반전] 입력 영상 : %s"), GetTitle()); // 출력창 문자열 설정
-	AfxNewBitmap(dib); // 영상 새 창으로 띄움
+			AfxPrintInfo(_T("[반전] 입력 영상 : %s"), GetTitle()); // 출력창 문자열 설정
+		AfxNewBitmap(dib); // 영상 새 창으로 띄움
+	}
+	else if (m_Dib.GetBitCount() == 24)
+	{
+		CONVERT_DIB_TO_RGBIMAGE(m_Dib, img) // 매크로 사용 (주석문 내용과 동일)
+		IppInverse(img);
+
+		CONVERT_IMAGE_TO_DIB(img, dib) // 매크로 사용 (주석문 내용과 동일)
+
+		AfxPrintInfo(_T("[반전] 입력 영상 : %s"), GetTitle()); // 출력창 문자열 설정
+		AfxNewBitmap(dib); // 영상 새 창으로 띄움
+	}
 }
 
 
 void CImageToolDoc::OnUpdateImageInverse(CCmdUI *pCmdUI)
 {
 	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
-	pCmdUI->Enable(m_Dib.GetBitCount() == 8);
+	pCmdUI->Enable(m_Dib.GetBitCount() == 8 || m_Dib.GetBitCount() == 24);
 }
 
 
@@ -1090,4 +1118,133 @@ void CImageToolDoc::OnEdgeSobel()
 
 	AfxPrintInfo(_T("[마스크 기반 엣지 검출/소벨] 입력 영상 : %s"), GetTitle());
 	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnEdgeCanny()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CCannyEdgeDlg dlg;
+	if (dlg.DoModal() == IDOK)
+	{
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+		IppByteImage imgEdge;
+		IppEdgeCanny(img, imgEdge, dlg.m_fSigma, dlg.m_fLowTh, dlg.m_fHighTh);
+		CONVERT_IMAGE_TO_DIB(imgEdge, dib)
+
+		AfxPrintInfo(_T("[캐니 엣지 검출] 입력 영상 : %s, sigma : %4.2f, Low Th : %4.2f, High Th : %4.2f"), GetTitle(), dlg.m_fSigma, dlg.m_fLowTh, dlg.m_fHighTh);
+		AfxNewBitmap(dib);
+	}
+}
+
+
+//void CImageToolDoc::OnHoughLine()
+//{
+//	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+//		IppByteImage imgEdge;
+//	IppEdgeCanny(img, imgEdge, 1.4f, 30.f, 60.f);
+//
+//	std::vector<IppLineParam> lines;
+//	IppHoughLine(imgEdge, lines);
+//
+//	if (lines.size() == 0)
+//	{
+//		AfxMessageBox(_T("검출된 직선이 없습니다."));
+//		return;
+//	}
+//
+//	std::sort(lines.begin(), lines.end());
+//
+//	// 최대 10개의 직선만 화면에 그려줌.
+//	int cnt = min(10, lines.size());
+//	for (int i = 0; i < cnt; i++)
+//		IppDrawLine(img, lines[i], 255);
+//
+//	CONVERT_IMAGE_TO_DIB(img, dib)
+//
+//		AfxPrintInfo(_T("[허프 선 검출] 입력 영상: %s, 중요 직선: rho = %4.2f, angle = %4.2f, vote = %d"),
+//			GetTitle(), lines[0].rho, (lines[0].ang * 180 / 3.14f), lines[0].vote);
+//	AfxNewBitmap(dib);
+//}
+
+
+void CImageToolDoc::OnHoughLine()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+	IppByteImage imgEdge;
+	IppEdgeCanny(img, imgEdge, 1.4f, 30.f, 60.f);
+
+	std::vector<IppLineParam> lines;
+	IppHoughLine(imgEdge, lines);
+
+	if (lines.size() == 0)
+	{
+		AfxMessageBox(_T("검출된 직선이 없습니다."));
+		return;
+	}
+
+	std::sort(lines.begin(), lines.end());
+
+	// 최대 10개의 직선만 화면에 그려줌.
+	int cnt = min(10, lines.size());
+	for (int i = 0; i < cnt; i++) 
+		IppDrawLine(img, lines[i], 255);
+
+	CONVERT_IMAGE_TO_DIB(img, dib)
+
+	AfxPrintInfo(_T("[허프 선 검출] 입력 영상: %s, 중요 직선: rho = %4.2f, angle = %4.2f,vote = %d"),
+		GetTitle(), lines[0].rho, (lines[0].ang * 180 / 3.14f), lines[0].vote);
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnHarrisCorner()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CHarrisCornerDlg dlg;
+	if (dlg.DoModal() == IDOK)
+	{
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+		std::vector<IppPoint> corners;
+		IppHarrisCorner(img, corners, dlg.m_nHarrisTh); // 입력 받은 임계값과 좌표를 저장할 배열을 넘겨줌
+
+		BYTE** ptr = img.GetPixels2D();
+
+		int x, y;
+		for (IppPoint cp : corners)
+		{
+			x = cp.x;
+			y = cp.y;
+
+			// 영상에 3 x 3 점을 찍는다. (픽셀을 검은색으로 바꿔서)
+			ptr[y - 1][x - 1] = ptr[y - 1][x] = ptr[y - 1][x + 1] = 0;
+			ptr[y][x - 1] = ptr[y][x] = ptr[y][x + 1] = 0;
+			ptr[y + 1][x - 1] = ptr[y + 1][x] = ptr[y + 1][x + 1] = 0;
+		}
+
+		CONVERT_IMAGE_TO_DIB(img, dib)
+		AfxPrintInfo(_T("[해리스 코너 검출] 입력 영상 : %s, Threshold: %d, 검출된 코너 갯수 : %d"), GetTitle(), dlg.m_nHarrisTh, corners.size());
+		AfxNewBitmap(dib);
+	}
+}
+
+
+void CImageToolDoc::OnColorGrayscale()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_RGBIMAGE(m_Dib, imgColor)
+	IppByteImage imgGray;
+	imgGray.Convert(imgColor);
+	CONVERT_IMAGE_TO_DIB(imgGray, dib)
+
+	AfxPrintInfo(_T("[그레이스케일 변환] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnUpdateColorGrayscale(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 24);
 }

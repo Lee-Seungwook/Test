@@ -4,6 +4,8 @@
 #include <memory.h>
 #include "RGBBYTE.h"
 
+#define RGB2GRAY(r, g, b) (0.299*(r) + 0.587*(g) + 0.114*(b))
+
 template<typename T>
 class IppImage
 {
@@ -35,6 +37,7 @@ public:
 
 	// 픽셀 값 설정
 	template<typename U> void Convert(const IppImage<U>& img, bool use_limit = false);
+	void    Convert(const IppImage<RGBBYTE> & img);
 
 	// 영상 정보 반환
 	int     GetWidth()    const { return width; }
@@ -145,6 +148,19 @@ void IppImage<T>::DestroyImage() // 이미 생성되어 있는 영상 데이터를 없애기 위해
 			 p1[i] = static_cast<T>(p2[i]);
  }
 
+ template<typename T>
+ void IppImage<T>::Convert(const IppImage<RGBBYTE>& img)
+ {
+	 CreateImage(img.GetWidth(), img.GetHeight());
+
+	 int size = GetSize();
+	 T* p1 = GetPixels();
+	 RGBBYTE* p2 = img.GetPixels();
+
+	 for (int i = 0; i < size; i++)
+		 p1[i] = static_cast<T>(RGB2GRAY(p2[i].r, p2[i].g, p2[i].b));
+ }
+
 
 
  // pixels 템플릿  클래스를 정의
@@ -158,4 +174,10 @@ void IppImage<T>::DestroyImage() // 이미 생성되어 있는 영상 데이터를 없애기 위해
  inline T limit(const T& value)
  {
 	 return ((value > 255) ? 255 : ((value < 0) ? 0 : value));
+ }
+
+ template<typename T>
+ inline T limit(const T& value, const T& lower, const T& upper)
+ {
+	 return ((value > upper) ? upper : ((value < lower) ? lower : value));
  }
