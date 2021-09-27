@@ -175,3 +175,9 @@ void IppImage<T>::DestroyImage() // 이미 생성되어 있는 영상 데이터를 없애기 위해
  {
 	 return ((value > 255) ? 255 : ((value < 0) ? 0 : value));
  }
+
+ template<typename T>
+ inline T limit(const T& value, const T& lower, const T& upper)
+ {
+	 return ((value > upper) ? upper : ((value < lower) ? lower : value));
+ }
