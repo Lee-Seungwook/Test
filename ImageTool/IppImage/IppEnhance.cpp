@@ -17,21 +17,21 @@ void IppInverse(IppByteImage& img)
 }
 
 // 트루 컬러 영상 반전
-void IppInverse(IppRgbImage& img)
-{
-	int size = img.GetSize() * 3; // 트루 컬러 영상은 비트수가 3배 많아서 곱해주었다.
-	RGBBYTE *p = img.GetPixels(); // 이미지를 1차적으로 저장한다. (트루 컬러 영상이기 때문이다.)
-	BYTE *b = &p->b; // 각각의 픽셀 색상에 맞는 1차원 배열 선언
-	BYTE *g = &p->g;
-	BYTE *r = &p->r;
-
-	for (int i = 0; i < size; i++) // 각각의 픽셀 색상을 반전
-	{
-		b[i] = 255 - b[i];
-		g[i] = 255 - g[i];
-		r[i] = 255 - r[i];
-	}
-}
+//void IppInverse(IppRgbImage& img)
+//{
+//	int size = img.GetSize() * 3; // 트루 컬러 영상은 비트수가 3배 많아서 곱해주었다.
+//	RGBBYTE *p = img.GetPixels(); // 이미지를 1차적으로 저장한다. (트루 컬러 영상이기 때문이다.)
+//	BYTE *b = &p->b; // 각각의 픽셀 색상에 맞는 1차원 배열 선언
+//	BYTE *g = &p->g;
+//	BYTE *r = &p->r;
+//
+//	for (int i = 0; i < size; i++) // 각각의 픽셀 색상을 반전
+//	{
+//		b[i] = 255 - b[i];
+//		g[i] = 255 - g[i];
+//		r[i] = 255 - r[i];
+//	}
+//}
 
 
 // 그레이 스케일 영상 밝기 조절

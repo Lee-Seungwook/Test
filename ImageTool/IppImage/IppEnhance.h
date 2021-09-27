@@ -4,7 +4,7 @@
 
 // 색상 반전
 void IppInverse(IppByteImage& img);
-void IppInverse(IppRgbImage& img);
+//void IppInverse(IppRgbImage& img);
 
 
 // 밝기 변화

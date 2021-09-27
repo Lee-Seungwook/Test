@@ -27,6 +27,7 @@
 #include "IppImage\IppImage.h"
 #include "IppImage\IppConvert.h"
 #include "IppImage\IppEnhance.h"
+#include "IppColor.h"
 
 #include "BrightnessContrastDlg.h"
 #include "GammaCorrectionDlg.h"
@@ -136,6 +137,8 @@ ON_COMMAND(ID_EDGE_CANNY, &CImageToolDoc::OnEdgeCanny)
 // ON_COMMAND(ID_HOUGH_LINE, &CImageToolDoc::OnHoughLine)
 ON_COMMAND(ID_HOUGH_LINE, &CImageToolDoc::OnHoughLine)
 ON_COMMAND(ID_HARRIS_CORNER, &CImageToolDoc::OnHarrisCorner)
+ON_COMMAND(ID_COLOR_GRAYSCALE, &CImageToolDoc::OnColorGrayscale)
+ON_UPDATE_COMMAND_UI(ID_COLOR_GRAYSCALE, &CImageToolDoc::OnUpdateColorGrayscale)
 END_MESSAGE_MAP()
 
 
@@ -330,22 +333,35 @@ void CImageToolDoc::OnImageInverse()
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	//IppByteImage img;
 	//IppDibToImage(m_Dib, img); // 객체 변환
-	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img) // 매크로 사용 (주석문 내용과 동일)
-	IppInverse(img);
+	if (m_Dib.GetBitCount() == 8)
+	{
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img) // 매크로 사용 (주석문 내용과 동일)
+			IppInverse(img);
 
-	//IppDib dib;
-	//IppImageToDib(img, dib); // 객체 변환
-	CONVERT_IMAGE_TO_DIB(img, dib) // 매크로 사용 (주석문 내용과 동일)
+		//IppDib dib;
+		//IppImageToDib(img, dib); // 객체 변환
+		CONVERT_IMAGE_TO_DIB(img, dib) // 매크로 사용 (주석문 내용과 동일)
 
-	AfxPrintInfo(_T("[반전] 입력 영상 : %s"), GetTitle()); // 출력창 문자열 설정
-	AfxNewBitmap(dib); // 영상 새 창으로 띄움
+			AfxPrintInfo(_T("[반전] 입력 영상 : %s"), GetTitle()); // 출력창 문자열 설정
+		AfxNewBitmap(dib); // 영상 새 창으로 띄움
+	}
+	else if (m_Dib.GetBitCount() == 24)
+	{
+		CONVERT_DIB_TO_RGBIMAGE(m_Dib, img) // 매크로 사용 (주석문 내용과 동일)
+		IppInverse(img);
+
+		CONVERT_IMAGE_TO_DIB(img, dib) // 매크로 사용 (주석문 내용과 동일)
+
+		AfxPrintInfo(_T("[반전] 입력 영상 : %s"), GetTitle()); // 출력창 문자열 설정
+		AfxNewBitmap(dib); // 영상 새 창으로 띄움
+	}
 }
 
 
 void CImageToolDoc::OnUpdateImageInverse(CCmdUI *pCmdUI)
 {
 	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
-	pCmdUI->Enable(m_Dib.GetBitCount() == 8);
+	pCmdUI->Enable(m_Dib.GetBitCount() == 8 || m_Dib.GetBitCount() == 24);
 }
 
 
@@ -1211,4 +1227,24 @@ void CImageToolDoc::OnHarrisCorner()
 		AfxPrintInfo(_T("[해리스 코너 검출] 입력 영상 : %s, Threshold: %d, 검출된 코너 갯수 : %d"), GetTitle(), dlg.m_nHarrisTh, corners.size());
 		AfxNewBitmap(dib);
 	}
+}
+
+
+void CImageToolDoc::OnColorGrayscale()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_RGBIMAGE(m_Dib, imgColor)
+	IppByteImage imgGray;
+	imgGray.Convert(imgColor);
+	CONVERT_IMAGE_TO_DIB(imgGray, dib)
+
+	AfxPrintInfo(_T("[그레이스케일 변환] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnUpdateColorGrayscale(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 24);
 }

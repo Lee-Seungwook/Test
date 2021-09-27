@@ -237,13 +237,15 @@
 #define ID_HOUGH_LINE                   32914
 #define ID_32915                        32915
 #define ID_HARRIS_CORNER                32916
+#define ID_32917                        32917
+#define ID_COLOR_GRAYSCALE              32918
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        362
-#define _APS_NEXT_COMMAND_VALUE         32917
+#define _APS_NEXT_COMMAND_VALUE         32919
 #define _APS_NEXT_CONTROL_VALUE         1035
 #define _APS_NEXT_SYMED_VALUE           311
 #endif
