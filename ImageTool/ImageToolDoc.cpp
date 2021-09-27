@@ -53,6 +53,7 @@
 #include "IppFeature.h"
 #include "CannyEdgeDlg.h"
 #include "HarrisCornerDlg.h"
+#include "ColorCombineDlg.h"
 
 #include "MyData.h"
 #include "MyStick.h"
@@ -145,6 +146,9 @@ ON_COMMAND(ID_COLOR_SPLIT_HSI, &CImageToolDoc::OnColorSplitHsi)
 ON_UPDATE_COMMAND_UI(ID_COLOR_SPLIT_HSI, &CImageToolDoc::OnUpdateColorSplitHsi)
 ON_COMMAND(ID_COLOR_SPLIT_YUV, &CImageToolDoc::OnColorSplitYuv)
 ON_UPDATE_COMMAND_UI(ID_COLOR_SPLIT_YUV, &CImageToolDoc::OnUpdateColorSplitYuv)
+ON_COMMAND(ID_COLOR_COMBINE_RGB, &CImageToolDoc::OnColorCombineRgb)
+ON_COMMAND(ID_COLOR_COMBINE_HSI, &CImageToolDoc::OnColorCombineHsi)
+ON_COMMAND(ID_COLOR_COMBINE_YUV, &CImageToolDoc::OnColorCombineYuv)
 END_MESSAGE_MAP()
 
 
@@ -1325,4 +1329,97 @@ void CImageToolDoc::OnUpdateColorSplitYuv(CCmdUI *pCmdUI)
 {
 	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
 	pCmdUI->Enable(m_Dib.GetBitCount() == 24);
+}
+
+
+void CImageToolDoc::OnColorCombineRgb()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CColorCombineDlg dlg;
+	dlg.m_strColorSpace = _T("RGB 색상 평면 합치기");
+	if (dlg.DoModal() == IDOK)
+	{
+		CImageToolDoc* pDoc1 = (CImageToolDoc*)dlg.m_pDoc1;
+		CImageToolDoc* pDoc2 = (CImageToolDoc*)dlg.m_pDoc2;
+		CImageToolDoc* pDoc3 = (CImageToolDoc*)dlg.m_pDoc3;
+
+		CONVERT_DIB_TO_BYTEIMAGE(pDoc1->m_Dib, imgR)
+		CONVERT_DIB_TO_BYTEIMAGE(pDoc2->m_Dib, imgG)
+		CONVERT_DIB_TO_BYTEIMAGE(pDoc3->m_Dib, imgB)
+
+		IppRgbImage imgColor;
+		if (IppColorCombineRGB(imgR, imgG, imgB, imgColor) == false)
+		{
+			AfxMessageBox(_T("영상의 크기가 다릅니다!"));
+			return;
+		}
+
+		CONVERT_IMAGE_TO_DIB(imgColor, dib)
+
+		AfxPrintInfo(_T("[색상 평면 합치기/RGB] 입력 영상: R: %s, G: %s, B: %s"),
+			pDoc1->GetTitle(), pDoc2->GetTitle(), pDoc3->GetTitle());
+		AfxNewBitmap(dib);
+	}
+}
+
+
+void CImageToolDoc::OnColorCombineHsi()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CColorCombineDlg dlg;
+	dlg.m_strColorSpace = _T("HSI 색상 평면 합치기");
+	if (dlg.DoModal() == IDOK)
+	{
+		CImageToolDoc* pDoc1 = (CImageToolDoc*)dlg.m_pDoc1;
+		CImageToolDoc* pDoc2 = (CImageToolDoc*)dlg.m_pDoc2;
+		CImageToolDoc* pDoc3 = (CImageToolDoc*)dlg.m_pDoc3;
+
+		CONVERT_DIB_TO_BYTEIMAGE(pDoc1->m_Dib, imgH)
+		CONVERT_DIB_TO_BYTEIMAGE(pDoc2->m_Dib, imgS)
+		CONVERT_DIB_TO_BYTEIMAGE(pDoc3->m_Dib, imgI)
+
+		IppRgbImage imgColor;
+		if (IppColorCombineHSI(imgH, imgS, imgI, imgColor) == false)
+		{
+			AfxMessageBox(_T("영상의 크기가 다릅니다!"));
+			return;
+		}
+
+		CONVERT_IMAGE_TO_DIB(imgColor, dib)
+
+		AfxPrintInfo(_T("[색상 평면 합치기/HSI] 입력 영상: H: %s, S: %s, I: %s"),
+			pDoc1->GetTitle(), pDoc2->GetTitle(), pDoc3->GetTitle());
+		AfxNewBitmap(dib);
+	}
+}
+
+
+void CImageToolDoc::OnColorCombineYuv()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CColorCombineDlg dlg;
+	dlg.m_strColorSpace = _T("YUV 색상 평면 합치기");
+	if (dlg.DoModal() == IDOK)
+	{
+		CImageToolDoc* pDoc1 = (CImageToolDoc*)dlg.m_pDoc1;
+		CImageToolDoc* pDoc2 = (CImageToolDoc*)dlg.m_pDoc2;
+		CImageToolDoc* pDoc3 = (CImageToolDoc*)dlg.m_pDoc3;
+
+		CONVERT_DIB_TO_BYTEIMAGE(pDoc1->m_Dib, imgY)
+		CONVERT_DIB_TO_BYTEIMAGE(pDoc2->m_Dib, imgU)
+		CONVERT_DIB_TO_BYTEIMAGE(pDoc3->m_Dib, imgV)
+
+		IppRgbImage imgColor;
+		if (IppColorCombineYUV(imgY, imgU, imgV, imgColor) == false)
+		{
+			AfxMessageBox(_T("영상의 크기가 다릅니다!"));
+			return;
+		}
+
+		CONVERT_IMAGE_TO_DIB(imgColor, dib)
+
+		AfxPrintInfo(_T("[색상 평면 합치기/YUV] 입력 영상: Y: %s, U: %s, V: %s"),
+			pDoc1->GetTitle(), pDoc2->GetTitle(), pDoc3->GetTitle());
+		AfxNewBitmap(dib);
+	}
 }
