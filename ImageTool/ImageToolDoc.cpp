@@ -158,7 +158,15 @@ BOOL CImageToolDoc::OnNewDocument()
 
 void CImageToolDoc::Serialize(CArchive& ar)
 {
-	m_MyDataList.Serialize(ar);
+	if (ar.IsStoring())
+	{
+		// TODO: 여기에 저장 코드를 추가합니다.
+	}
+	else
+	{
+		// TODO: 여기에 로딩 코드를 추가합니다.
+	}
+	/*m_MyDataList.Serialize(ar);
 	m_MyStickList.Serialize(ar);
 	m_MyEllipseList.Serialize(ar);
 	m_MyRectList.Serialize(ar);
@@ -167,7 +175,7 @@ void CImageToolDoc::Serialize(CArchive& ar)
 	m_MyRightTriangleList.Serialize(ar);
 	m_MyRhombusList.Serialize(ar);
 	m_MyEraseList.Serialize(ar);
-	m_MyFillList.Serialize(ar);
+	m_MyFillList.Serialize(ar);*/
 }
 
 #ifdef SHARED_HANDLERS
@@ -752,65 +760,65 @@ void CImageToolDoc::OnImageFlip()
 }
 
 
-void CImageToolDoc::DeleteContents()
-{
-	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
-	// IsEmpty() 함수를 호출하여 리스트가 비었을 때까지 while 루프를 돌면서
-	// RemoveHead() 함수를 호출한다.
-	while (!m_MyDataList.IsEmpty())
-	{
-		m_MyDataList.RemoveHead();
-	}
-
-	while (!m_MyStickList.IsEmpty())
-	{
-		m_MyStickList.RemoveHead();
-	}
-
-	while (!m_MyEllipseList.IsEmpty())
-	{
-		m_MyEllipseList.RemoveHead();
-	}
-
-	while (!m_MyRectList.IsEmpty())
-	{
-		m_MyRectList.RemoveHead();
-	}
-
-	while (!m_MyRoundRectList.IsEmpty())
-	{
-		m_MyRoundRectList.RemoveHead();
-	}
-
-	while (!m_MyTriangleList.IsEmpty())
-	{
-		m_MyTriangleList.RemoveHead();
-	}
-
-	while (!m_MyRightTriangleList.IsEmpty())
-	{
-		m_MyRightTriangleList.RemoveHead();
-	}
-
-	while (!m_MyRhombusList.IsEmpty())
-	{
-		m_MyRhombusList.RemoveHead();
-	}
-
-	while (!m_MyPentagonList.IsEmpty())
-	{
-		m_MyPentagonList.RemoveHead();
-	}
-
-	while (!m_MyEraseList.IsEmpty())
-	{
-		m_MyEraseList.RemoveHead();
-	}
-
-	while (!m_MyFillList.IsEmpty())
-	{
-		m_MyFillList.RemoveHead();
-	}
-	UpdateAllViews(NULL);
-	CDocument::DeleteContents();
-}
+//void CImageToolDoc::DeleteContents()
+//{
+//	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
+//	// IsEmpty() 함수를 호출하여 리스트가 비었을 때까지 while 루프를 돌면서
+//	// RemoveHead() 함수를 호출한다.
+//	while (!m_MyDataList.IsEmpty())
+//	{
+//		m_MyDataList.RemoveHead();
+//	}
+//
+//	while (!m_MyStickList.IsEmpty())
+//	{
+//		m_MyStickList.RemoveHead();
+//	}
+//
+//	while (!m_MyEllipseList.IsEmpty())
+//	{
+//		m_MyEllipseList.RemoveHead();
+//	}
+//
+//	while (!m_MyRectList.IsEmpty())
+//	{
+//		m_MyRectList.RemoveHead();
+//	}
+//
+//	while (!m_MyRoundRectList.IsEmpty())
+//	{
+//		m_MyRoundRectList.RemoveHead();
+//	}
+//
+//	while (!m_MyTriangleList.IsEmpty())
+//	{
+//		m_MyTriangleList.RemoveHead();
+//	}
+//
+//	while (!m_MyRightTriangleList.IsEmpty())
+//	{
+//		m_MyRightTriangleList.RemoveHead();
+//	}
+//
+//	while (!m_MyRhombusList.IsEmpty())
+//	{
+//		m_MyRhombusList.RemoveHead();
+//	}
+//
+//	while (!m_MyPentagonList.IsEmpty())
+//	{
+//		m_MyPentagonList.RemoveHead();
+//	}
+//
+//	while (!m_MyEraseList.IsEmpty())
+//	{
+//		m_MyEraseList.RemoveHead();
+//	}
+//
+//	while (!m_MyFillList.IsEmpty())
+//	{
+//		m_MyFillList.RemoveHead();
+//	}
+//	UpdateAllViews(NULL);
+//	CDocument::DeleteContents();
+//}

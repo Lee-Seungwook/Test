@@ -103,5 +103,5 @@ public:
 	afx_msg void OnImageRotate();
 	afx_msg void OnImageMirror();
 	afx_msg void OnImageFlip();
-	virtual void DeleteContents();
+//	virtual void DeleteContents();
 };
