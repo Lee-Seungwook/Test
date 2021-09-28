@@ -270,13 +270,31 @@
 #define ID_SEGMENT_LABELING             32940
 #define ID_32941                        32941
 #define ID_CONTOUR_TACING               32942
+#define ID_32943                        32943
+#define ID_32944                        32944
+#define ID_32945                        32945
+#define ID_32946                        32946
+#define ID_32947                        32947
+#define ID_MORPOLOGY_EROSION            32948
+#define ID_MORPOLOGY_DILATION           32949
+#define ID_MORPOLOGY_OPENING            32950
+#define ID_MORPOLOGY_CLOSING            32951
+#define ID_32952                        32952
+#define ID_32953                        32953
+#define ID_32954                        32954
+#define ID_32955                        32955
+#define ID_32956                        32956
+#define ID_GRAYMORPH_EROSION            32957
+#define ID_GRAYMORPH_DILATION           32958
+#define ID_GRAYMORPH_OPENING            32959
+#define ID_GRAYMORPH_CLOSING            32960
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        366
-#define _APS_NEXT_COMMAND_VALUE         32943
+#define _APS_NEXT_COMMAND_VALUE         32961
 #define _APS_NEXT_CONTROL_VALUE         1039
 #define _APS_NEXT_SYMED_VALUE           311
 #endif

@@ -133,4 +133,12 @@ public:
 	afx_msg void OnSegmentBinarization();
 	afx_msg void OnSegmentLabeling();
 	afx_msg void OnContourTacing();
+	afx_msg void OnMorpologyErosion();
+	afx_msg void OnMorpologyDilation();
+	afx_msg void OnMorpologyOpening();
+	afx_msg void OnMorpologyClosing();
+	afx_msg void OnGraymorphErosion();
+	afx_msg void OnGraymorphDilation();
+	afx_msg void OnGraymorphOpening();
+	afx_msg void OnGraymorphClosing();
 };

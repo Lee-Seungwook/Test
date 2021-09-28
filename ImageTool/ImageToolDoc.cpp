@@ -159,6 +159,14 @@ ON_UPDATE_COMMAND_UI(ID_COLOR_HISTO, &CImageToolDoc::OnUpdateColorHisto)
 ON_COMMAND(ID_SEGMENT_BINARIZATION, &CImageToolDoc::OnSegmentBinarization)
 ON_COMMAND(ID_SEGMENT_LABELING, &CImageToolDoc::OnSegmentLabeling)
 ON_COMMAND(ID_CONTOUR_TACING, &CImageToolDoc::OnContourTacing)
+ON_COMMAND(ID_MORPOLOGY_EROSION, &CImageToolDoc::OnMorpologyErosion)
+ON_COMMAND(ID_MORPOLOGY_DILATION, &CImageToolDoc::OnMorpologyDilation)
+ON_COMMAND(ID_MORPOLOGY_OPENING, &CImageToolDoc::OnMorpologyOpening)
+ON_COMMAND(ID_MORPOLOGY_CLOSING, &CImageToolDoc::OnMorpologyClosing)
+ON_COMMAND(ID_GRAYMORPH_EROSION, &CImageToolDoc::OnGraymorphErosion)
+ON_COMMAND(ID_GRAYMORPH_DILATION, &CImageToolDoc::OnGraymorphDilation)
+ON_COMMAND(ID_GRAYMORPH_OPENING, &CImageToolDoc::OnGraymorphOpening)
+ON_COMMAND(ID_GRAYMORPH_CLOSING, &CImageToolDoc::OnGraymorphClosing)
 END_MESSAGE_MAP()
 
 
@@ -1561,5 +1569,109 @@ void CImageToolDoc::OnContourTacing()
 	CONVERT_IMAGE_TO_DIB(imgContour, dib)
 
 	AfxPrintInfo(_T("[외곽선 추적] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnMorpologyErosion()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+	IppByteImage imgDst;
+	IppMorphologyErosion(img, imgDst);
+	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+	AfxPrintInfo(_T("[이진 모폴로지 / 침식] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnMorpologyDilation()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+	IppByteImage imgDst;
+	IppMorphologyDilation(img, imgDst);
+	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+	AfxPrintInfo(_T("[이진 모폴로지 / 팽창] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnMorpologyOpening()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+	IppByteImage imgDst;
+	IppMorphologyOpening(img, imgDst);
+	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+	AfxPrintInfo(_T("[이진 모폴로지 / 열기] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnMorpologyClosing()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+	IppByteImage imgDst;
+	IppMorphologyClosing(img, imgDst);
+	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+	AfxPrintInfo(_T("[이진 모폴로지 / 닫기] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnGraymorphErosion()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+	IppByteImage imgDst;
+	IppMorphologyGrayErosion(img, imgDst);
+	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+	AfxPrintInfo(_T("[그레이스케일 모폴로지 / 침식] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnGraymorphDilation()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+	IppByteImage imgDst;
+	IppMorphologyGrayDilation(img, imgDst);
+	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+	AfxPrintInfo(_T("[그레이스케일 모폴로지 / 팽창] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnGraymorphOpening()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+	IppByteImage imgDst;
+	IppMorphologyGrayOpening(img, imgDst);
+	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+	AfxPrintInfo(_T("[그레이스케일 모폴로지 / 열기] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnGraymorphClosing()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+	IppByteImage imgDst;
+	IppMorphologyGrayClosing(img, imgDst);
+	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+	AfxPrintInfo(_T("[그레이스케일 모폴로지 / 닫기] 입력 영상 : %s"), GetTitle());
 	AfxNewBitmap(dib);
 }
