@@ -126,4 +126,8 @@ public:
 	afx_msg void OnColorCombineRgb();
 	afx_msg void OnColorCombineHsi();
 	afx_msg void OnColorCombineYuv();
+	afx_msg void OnColorEdge();
+	afx_msg void OnUpdateColorEdge(CCmdUI *pCmdUI);
+	afx_msg void OnColorHisto();
+	afx_msg void OnUpdateColorHisto(CCmdUI *pCmdUI);
 };

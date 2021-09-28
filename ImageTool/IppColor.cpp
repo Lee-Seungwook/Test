@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "IppColor.h"
+#include "IppFeature.h"
 
 const double PI = 3.14159265358979323846;
 
@@ -285,4 +286,37 @@ bool IppColorCombineYUV(IppByteImage& imgY, IppByteImage& imgU, IppByteImage& im
 	}
 
 	return true;
+}
+
+void IppColorEdge(IppRgbImage& imgSrc, IppByteImage& imgEdge)
+{
+	IppByteImage imgY, imgU, imgV;
+	IppColorSplitYUV(imgSrc, imgY, imgU, imgV);
+
+	IppByteImage edgeY, edgeU, edgeV;
+	// 프리윗 엣지 검출
+	IppEdgePrewitt(imgY, edgeY);
+	IppEdgePrewitt(imgU, edgeU);
+	IppEdgePrewitt(imgV, edgeV);
+
+	int w = imgSrc.GetWidth();
+	int h = imgSrc.GetHeight();
+	int size = imgSrc.GetSize();
+
+	imgEdge.CreateImage(w, h);
+	BYTE* pEdge = imgEdge.GetPixels();
+
+	BYTE* pY = edgeY.GetPixels();
+	BYTE* pU = edgeU.GetPixels();
+	BYTE* pV = edgeV.GetPixels();
+
+	// 유클라디언 거리 구하기, 0.5의 가중치를 부여
+	double dist;
+	for (int i = 0; i < size; i++)
+	{
+		dist = (pY[i] * pY[i]) +
+			(0.5 * pU[i]) * (0.5 * pU[i]) +
+			(0.5 * pV[i]) * (0.5 * pV[i]);
+		pEdge[i] = static_cast<BYTE>(limit(sqrt(dist)));
+	}
 }
