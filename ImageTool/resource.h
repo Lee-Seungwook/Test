@@ -51,6 +51,7 @@
 #define IDD_FREQUENCY_FILTERING         355
 #define IDD_CANNY_EDGE                  358
 #define IDD_HARRIS_CORNER               360
+#define IDD_COLOR_COMBINE               362
 #define IDC_WIDTH                       1000
 #define IDC_HEIGHT                      1001
 #define IDC_IMAGE_TYPE                  1002
@@ -76,6 +77,7 @@
 #define IDC_CUTOFF_FREQ                 1010
 #define IDC_CANNY_SIGMA                 1010
 #define IDC_HARRIS_THRESHOLD            1010
+#define IDC_COLOR_SPACE                 1010
 #define IDC_FUNCTION5                   1011
 #define IDC_ALPHA_SLIDER                1011
 #define IDC_DIFFUSION_ITER              1011
@@ -111,6 +113,7 @@
 #define IDC_RADIUS_RANGE                1034
 #define IDC_RADIO_DASHDOTDOT            1035
 #define IDC_RADIO_NULL                  1036
+#define IDC_COMBO_IMAGE3                1037
 #define ID_32771                        32771
 #define ID_WINDOW_DUPLICATE             32772
 #define ID_32773                        32773
@@ -239,14 +242,28 @@
 #define ID_HARRIS_CORNER                32916
 #define ID_32917                        32917
 #define ID_COLOR_GRAYSCALE              32918
+#define ID_32919                        32919
+#define ID_32920                        32920
+#define ID_32921                        32921
+#define ID_32922                        32922
+#define ID_COLOR_SPLIT_RGB              32923
+#define ID_COLOR_SPLIT_HSI              32924
+#define ID_COLOR_SPLIT_YUV              32925
+#define ID_32926                        32926
+#define ID_32927                        32927
+#define ID_32928                        32928
+#define ID_32929                        32929
+#define ID_COLOR_COMBINE_RGB            32930
+#define ID_COLOR_COMBINE_HSI            32931
+#define ID_COLOR_COMBINE_YUV            32932
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        362
-#define _APS_NEXT_COMMAND_VALUE         32919
-#define _APS_NEXT_CONTROL_VALUE         1035
+#define _APS_NEXT_RESOURCE_VALUE        364
+#define _APS_NEXT_COMMAND_VALUE         32933
+#define _APS_NEXT_CONTROL_VALUE         1036
 #define _APS_NEXT_SYMED_VALUE           311
 #endif
 #endif

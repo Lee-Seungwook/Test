@@ -195,4 +195,94 @@ void IppColorSplitYUV(IppRgbImage& imgColor, IppByteImage& imgY, IppByteImage& i
 	{
 		RGB_TO_YUV(pColor[i].r, pColor[i].g, pColor[i].b, pY[i], pU[i], pV[i]);
 	}
-} // p.585
+} 
+
+// RGB 색상 평면 합치기
+bool IppColorCombineRGB(IppByteImage& imgR, IppByteImage& imgG, IppByteImage& imgB, IppRgbImage& imgColor)
+{
+	int w = imgR.GetWidth();
+	int h = imgR.GetHeight();
+	int size = imgR.GetSize();
+
+	// 같은 그림이 아닐경우 FALSE를 반환
+	if (imgG.GetWidth() != w || imgG.GetHeight() != h ||
+		imgB.GetWidth() != w || imgB.GetHeight() != h)
+		return FALSE;
+
+	imgColor.CreateImage(w, h);
+
+	BYTE* pR = imgR.GetPixels();
+	BYTE* pG = imgG.GetPixels();
+	BYTE* pB = imgB.GetPixels();
+	RGBBYTE* pColor = imgColor.GetPixels();
+
+	for (int i = 0; i < size; i++)
+	{
+		pColor[i].r = pR[i];
+		pColor[i].g = pG[i];
+		pColor[i].b = pB[i];
+	}
+
+	return true;
+}
+
+// HSI 색상 평면 합치기
+bool IppColorCombineHSI(IppByteImage& imgH, IppByteImage& imgS, IppByteImage& imgI, IppRgbImage& imgColor)
+{
+	int w = imgH.GetWidth();
+	int h = imgH.GetHeight();
+	int size = imgH.GetSize();
+
+	if (imgS.GetWidth() != w || imgS.GetHeight() != h ||
+		imgI.GetWidth() != w || imgI.GetHeight() != h)
+		return false;
+
+	imgColor.CreateImage(w, h);
+
+	BYTE* pH = imgH.GetPixels();
+	BYTE* pS = imgS.GetPixels();
+	BYTE* pI = imgI.GetPixels();
+	RGBBYTE* pColor = imgColor.GetPixels();
+
+	double r, g, b, hh, ss, ii;
+	for (int i = 0; i < size; i++)
+	{
+		hh = pH[i] / 255.;
+		ss = pS[i] / 255.;
+		ii = pI[i] / 255.;
+
+		HSI_TO_RGB(hh, ss, ii, r, g, b); // 트루 컬러 영상으로 출력해야 하기 때문에 변환해준다.
+
+		pColor[i].r = static_cast<BYTE>(limit(r * 255 + 0.5)); 
+		pColor[i].g = static_cast<BYTE>(limit(g * 255 + 0.5));
+		pColor[i].b = static_cast<BYTE>(limit(b * 255 + 0.5));
+	}
+
+	return true;
+}
+
+// YUV 색상 평면 합치기
+bool IppColorCombineYUV(IppByteImage& imgY, IppByteImage& imgU, IppByteImage& imgV, IppRgbImage& imgColor)
+{
+	int w = imgY.GetWidth();
+	int h = imgY.GetHeight();
+	int size = imgY.GetSize();
+
+	if (imgU.GetWidth() != w || imgU.GetHeight() != h ||
+		imgV.GetWidth() != w || imgV.GetHeight() != h)
+		return false;
+
+	imgColor.CreateImage(w, h);
+
+	BYTE* pY = imgY.GetPixels();
+	BYTE* pU = imgU.GetPixels();
+	BYTE* pV = imgV.GetPixels();
+	RGBBYTE* pColor = imgColor.GetPixels();
+
+	for (int i = 0; i < size; i++)
+	{
+		YUV_TO_RGB(pY[i], pU[i], pV[i], pColor[i].r, pColor[i].g, pColor[i].b);
+	}
+
+	return true;
+}
