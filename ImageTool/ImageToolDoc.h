@@ -130,4 +130,7 @@ public:
 	afx_msg void OnUpdateColorEdge(CCmdUI *pCmdUI);
 	afx_msg void OnColorHisto();
 	afx_msg void OnUpdateColorHisto(CCmdUI *pCmdUI);
+	afx_msg void OnSegmentBinarization();
+	afx_msg void OnSegmentLabeling();
+	afx_msg void OnContourTacing();
 };
