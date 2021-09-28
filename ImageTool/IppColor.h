@@ -4,6 +4,10 @@
 
 void IppInverse(IppRgbImage& img);
 
+void IppResizeNearest(IppRgbImage& imgSrc, IppRgbImage& imgDst, int nw, int nh);
+void IppResizeBilinear(IppRgbImage& imgSrc, IppRgbImage& imgDst, int nw, int nh);
+void IppResizeCubic(IppRgbImage& imgSrc, IppRgbImage& imgDst, int nw, int nh);
+
 void RGB_TO_HSI(double R, double G, double B, double& H, double& S, double& I);
 void HSI_TO_RGB(double H, double S, double I, double& R, double& G, double& B);
 

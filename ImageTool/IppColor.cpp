@@ -2,6 +2,7 @@
 
 #include "IppColor.h"
 #include "IppFeature.h"
+#include "IppGeometry.h"
 
 const double PI = 3.14159265358979323846;
 
@@ -16,6 +17,138 @@ void IppInverse(IppRgbImage& img)
 		p[i].g = 255 - p[i].g;
 		p[i].b = 255 - p[i].b;
 	}
+}
+
+void IppResizeNearest(IppRgbImage& imgSrc, IppRgbImage& imgDst, int nw, int nh)
+{
+	int w = imgSrc.GetWidth();
+	int h = imgSrc.GetHeight();
+
+	imgDst.CreateImage(nw, nh);
+
+	RGBBYTE** pSrc = imgSrc.GetPixels2D();
+	RGBBYTE** pDst = imgDst.GetPixels2D();
+
+	int i, j, x, y;
+	double rx, ry;
+	for (j = 0; j < nh; j++)
+		for (i = 0; i < nw; i++)
+		{
+			rx = static_cast<double>(w - 1) * i / (nw - 1); // 확대 비율로 나누어줌
+			ry = static_cast<double>(h - 1) * j / (nh - 1);
+			x = static_cast<int>(rx + 0.5); // 정수 값 변환 (반올림 하여), 참조할 원본 영상 좌표 
+			y = static_cast<int>(ry + 0.5);
+
+			if (x >= w) x = w - 1;
+			if (y >= h) y = h - 1;
+
+			pDst[j][i].r = pSrc[y][x].r;
+			pDst[j][i].g = pSrc[y][x].g;
+			pDst[j][i].b = pSrc[y][x].b;
+		}
+}
+
+void IppResizeBilinear(IppRgbImage& imgSrc, IppRgbImage& imgDst, int nw, int nh)
+{
+	int w = imgSrc.GetWidth();
+	int h = imgSrc.GetHeight();
+
+	imgDst.CreateImage(nw, nh);
+
+	RGBBYTE** pSrc = imgSrc.GetPixels2D();
+	RGBBYTE** pDst = imgDst.GetPixels2D();
+
+	int i, j, x1, y1, x2, y2;
+	double rx, ry, p, q, Rvalue, Gvalue, Bvalue;
+
+	for (j = 0; j < nh; j++)
+		for (i = 0; i < nw; i++)
+		{
+			rx = static_cast<double>(w - 1) * i / (nw - 1); // 확대 비율로 나누어줌
+			ry = static_cast<double>(h - 1) * j / (nh - 1);
+
+			x1 = static_cast<int>(rx); // rx, ry 좌표를
+			y1 = static_cast<int>(ry);
+
+			x2 = x1 + 1; if (x2 == w) x2 = w - 1; // 같은 경우에는 맨 가장자리의 픽셀 값을 참조하도록 한다.
+			y2 = y1 + 1; if (y2 == h) y2 = h - 1; // 둘러싼 4개의 픽셀 좌표를 나타냄
+
+			p = rx - x1;
+			q = ry - y1;
+
+			Rvalue = (1. - p) * (1. - q) * pSrc[y1][x1].r + p * (1. - q) * pSrc[y1][x2].r
+				+ (1. - p) * q * pSrc[y2][x1].r + p * q * pSrc[y2][x2].r; // 양선형 보간법을 적용하여 픽셀 값을 설정
+
+			Gvalue = (1. - p) * (1. - q) * pSrc[y1][x1].g + p * (1. - q) * pSrc[y1][x2].g
+				+ (1. - p) * q * pSrc[y2][x1].g + p * q * pSrc[y2][x2].g; // 양선형 보간법을 적용하여 픽셀 값을 설정
+
+			Bvalue = (1. - p) * (1. - q) * pSrc[y1][x1].b + p * (1. - q) * pSrc[y1][x2].b
+				+ (1. - p) * q * pSrc[y2][x1].b + p * q * pSrc[y2][x2].b; // 양선형 보간법을 적용하여 픽셀 값을 설정
+
+			pDst[j][i].r = static_cast<BYTE>(limit(Rvalue + .5)); // 반올림하여 픽셀 값으로 저장
+			pDst[j][i].g = static_cast<BYTE>(limit(Gvalue + .5)); // 반올림하여 픽셀 값으로 저장
+			pDst[j][i].b = static_cast<BYTE>(limit(Bvalue + .5)); // 반올림하여 픽셀 값으로 저장
+		}
+}
+
+void IppResizeCubic(IppRgbImage& imgSrc, IppRgbImage& imgDst, int nw, int nh)
+{
+	int w = imgSrc.GetWidth();
+	int h = imgSrc.GetHeight();
+
+	imgDst.CreateImage(nw, nh);
+
+	RGBBYTE** pSrc = imgSrc.GetPixels2D();
+	RGBBYTE** pDst = imgDst.GetPixels2D();
+
+	int i, j, x1, x2, x3, x4, y1, y2, y3, y4; // 각 행의 4개의 점 총 16개의 점의 좌표를 저장할 x1 ~ y4
+	double Rv1, Rv2, Rv3, Rv4, Rv;
+	double Gv1, Gv2, Gv3, Gv4, Gv;
+	double Bv1, Bv2, Bv3, Bv4, Bv;
+	double rx, ry, p, q;
+
+	for (j = 0; j < nh; j++)
+		for (i = 0; i < nw; i++)
+		{
+			rx = static_cast<double>(w - 1) * i / (nw - 1); // 확대 비율로 나누어줌
+			ry = static_cast<double>(h - 1) * j / (nh - 1);
+
+			x2 = static_cast<int>(rx);
+			x1 = x2 - 1; if (x1 < 0) x1 = 0;
+			x3 = x2 + 1; if (x3 >= w) x3 = w - 1;
+			x4 = x2 + 2; if (x4 >= w) x4 = w - 1;
+			p = rx - x2;
+
+			y2 = static_cast<int>(ry);
+			y1 = y2 - 1; if (y1 < 0) y1 = 0;
+			y3 = y2 + 1; if (y3 >= h) y3 = h - 1;
+			y4 = y2 + 2; if (y4 >= h) y4 = h - 1;
+			q = ry - y2;
+
+			// 각 행의 점의 좌표를 계산하여 한 개의 점 v... 을 설정
+			Rv1 = cubic_interpolation(pSrc[y1][x1].r, pSrc[y1][x2].r, pSrc[y1][x3].r, pSrc[y1][x4].r, p);
+			Rv2 = cubic_interpolation(pSrc[y2][x1].r, pSrc[y2][x2].r, pSrc[y2][x3].r, pSrc[y2][x4].r, p);
+			Rv3 = cubic_interpolation(pSrc[y3][x1].r, pSrc[y3][x2].r, pSrc[y3][x3].r, pSrc[y3][x4].r, p);
+			Rv4 = cubic_interpolation(pSrc[y4][x1].r, pSrc[y4][x2].r, pSrc[y4][x3].r, pSrc[y4][x4].r, p);
+
+			Gv1 = cubic_interpolation(pSrc[y1][x1].g, pSrc[y1][x2].g, pSrc[y1][x3].g, pSrc[y1][x4].g, p);
+			Gv2 = cubic_interpolation(pSrc[y2][x1].g, pSrc[y2][x2].g, pSrc[y2][x3].g, pSrc[y2][x4].g, p);
+			Gv3 = cubic_interpolation(pSrc[y3][x1].g, pSrc[y3][x2].g, pSrc[y3][x3].g, pSrc[y3][x4].g, p);
+			Gv4 = cubic_interpolation(pSrc[y4][x1].g, pSrc[y4][x2].g, pSrc[y4][x3].g, pSrc[y4][x4].g, p);
+
+			Bv1 = cubic_interpolation(pSrc[y1][x1].b, pSrc[y1][x2].b, pSrc[y1][x3].b, pSrc[y1][x4].b, p);
+			Bv2 = cubic_interpolation(pSrc[y2][x1].b, pSrc[y2][x2].b, pSrc[y2][x3].b, pSrc[y2][x4].b, p);
+			Bv3 = cubic_interpolation(pSrc[y3][x1].b, pSrc[y3][x2].b, pSrc[y3][x3].b, pSrc[y3][x4].b, p);
+			Bv4 = cubic_interpolation(pSrc[y4][x1].b, pSrc[y4][x2].b, pSrc[y4][x3].b, pSrc[y4][x4].b, p);
+
+			Rv = cubic_interpolation(Rv1, Rv2, Rv3, Rv4, q); // 각 행의 보간된 점들을 다시 보간하여 최종적으로 보간된 값을 구한다.
+			Gv = cubic_interpolation(Gv1, Gv2, Gv3, Gv4, q); // 각 행의 보간된 점들을 다시 보간하여 최종적으로 보간된 값을 구한다.
+			Bv = cubic_interpolation(Bv1, Bv2, Bv3, Bv4, q); // 각 행의 보간된 점들을 다시 보간하여 최종적으로 보간된 값을 구한다.
+
+			pDst[j][i].r = static_cast<BYTE>(limit(Rv + 0.5)); // 반올림하여 점수형을 변환하여 픽셀값으로 지정
+			pDst[j][i].g = static_cast<BYTE>(limit(Gv + 0.5)); // 반올림하여 점수형을 변환하여 픽셀값으로 지정
+			pDst[j][i].b = static_cast<BYTE>(limit(Bv + 0.5)); // 반올림하여 점수형을 변환하여 픽셀값으로 지정
+		}
 }
 
 //-------------------------------------------------------------------------

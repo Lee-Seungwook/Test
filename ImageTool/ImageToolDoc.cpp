@@ -782,22 +782,46 @@ void CImageToolDoc::OnImageResize()
 	CResizeDlg dlg;
 	dlg.m_nOldWidth = m_Dib.GetWidth();
 	dlg.m_nOldHeight = m_Dib.GetHeight();
-	if (dlg.DoModal() == IDOK)
+	if (m_Dib.GetBitCount() == 8)
 	{
-		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
-		IppByteImage imgDst;
-		switch (dlg.m_nInterpolation)
+		if (dlg.DoModal() == IDOK)
 		{
-		case 0: IppResizeNearest(imgSrc, imgDst, dlg.m_nNewWidth, dlg.m_nNewHeight); break;
-		case 1: IppResizeBilinear(imgSrc, imgDst, dlg.m_nNewWidth, dlg.m_nNewHeight); break;
-		case 2: IppResizeCubic(imgSrc, imgDst, dlg.m_nNewWidth, dlg.m_nNewHeight); break;
-		}
-		CONVERT_IMAGE_TO_DIB(imgDst, dib)
+			CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+				IppByteImage imgDst;
+			switch (dlg.m_nInterpolation)
+			{
+			case 0: IppResizeNearest(imgSrc, imgDst, dlg.m_nNewWidth, dlg.m_nNewHeight); break;
+			case 1: IppResizeBilinear(imgSrc, imgDst, dlg.m_nNewWidth, dlg.m_nNewHeight); break;
+			case 2: IppResizeCubic(imgSrc, imgDst, dlg.m_nNewWidth, dlg.m_nNewHeight); break;
+			}
+			CONVERT_IMAGE_TO_DIB(imgDst, dib)
 
-		TCHAR* interpolation[] = { _T("최근방 이웃 보간법"), _T("양선형 보간법"), _T("3차 회선 보간법") };
-		AfxPrintInfo(_T("[크기 변환] 입력 영상 : %s, , 새 가로 크기 : %d, 새 세로 크기 : %d, 보간법 : %s")
-			, GetTitle(), dlg.m_nNewWidth, dlg.m_nNewHeight, interpolation[dlg.m_nInterpolation]);
-		AfxNewBitmap(dib);
+				TCHAR* interpolation[] = { _T("최근방 이웃 보간법"), _T("양선형 보간법"), _T("3차 회선 보간법") };
+			AfxPrintInfo(_T("[크기 변환] 입력 영상 : %s, , 새 가로 크기 : %d, 새 세로 크기 : %d, 보간법 : %s")
+				, GetTitle(), dlg.m_nNewWidth, dlg.m_nNewHeight, interpolation[dlg.m_nInterpolation]);
+			AfxNewBitmap(dib);
+		}
+	}
+
+	if (m_Dib.GetBitCount() == 24)
+	{
+		if (dlg.DoModal() == IDOK)
+		{
+			CONVERT_DIB_TO_RGBIMAGE(m_Dib, imgSrc)
+				IppRgbImage imgDst;
+			switch (dlg.m_nInterpolation)
+			{
+			case 0: IppResizeNearest(imgSrc, imgDst, dlg.m_nNewWidth, dlg.m_nNewHeight); break;
+			case 1: IppResizeBilinear(imgSrc, imgDst, dlg.m_nNewWidth, dlg.m_nNewHeight); break;
+			case 2: IppResizeCubic(imgSrc, imgDst, dlg.m_nNewWidth, dlg.m_nNewHeight); break;
+			}
+			CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+				TCHAR* interpolation[] = { _T("최근방 이웃 보간법"), _T("양선형 보간법"), _T("3차 회선 보간법") };
+			AfxPrintInfo(_T("[크기 변환] 입력 영상 : %s, , 새 가로 크기 : %d, 새 세로 크기 : %d, 보간법 : %s")
+				, GetTitle(), dlg.m_nNewWidth, dlg.m_nNewHeight, interpolation[dlg.m_nInterpolation]);
+			AfxNewBitmap(dib);
+		}
 	}
 }
 
