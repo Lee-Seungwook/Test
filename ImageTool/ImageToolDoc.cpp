@@ -514,12 +514,22 @@ void CImageToolDoc::OnViewHistogram()
 void CImageToolDoc::OnHistoStretching()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
-	IppHistogramStretching(img);
-	CONVERT_IMAGE_TO_DIB(img, dib)
-
-	AfxPrintInfo(_T("[히스토그램 스트레칭] 입력 영상 : %s"), GetTitle());
-	AfxNewBitmap(dib);
+	if (m_Dib.GetBitCount() == 8)
+	{
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+		IppHistogramStretching(img);
+		CONVERT_IMAGE_TO_DIB(img, dib)
+		AfxPrintInfo(_T("[히스토그램 스트레칭] 입력 영상 : %s"), GetTitle());
+		AfxNewBitmap(dib);
+	}
+	else if (m_Dib.GetBitCount() == 24)
+	{
+		CONVERT_DIB_TO_RGBIMAGE(m_Dib, img)
+		IppHistogramStretching(img);
+		CONVERT_IMAGE_TO_DIB(img, dib)
+		AfxPrintInfo(_T("[히스토그램 스트레칭] 입력 영상 : %s"), GetTitle());
+		AfxNewBitmap(dib);
+	}
 }
 
 
@@ -537,13 +547,17 @@ void CImageToolDoc::OnHistoEqualization()
 	}
 	else if (m_Dib.GetBitCount() == 24)
 	{
-		CONVERT_DIB_TO_RGBIMAGE(m_Dib, img)
+		/*CONVERT_DIB_TO_RGBIMAGE(m_Dib, img)
 		IppByteImage imgY, imgU, imgV;
 		IppColorSplitYUV(img, imgY, imgU, imgV);
 		IppHistogramEqualization(imgY);
 		IppRgbImage imgRes;
 		IppColorCombineYUV(imgY, imgU, imgV, imgRes);
-		CONVERT_IMAGE_TO_DIB(imgRes, dib);
+		CONVERT_IMAGE_TO_DIB(imgRes, dib);*/
+
+		CONVERT_DIB_TO_RGBIMAGE(m_Dib, img)
+		IppHistogramEqualization(img);
+		CONVERT_IMAGE_TO_DIB(img, dib)
 
 		AfxPrintInfo(_T("[히스토그램 균등화] 입력 영상 : %s"), GetTitle());
 		AfxNewBitmap(dib);
@@ -560,32 +574,66 @@ void CImageToolDoc::OnArithmeticLogical()
 		CImageToolDoc* pDoc1 = (CImageToolDoc*)dlg.m_pDoc1;
 		CImageToolDoc* pDoc2 = (CImageToolDoc*)dlg.m_pDoc2;
 
-		CONVERT_DIB_TO_BYTEIMAGE(pDoc1->m_Dib, img1)
-		CONVERT_DIB_TO_BYTEIMAGE(pDoc2->m_Dib, img2)
-		IppByteImage img3;
-
-		bool ret = false;
-
-		switch (dlg.m_nFunction) // 라디오 버튼에 따름
+		if (m_Dib.GetBitCount() == 8)
 		{
-		case 0: ret = IppAdd(img1, img2, img3); break;
-		case 1: ret = IppSub(img1, img2, img3); break;
-		case 2: ret = IppAve(img1, img2, img3); break;
-		case 3: ret = IppDiff(img1, img2, img3); break;
-		case 4: ret = IppAND(img1, img2, img3); break;
-		case 5: ret = IppOR(img1, img2, img3); break;
-		}
+			CONVERT_DIB_TO_BYTEIMAGE(pDoc1->m_Dib, img1)
+				CONVERT_DIB_TO_BYTEIMAGE(pDoc2->m_Dib, img2)
+				IppByteImage img3;
 
-		if (ret)
-		{
-			CONVERT_IMAGE_TO_DIB(img3, dib) // 영상 출력을 위해 비트맵이미지로 재변환
-			TCHAR* op[] = { _T("덧셈"), _T("뺄셈"), _T("평균"), _T("차이"), _T("논리 AND"), _T("논리 OR") };
-			AfxPrintInfo(_T("[산술 및 논리 연산] [%s] 입력 영상 #1 : %s, 입력 영상 #2 : %s"), op[dlg.m_nFunction], pDoc1->GetTitle()
-			, pDoc2->GetTitle());
-			AfxNewBitmap(dib); // 영상 출력
+			bool ret = false;
+
+			switch (dlg.m_nFunction) // 라디오 버튼에 따름
+			{
+			case 0: ret = IppAdd(img1, img2, img3); break;
+			case 1: ret = IppSub(img1, img2, img3); break;
+			case 2: ret = IppAve(img1, img2, img3); break;
+			case 3: ret = IppDiff(img1, img2, img3); break;
+			case 4: ret = IppAND(img1, img2, img3); break;
+			case 5: ret = IppOR(img1, img2, img3); break;
+			}
+
+
+			if (ret)
+			{
+				CONVERT_IMAGE_TO_DIB(img3, dib) // 영상 출력을 위해 비트맵이미지로 재변환
+					TCHAR* op[] = { _T("덧셈"), _T("뺄셈"), _T("평균"), _T("차이"), _T("논리 AND"), _T("논리 OR") };
+				AfxPrintInfo(_T("[산술 및 논리 연산] [%s] 입력 영상 #1 : %s, 입력 영상 #2 : %s"), op[dlg.m_nFunction], pDoc1->GetTitle()
+					, pDoc2->GetTitle());
+				AfxNewBitmap(dib); // 영상 출력
+			}
+			else
+				AfxMessageBox(_T("영상의 크기가 다릅니다!"));
 		}
-		else
-			AfxMessageBox(_T("영상의 크기가 다릅니다!"));
+		else if (m_Dib.GetBitCount() == 24)
+		{
+			CONVERT_DIB_TO_RGBIMAGE(pDoc1->m_Dib, img1)
+			CONVERT_DIB_TO_RGBIMAGE(pDoc2->m_Dib, img2)
+			IppRgbImage img3;
+
+			bool ret = false;
+
+			switch (dlg.m_nFunction) // 라디오 버튼에 따름
+			{
+			case 0: ret = IppAdd(img1, img2, img3); break;
+			case 1: ret = IppSub(img1, img2, img3); break;
+			case 2: ret = IppAve(img1, img2, img3); break;
+			case 3: ret = IppDiff(img1, img2, img3); break;
+			case 4: ret = IppAND(img1, img2, img3); break;
+			case 5: ret = IppOR(img1, img2, img3); break;
+			}
+
+
+			if (ret)
+			{
+				CONVERT_IMAGE_TO_DIB(img3, dib) // 영상 출력을 위해 비트맵이미지로 재변환
+					TCHAR* op[] = { _T("덧셈"), _T("뺄셈"), _T("평균"), _T("차이"), _T("논리 AND"), _T("논리 OR") };
+				AfxPrintInfo(_T("[산술 및 논리 연산] [%s] 입력 영상 #1 : %s, 입력 영상 #2 : %s"), op[dlg.m_nFunction], pDoc1->GetTitle()
+					, pDoc2->GetTitle());
+				AfxNewBitmap(dib); // 영상 출력
+			}
+			else
+				AfxMessageBox(_T("영상의 크기가 다릅니다!"));
+		}
 	}
 }
 

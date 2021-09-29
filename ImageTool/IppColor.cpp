@@ -3,9 +3,19 @@
 #include "IppColor.h"
 #include "IppFeature.h"
 #include "IppGeometry.h"
+#include "IppImage/IppEnhance.h"
+#include "IppFilter.h"
+
+#include <math.h>
+#include <time.h>
+#include <stdlib.h>
+#include <random>
+#include <algorithm>
 
 const double PI = 3.14159265358979323846;
+const float  PI_F = 3.14159265358979323846f;
 
+// 색상 반전
 void IppInverse(IppRgbImage& img)
 {
 	int size = img.GetSize();
@@ -17,6 +27,265 @@ void IppInverse(IppRgbImage& img)
 		p[i].g = 255 - p[i].g;
 		p[i].b = 255 - p[i].b;
 	}
+}
+
+// 히스토그램
+void IppHistogram(IppRgbImage& img, float Rhisto[256], float Ghisto[256], float Bhisto[256])
+{
+	int size = img.GetSize();
+	RGBBYTE* p = img.GetPixels();
+
+	// 히스토그램 계산
+	int Rcnt[256], Gcnt[256], Bcnt[256];
+	memset(Rcnt, 0, sizeof(int) * 256);
+	memset(Gcnt, 0, sizeof(int) * 256);
+	memset(Bcnt, 0, sizeof(int) * 256);
+	for (int i = 0; i < size; i++)
+	{
+		// 픽셀의 개수를 계산
+		Rcnt[p[i].r]++;
+		Gcnt[p[i].g]++;
+		Bcnt[p[i].b]++;
+	}
+
+	// 히스토그램 정규화(histogram normalization)
+	for (int i = 0; i < 256; i++)
+	{
+		Rhisto[i] = static_cast<float>(Rcnt[i]) / size; // cnt 배열에 저장된 값을 전체 픽셀의 개수로 나누어 정규화된 히스토그램 값을 histo 배열에 저장
+		Ghisto[i] = static_cast<float>(Gcnt[i]) / size;
+		Bhisto[i] = static_cast<float>(Bcnt[i]) / size;
+	}
+}
+
+// 히스토그램 스트레칭
+void IppHistogramStretching(IppRgbImage& img)
+{
+	int size = img.GetSize();
+	RGBBYTE* p = img.GetPixels();
+
+	// 최대, 최소 그레이스케일 값 계산
+	BYTE R_max, R_min, G_max, G_min, B_max, B_min;
+	R_max = R_min = p[0].r; // 초기화
+	G_max = G_min = p[0].g;
+	B_max = B_min = p[0].b;
+	for (int i = 1; i < size; i++)
+	{
+		if (R_max < p[i].r) R_max = p[i].r;
+		if (R_min > p[i].r) R_min = p[i].r;
+
+		if (G_max < p[i].g) R_max = p[i].g;
+		if (G_min > p[i].g) R_min = p[i].g;
+
+		if (B_max < p[i].b) R_max = p[i].b;
+		if (B_min > p[i].b) R_min = p[i].b;
+	}
+
+	if (R_max == R_min || G_max == G_min || B_max == B_min)
+		return;
+
+	// 히스토그램 스트레칭
+	for (int i = 0; i < size; i++)
+	{
+		p[i].r = (p[i].r - R_min) * 255 / (R_max - R_min); // 공식 적용
+		p[i].g = (p[i].g - G_min) * 255 / (G_max - G_min); // 공식 적용
+		p[i].b = (p[i].b - B_min) * 255 / (B_max - B_min); // 공식 적용
+	}
+}
+
+// 히스토그램 균등화
+void IppHistogramEqualization(IppRgbImage& img)
+{
+	int size = img.GetSize();
+	RGBBYTE* p = img.GetPixels();
+
+	// 히스토그램 계산
+	float Rhist[256], Ghist[256], Bhist[256];
+	IppHistogram(img, Rhist, Ghist, Bhist);
+
+	// 히스토그램 누적 함수 계산
+	float Rcdf[256] = { 0, 0, };
+	float Gcdf[256] = { 0, 0, };
+	float Bcdf[256] = { 0, 0, };
+
+	Rcdf[0] = Rhist[0];
+	Gcdf[0] = Ghist[0];
+	Bcdf[0] = Bhist[0];
+
+	for (int i = 1; i < 256; i++)
+	{
+		Rcdf[i] = Rcdf[i - 1] + Rhist[i];
+		Gcdf[i] = Gcdf[i - 1] + Ghist[i];
+		Bcdf[i] = Bcdf[i - 1] + Bhist[i];
+	}
+
+	// 히스토그램 균등화
+	for (int i = 0; i < size; i++)
+	{
+		p[i].r = static_cast<BYTE>(limit(Rcdf[p[i].r] * 255));
+		p[i].g = static_cast<BYTE>(limit(Gcdf[p[i].g] * 255));
+		p[i].b = static_cast<BYTE>(limit(Bcdf[p[i].b] * 255));
+	}
+}
+
+// 덧셈 연산
+bool IppAdd(IppRgbImage& img1, IppRgbImage& img2, IppRgbImage& img3)
+{
+	int w = img1.GetWidth();
+	int h = img1.GetHeight();
+
+	if (w != img2.GetWidth() || h != img2.GetHeight()) // 입력받은 영상의 가로 세로 크기가 동일해야 연산을 수행
+		return false;
+
+	img3.CreateImage(w, h);
+
+	int size = img3.GetSize();
+	RGBBYTE *p1 = img1.GetPixels();
+	RGBBYTE *p2 = img2.GetPixels();
+	RGBBYTE *p3 = img3.GetPixels();
+
+	for (int i = 0; i < size; i++)
+	{
+		p3[i].r = limit(p1[i].r + p2[i].r); // 덧셈 연산 수행
+		p3[i].g = limit(p1[i].g + p2[i].g);
+		p3[i].b = limit(p1[i].b + p2[i].b);
+	}
+
+	return true;
+}
+
+// 뺄셈 연산
+bool IppSub(IppRgbImage& img1, IppRgbImage& img2, IppRgbImage& img3)
+{
+	int w = img1.GetWidth();
+	int h = img1.GetHeight();
+
+	if (w != img2.GetWidth() || h != img2.GetHeight()) // 입력받은 영상의 가로 세로 크기가 동일해야 연산을 수행
+		return false;
+
+	img3.CreateImage(w, h);
+
+	int size = img3.GetSize();
+	RGBBYTE *p1 = img1.GetPixels();
+	RGBBYTE *p2 = img2.GetPixels();
+	RGBBYTE *p3 = img3.GetPixels();
+
+	for (int i = 0; i < size; i++)
+	{
+		p3[i].r = limit(p1[i].r - p2[i].r); // 덧셈 연산 수행
+		p3[i].g = limit(p1[i].g - p2[i].g);
+		p3[i].b = limit(p1[i].b - p2[i].b);
+	}
+
+	return true;
+}
+
+// 평균 연산 수행
+bool IppAve(IppRgbImage& img1, IppRgbImage& img2, IppRgbImage& img3)
+{
+	int w = img1.GetWidth();
+	int h = img1.GetHeight();
+
+	if (w != img2.GetWidth() || h != img2.GetHeight()) // 입력받은 영상의 가로 세로 크기가 동일해야 연산을 수행
+		return false;
+
+	img3.CreateImage(w, h);
+
+	int size = img3.GetSize();
+	RGBBYTE *p1 = img1.GetPixels();
+	RGBBYTE *p2 = img2.GetPixels();
+	RGBBYTE *p3 = img3.GetPixels();
+
+	for (int i = 0; i < size; i++)
+	{
+		p3[i].r = (p1[i].r + p2[i].r) / 2;
+		p3[i].g = (p1[i].g - p2[i].g) / 2;
+		p3[i].b = (p1[i].b - p2[i].b) / 2;
+	}
+
+	return true;
+}
+
+// 차이 계산
+bool IppDiff(IppRgbImage& img1, IppRgbImage& img2, IppRgbImage& img3)
+{
+	int w = img1.GetWidth();
+	int h = img1.GetHeight();
+
+	if (w != img2.GetWidth() || h != img2.GetHeight()) // 입력받은 영상의 가로 세로 크기가 동일해야 연산을 수행
+		return false;
+
+	img3.CreateImage(w, h);
+
+	int size = img3.GetSize();
+	RGBBYTE *p1 = img1.GetPixels();
+	RGBBYTE *p2 = img2.GetPixels();
+	RGBBYTE *p3 = img3.GetPixels();
+
+	int Rdiff, Gdiff, Bdiff;
+	for (int i = 0; i < size; i++)
+	{
+		Rdiff = p1[i].r - p2[i].r; // 영상의 뺄셈 연산 수행
+		Gdiff = p1[i].g - p2[i].g; // 영상의 뺄셈 연산 수행
+		Bdiff = p1[i].b - p2[i].b; // 영상의 뺄셈 연산 수행
+
+		p3[i].r = static_cast<BYTE>((Rdiff >= 0) ? Rdiff : -Rdiff); // 절대값 변환
+		p3[i].g = static_cast<BYTE>((Gdiff >= 0) ? Gdiff : -Gdiff); // 절대값 변환
+		p3[i].b = static_cast<BYTE>((Bdiff >= 0) ? Bdiff : -Bdiff); // 절대값 변환
+	}
+
+	return true;
+}
+
+// AND 연산
+bool IppAND(IppRgbImage& img1, IppRgbImage& img2, IppRgbImage& img3)
+{
+	int w = img1.GetWidth();
+	int h = img1.GetHeight();
+
+	if (w != img2.GetWidth() || h != img2.GetHeight()) // 입력받은 영상의 가로 세로 크기가 동일해야 연산을 수행
+		return false;
+
+	img3.CreateImage(w, h);
+
+	int size = img3.GetSize();
+	RGBBYTE *p1 = img1.GetPixels();
+	RGBBYTE *p2 = img2.GetPixels();
+	RGBBYTE *p3 = img3.GetPixels();
+
+	for (int i = 0; i < size; i++)
+	{
+		p3[i].r = limit(p1[i].r & p2[i].r); // 덧셈 연산 수행
+		p3[i].g = limit(p1[i].g & p2[i].g);
+		p3[i].b = limit(p1[i].b & p2[i].b);
+	}
+
+	return true;
+}
+
+// OR 연산
+bool IppOR(IppRgbImage& img1, IppRgbImage& img2, IppRgbImage& img3)
+{
+	int w = img1.GetWidth();
+	int h = img1.GetHeight();
+
+	if (w != img2.GetWidth() || h != img2.GetHeight()) // 입력받은 영상의 가로 세로 크기가 동일해야 연산을 수행
+		return false;
+
+	img3.CreateImage(w, h);
+
+	int size = img3.GetSize();
+	RGBBYTE *p1 = img1.GetPixels();
+	RGBBYTE *p2 = img2.GetPixels();
+	RGBBYTE *p3 = img3.GetPixels();
+
+	for (int i = 0; i < size; i++)
+	{
+		p3[i].r = limit(p1[i].r | p2[i].r); // 덧셈 연산 수행
+		p3[i].g = limit(p1[i].g | p2[i].g);
+		p3[i].b = limit(p1[i].b | p2[i].b);
+	}
+
+	return true;
 }
 
 void IppResizeNearest(IppRgbImage& imgSrc, IppRgbImage& imgDst, int nw, int nh)

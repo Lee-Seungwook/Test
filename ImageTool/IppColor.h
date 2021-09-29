@@ -4,9 +4,22 @@
 
 void IppInverse(IppRgbImage& img);
 
+void IppHistogram(IppRgbImage& img, float Rhisto[256], float Ghisto[256], float Bhisto[256]);
+void IppHistogramStretching(IppRgbImage& img);
+void IppHistogramEqualization(IppRgbImage& img);
+
+bool IppAdd(IppRgbImage& img1, IppRgbImage& img2, IppRgbImage& img3);
+bool IppSub(IppRgbImage& img1, IppRgbImage& img2, IppRgbImage& img3);
+bool IppAve(IppRgbImage& img1, IppRgbImage& img2, IppRgbImage& img3);
+bool IppDiff(IppRgbImage& img1, IppRgbImage& img2, IppRgbImage& img3);
+bool IppAND(IppRgbImage& img1, IppRgbImage& img2, IppRgbImage& img3);
+bool IppOR(IppRgbImage& img1, IppRgbImage& img2, IppRgbImage& img3);
+
 void IppResizeNearest(IppRgbImage& imgSrc, IppRgbImage& imgDst, int nw, int nh);
 void IppResizeBilinear(IppRgbImage& imgSrc, IppRgbImage& imgDst, int nw, int nh);
 void IppResizeCubic(IppRgbImage& imgSrc, IppRgbImage& imgDst, int nw, int nh);
+
+void IppFilterMean(IppByteImage& imgSrc, IppByteImage& imgDst);
 
 void RGB_TO_HSI(double R, double G, double B, double& H, double& S, double& I);
 void HSI_TO_RGB(double H, double S, double I, double& R, double& G, double& B);
