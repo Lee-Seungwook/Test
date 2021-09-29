@@ -167,6 +167,23 @@ ON_COMMAND(ID_GRAYMORPH_EROSION, &CImageToolDoc::OnGraymorphErosion)
 ON_COMMAND(ID_GRAYMORPH_DILATION, &CImageToolDoc::OnGraymorphDilation)
 ON_COMMAND(ID_GRAYMORPH_OPENING, &CImageToolDoc::OnGraymorphOpening)
 ON_COMMAND(ID_GRAYMORPH_CLOSING, &CImageToolDoc::OnGraymorphClosing)
+ON_UPDATE_COMMAND_UI(ID__FILTER_GAUSSIAN, &CImageToolDoc::OnUpdateFilterGaussian)
+ON_UPDATE_COMMAND_UI(ID_FILTER_DIFFUSION, &CImageToolDoc::OnUpdateFilterDiffusion)
+ON_UPDATE_COMMAND_UI(ID_FREQ_FILTERING, &CImageToolDoc::OnUpdateFreqFiltering)
+ON_UPDATE_COMMAND_UI(ID_FOURIER_DFT, &CImageToolDoc::OnUpdateFourierDft)
+ON_UPDATE_COMMAND_UI(ID_FOURIER_DFTRC, &CImageToolDoc::OnUpdateFourierDftrc)
+ON_UPDATE_COMMAND_UI(ID_FOURIER_FFT, &CImageToolDoc::OnUpdateFourierFft)
+ON_UPDATE_COMMAND_UI(ID_HOUGH_LINE, &CImageToolDoc::OnUpdateHoughLine)
+ON_UPDATE_COMMAND_UI(ID_SEGMENT_LABELING, &CImageToolDoc::OnUpdateSegmentLabeling)
+ON_UPDATE_COMMAND_UI(ID_CONTOUR_TACING, &CImageToolDoc::OnUpdateContourTacing)
+ON_UPDATE_COMMAND_UI(ID_MORPOLOGY_CLOSING, &CImageToolDoc::OnUpdateMorpologyClosing)
+ON_UPDATE_COMMAND_UI(ID_MORPOLOGY_DILATION, &CImageToolDoc::OnUpdateMorpologyDilation)
+ON_UPDATE_COMMAND_UI(ID_MORPOLOGY_EROSION, &CImageToolDoc::OnUpdateMorpologyErosion)
+ON_UPDATE_COMMAND_UI(ID_MORPOLOGY_OPENING, &CImageToolDoc::OnUpdateMorpologyOpening)
+ON_UPDATE_COMMAND_UI(ID_GRAYMORPH_CLOSING, &CImageToolDoc::OnUpdateGraymorphClosing)
+ON_UPDATE_COMMAND_UI(ID_GRAYMORPH_DILATION, &CImageToolDoc::OnUpdateGraymorphDilation)
+ON_UPDATE_COMMAND_UI(ID_GRAYMORPH_EROSION, &CImageToolDoc::OnUpdateGraymorphErosion)
+ON_UPDATE_COMMAND_UI(ID_GRAYMORPH_OPENING, &CImageToolDoc::OnUpdateGraymorphOpening)
 END_MESSAGE_MAP()
 
 
@@ -722,6 +739,12 @@ void CImageToolDoc::OnFilterGaussian()
 	}
 }
 
+void CImageToolDoc::OnUpdateFilterGaussian(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 8);
+}
+
 
 void CImageToolDoc::OnFilterLaplacian()
 {
@@ -896,6 +919,11 @@ void CImageToolDoc::OnFilterDiffusion()
 	}
 }
 
+void CImageToolDoc::OnUpdateFilterDiffusion(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 8);
+}
 
 void CImageToolDoc::OnImageTranslation()
 {
@@ -1478,29 +1506,61 @@ void CImageToolDoc::OnHarrisCorner()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	CHarrisCornerDlg dlg;
-	if (dlg.DoModal() == IDOK)
+	if (m_Dib.GetBitCount() == 8)
 	{
-		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
-		std::vector<IppPoint> corners;
-		IppHarrisCorner(img, corners, dlg.m_nHarrisTh); // 입력 받은 임계값과 좌표를 저장할 배열을 넘겨줌
-
-		BYTE** ptr = img.GetPixels2D();
-
-		int x, y;
-		for (IppPoint cp : corners)
+		if (dlg.DoModal() == IDOK)
 		{
-			x = cp.x;
-			y = cp.y;
+			CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+				std::vector<IppPoint> corners;
+			IppHarrisCorner(img, corners, dlg.m_nHarrisTh); // 입력 받은 임계값과 좌표를 저장할 배열을 넘겨줌
 
-			// 영상에 3 x 3 점을 찍는다. (픽셀을 검은색으로 바꿔서)
-			ptr[y - 1][x - 1] = ptr[y - 1][x] = ptr[y - 1][x + 1] = 0;
-			ptr[y][x - 1] = ptr[y][x] = ptr[y][x + 1] = 0;
-			ptr[y + 1][x - 1] = ptr[y + 1][x] = ptr[y + 1][x + 1] = 0;
+			BYTE** ptr = img.GetPixels2D();
+
+			int x, y;
+			for (IppPoint cp : corners)
+			{
+				x = cp.x;
+				y = cp.y;
+
+				// 영상에 3 x 3 점을 찍는다. (픽셀을 검은색으로 바꿔서)
+				ptr[y - 1][x - 1] = ptr[y - 1][x] = ptr[y - 1][x + 1] = 0;
+				ptr[y][x - 1] = ptr[y][x] = ptr[y][x + 1] = 0;
+				ptr[y + 1][x - 1] = ptr[y + 1][x] = ptr[y + 1][x + 1] = 0;
+			}
+
+			CONVERT_IMAGE_TO_DIB(img, dib)
+				AfxPrintInfo(_T("[해리스 코너 검출] 입력 영상 : %s, Threshold: %d, 검출된 코너 갯수 : %d"), GetTitle(), dlg.m_nHarrisTh, corners.size());
+			AfxNewBitmap(dib);
 		}
+	}
+	else if (m_Dib.GetBitCount() == 24)
+	{
+		if (dlg.DoModal() == IDOK)
+		{
+			CONVERT_DIB_TO_RGBIMAGE(m_Dib, imgColor)
+				IppByteImage img;
+			img.Convert(imgColor);
+			std::vector<IppPoint> corners;
+			IppHarrisCorner(img, corners, dlg.m_nHarrisTh); // 입력 받은 임계값과 좌표를 저장할 배열을 넘겨줌
 
-		CONVERT_IMAGE_TO_DIB(img, dib)
-		AfxPrintInfo(_T("[해리스 코너 검출] 입력 영상 : %s, Threshold: %d, 검출된 코너 갯수 : %d"), GetTitle(), dlg.m_nHarrisTh, corners.size());
-		AfxNewBitmap(dib);
+			BYTE** ptr = img.GetPixels2D();
+
+			int x, y;
+			for (IppPoint cp : corners)
+			{
+				x = cp.x;
+				y = cp.y;
+
+				// 영상에 3 x 3 점을 찍는다. (픽셀을 검은색으로 바꿔서)
+				ptr[y - 1][x - 1] = ptr[y - 1][x] = ptr[y - 1][x + 1] = 0;
+				ptr[y][x - 1] = ptr[y][x] = ptr[y][x + 1] = 0;
+				ptr[y + 1][x - 1] = ptr[y + 1][x] = ptr[y + 1][x + 1] = 0;
+			}
+
+			CONVERT_IMAGE_TO_DIB(img, dib)
+				AfxPrintInfo(_T("[해리스 코너 검출] 입력 영상 : %s, Threshold: %d, 검출된 코너 갯수 : %d"), GetTitle(), dlg.m_nHarrisTh, corners.size());
+			AfxNewBitmap(dib);
+		}
 	}
 }
 
@@ -1737,16 +1797,40 @@ void CImageToolDoc::OnSegmentBinarization()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	CBinarizationDlg dlg;
-	dlg.SetImage(m_Dib); // 입력 영상 전달
-	if (dlg.DoModal() == IDOK)
+	if (m_Dib.GetBitCount() == 8)
 	{
-		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
-		IppByteImage imgRes;
-		IppBinarization(img, imgRes, dlg.m_nThreshold);
-		CONVERT_IMAGE_TO_DIB(imgRes, dib)
+		dlg.SetImage(m_Dib); // 입력 영상 전달
+		if (dlg.DoModal() == IDOK)
+		{
+			CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+				IppByteImage imgRes;
+			IppBinarization(img, imgRes, dlg.m_nThreshold);
+			CONVERT_IMAGE_TO_DIB(imgRes, dib)
+
+				AfxPrintInfo(_T("[이진화] 입력 영상: %s, 임계값: %d"), GetTitle(), dlg.m_nThreshold);
+			AfxNewBitmap(dib);
+		}
+	}
+	else if (m_Dib.GetBitCount() == 24)
+	{
+		CONVERT_DIB_TO_RGBIMAGE(m_Dib, imgColor)
+		IppByteImage imgGray;
+		imgGray.Convert(imgColor);
+		CONVERT_IMAGE_TO_DIB(imgGray, c_Dib) // 입력 영상 전달을 위해 그레이 스케일로 변환
+
+		dlg.SetImage(c_Dib); // 입력 영상 전달
+		if (dlg.DoModal() == IDOK)
+		{
+			CONVERT_DIB_TO_RGBIMAGE(m_Dib, imgColor)
+			IppByteImage img;
+			img.Convert(imgColor);
+			IppByteImage imgRes;
+			IppBinarization(img, imgRes, dlg.m_nThreshold);
+			CONVERT_IMAGE_TO_DIB(imgRes, dib)
 
 			AfxPrintInfo(_T("[이진화] 입력 영상: %s, 임계값: %d"), GetTitle(), dlg.m_nThreshold);
-		AfxNewBitmap(dib);
+			AfxNewBitmap(dib);
+		}
 	}
 }
 
@@ -1755,7 +1839,7 @@ void CImageToolDoc::OnSegmentLabeling()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
-		IppIntImage imgLabel;
+	IppIntImage imgLabel;
 	std::vector<IppLabelInfo> labels;
 	int label_cnt = IppLabeling(img, imgLabel, labels);
 
@@ -1772,8 +1856,9 @@ void CImageToolDoc::OnSegmentLabeling()
 
 	CONVERT_IMAGE_TO_DIB(img, dib)
 
-	AfxPrintInfo(_T("[레이블링] 입력 영상 : %s, 객체 객수 : %d"), GetTitle(), label_cnt);
+		AfxPrintInfo(_T("[레이블링] 입력 영상 : %s, 객체 객수 : %d"), GetTitle(), label_cnt);
 	AfxNewBitmap(dib);
+	
 }
 
 
@@ -1905,4 +1990,109 @@ void CImageToolDoc::OnGraymorphClosing()
 
 	AfxPrintInfo(_T("[그레이스케일 모폴로지 / 닫기] 입력 영상 : %s"), GetTitle());
 	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnUpdateFreqFiltering(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 8);
+}
+
+
+void CImageToolDoc::OnUpdateFourierDft(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 8);
+}
+
+
+void CImageToolDoc::OnUpdateFourierDftrc(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 8);
+}
+
+
+void CImageToolDoc::OnUpdateFourierFft(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 8);
+}
+
+
+void CImageToolDoc::OnUpdateHoughLine(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 8);
+}
+
+
+void CImageToolDoc::OnUpdateSegmentLabeling(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 8);
+}
+
+
+void CImageToolDoc::OnUpdateContourTacing(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 8);
+}
+
+
+void CImageToolDoc::OnUpdateMorpologyClosing(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 8);
+}
+
+
+void CImageToolDoc::OnUpdateMorpologyDilation(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 8);
+}
+
+
+void CImageToolDoc::OnUpdateMorpologyErosion(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 8);
+}
+
+
+void CImageToolDoc::OnUpdateMorpologyOpening(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 8);
+}
+
+
+void CImageToolDoc::OnUpdateGraymorphClosing(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 8);
+}
+
+
+void CImageToolDoc::OnUpdateGraymorphDilation(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 8);
+}
+
+
+void CImageToolDoc::OnUpdateGraymorphErosion(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 8);
+}
+
+
+void CImageToolDoc::OnUpdateGraymorphOpening(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 8);
 }
