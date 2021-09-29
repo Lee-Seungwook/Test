@@ -80,7 +80,7 @@ void IppFilterWeightedMean(IppByteImage& imgSrc, IppByteImage& imgDst)
 void IppFilterGaussian(IppByteImage& imgSrc, IppFloatImage& imgDst, float sigma)
 {
 	register int i, j, k, x;
-
+	       
 	int w = imgSrc.GetWidth();
 	int h = imgSrc.GetHeight();
 

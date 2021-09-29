@@ -288,6 +288,314 @@ bool IppOR(IppRgbImage& img1, IppRgbImage& img2, IppRgbImage& img3)
 	return true;
 }
 
+// 평균 값 필터
+void IppFilterMean(IppRgbImage& imgSrc, IppRgbImage& imgDst)
+{
+	int w = imgSrc.GetWidth();
+	int h = imgSrc.GetHeight();
+
+	imgDst = imgSrc; // 대입 연산자 오버로딩으로 클래스간 연산 가능, 이미지 복사
+
+	RGBBYTE** pSrc = imgSrc.GetPixels2D();
+	RGBBYTE** pDst = imgDst.GetPixels2D();
+
+	int mask[3][3] = {
+		{1, 1, 1},
+		{1, 1, 1},
+		{1, 1, 1},
+	};
+
+	int i, j, m, n, Rsum, Gsum, Bsum;
+	for (j = 1; j < h - 1; j++) // 최외곽 픽셀은 계산하지 않는다.
+		for (i = 1; i < w - 1; i++) // 영상 픽셀
+		{
+			Rsum = 0;
+			Gsum = 0;
+			Bsum = 0;
+			for (m = 0; m < 3; m++) // 마스크 배열
+				for (n = 0; n < 3; n++)
+				{
+					Rsum += (pSrc[j - 1 + m][i - 1 + n].r * mask[m][n]); // 영상 픽셀을 1부터 시작했기 때문에 1을 빼준다.
+					Gsum += (pSrc[j - 1 + m][i - 1 + n].g * mask[m][n]); // 영상 픽셀을 1부터 시작했기 때문에 1을 빼준다.
+					Bsum += (pSrc[j - 1 + m][i - 1 + n].b * mask[m][n]); // 영상 픽셀을 1부터 시작했기 때문에 1을 빼준다.
+				}
+
+			pDst[j][i].r = static_cast<BYTE>(limit(Rsum / 9. + 0.5)); // 마스크의 총 합으로 나눠준다, 0.5는 반올림인듯
+			pDst[j][i].g = static_cast<BYTE>(limit(Gsum / 9. + 0.5)); // 마스크의 총 합으로 나눠준다, 0.5는 반올림인듯
+			pDst[j][i].b = static_cast<BYTE>(limit(Bsum / 9. + 0.5)); // 마스크의 총 합으로 나눠준다, 0.5는 반올림인듯
+		}
+}
+
+// 가중 평균값 필터링
+void IppFilterWeightedMean(IppRgbImage& imgSrc, IppRgbImage& imgDst)
+{
+	int w = imgSrc.GetWidth();
+	int h = imgSrc.GetHeight();
+
+	imgDst = imgSrc; // 대입 연산자 오버로딩으로 클래스간 연산 가능, 이미지 복사
+
+	RGBBYTE** pSrc = imgSrc.GetPixels2D();
+	RGBBYTE** pDst = imgDst.GetPixels2D();
+
+	int mask[3][3] = {
+		{1, 2, 1},
+		{2, 4, 2},
+		{1, 2, 1},
+	};
+
+	int i, j, m, n, Rsum, Gsum ,Bsum;
+	for (j = 1; j < h - 1; j++) // 최외곽 픽셀은 계산하지 않는다.
+		for (i = 1; i < w - 1; i++) // 영상 픽셀
+		{
+			Rsum = 0;
+			Gsum = 0;
+			Bsum = 0;
+			for (m = 0; m < 3; m++) // 마스크 배열
+				for (n = 0; n < 3; n++)
+				{
+					Rsum += (pSrc[j - 1 + m][i - 1 + n].r * mask[m][n]); // 영상 픽셀을 1부터 시작했기 때문에 1을 빼준다.
+					Gsum += (pSrc[j - 1 + m][i - 1 + n].g * mask[m][n]); // 영상 픽셀을 1부터 시작했기 때문에 1을 빼준다.
+					Bsum += (pSrc[j - 1 + m][i - 1 + n].b * mask[m][n]); // 영상 픽셀을 1부터 시작했기 때문에 1을 빼준다.
+				}
+
+			pDst[j][i].r = static_cast<BYTE>(limit(Rsum / 16. + 0.5)); // 마스크의 총 합으로 나눠준다, 0.5는 반올림인듯
+			pDst[j][i].g = static_cast<BYTE>(limit(Gsum / 16. + 0.5)); // 마스크의 총 합으로 나눠준다, 0.5는 반올림인듯
+			pDst[j][i].b = static_cast<BYTE>(limit(Bsum / 16. + 0.5)); // 마스크의 총 합으로 나눠준다, 0.5는 반올림인듯
+		}
+}
+
+// 라플라시안 필터
+void IppFilterLaplacian(IppRgbImage& imgSrc, IppRgbImage& imgDst)
+{
+	int w = imgSrc.GetWidth();
+	int h = imgSrc.GetHeight();
+
+	imgDst.CreateImage(w, h); // 결과 영상을 새로 생성함으로써 모든 픽셀 값을 0으로 초기화
+
+	RGBBYTE** pSrc = imgSrc.GetPixels2D();
+	RGBBYTE** pDst = imgDst.GetPixels2D();
+
+	int i, j, Rsum, Gsum, Bsum;
+	for (j = 1; j < h - 1; j++) // 4방향에 대한 픽셀 값을 직접 참조하여 결과 픽셀 값을 계산
+		for (i = 1; i < w - 1; i++) // 최외곽 픽셀은 연산에서 제외
+		{
+			Rsum = pSrc[j - 1][i].r + pSrc[j][i - 1].r + pSrc[j + 1][i].r + pSrc[j][i + 1].r - 4 * pSrc[j][i].r;
+			Gsum = pSrc[j - 1][i].g + pSrc[j][i - 1].g + pSrc[j + 1][i].g + pSrc[j][i + 1].g - 4 * pSrc[j][i].g;
+			Bsum = pSrc[j - 1][i].b + pSrc[j][i - 1].b + pSrc[j + 1][i].b + pSrc[j][i + 1].b - 4 * pSrc[j][i].b;
+
+			pDst[j][i].r = static_cast<BYTE>(limit(Rsum + 128));
+			pDst[j][i].g = static_cast<BYTE>(limit(Gsum + 128));
+			pDst[j][i].b = static_cast<BYTE>(limit(Bsum + 128));
+		}
+}
+
+// 언샤프 마스크 필터
+void IppFilterUnsharpMask(IppRgbImage& imgSrc, IppRgbImage& imgDst)
+{
+	int w = imgSrc.GetWidth();
+	int h = imgSrc.GetHeight();
+
+	imgDst = imgSrc;
+
+	RGBBYTE** pSrc = imgSrc.GetPixels2D();
+	RGBBYTE** pDst = imgDst.GetPixels2D();
+
+	int i, j, Rsum, Gsum, Bsum;
+	for (j = 1; j < h - 1; j++) // 4방향에 대한 픽셀 값을 직접 참조하여 결과 픽셀 값을 계산
+		for (i = 1; i < w - 1; i++)
+		{
+			Rsum = 5 * pSrc[j][i].r - pSrc[j - 1][i].r - pSrc[j][i - 1].r - pSrc[j + 1][i].r - pSrc[j][i + 1].r;
+			Gsum = 5 * pSrc[j][i].g - pSrc[j - 1][i].g - pSrc[j][i - 1].g - pSrc[j + 1][i].g - pSrc[j][i + 1].g;
+			Bsum = 5 * pSrc[j][i].b - pSrc[j - 1][i].b - pSrc[j][i - 1].b - pSrc[j + 1][i].b - pSrc[j][i + 1].b;
+
+			pDst[j][i].r = static_cast<BYTE>(limit(Rsum));
+			pDst[j][i].g = static_cast<BYTE>(limit(Gsum));
+			pDst[j][i].b = static_cast<BYTE>(limit(Bsum));
+		}
+}
+
+// 하이부스트 필터
+void IppFilterHighboost(IppRgbImage& imgSrc, IppRgbImage& imgDst, float alpha)
+{
+	int w = imgSrc.GetWidth();
+	int h = imgSrc.GetHeight();
+
+	imgDst = imgSrc;
+
+	RGBBYTE** pSrc = imgSrc.GetPixels2D();
+	RGBBYTE** pDst = imgDst.GetPixels2D();
+
+	int i, j;
+	float Rsum, Gsum, Bsum;
+
+	for (j = 1; j < h - 1; j++) // 4방향에 대한 픽셀 값을 직접 참조하여 결과 픽셀 값을 계산
+		for (i = 1; i < w - 1; i++)
+		{
+			Rsum = (4 + alpha) * pSrc[j][i].r - pSrc[j - 1][i].r - pSrc[j][i - 1].r - pSrc[j + 1][i].r - pSrc[j][i + 1].r; // alpha 값으로 명암비를 조절한다.
+			Gsum = (4 + alpha) * pSrc[j][i].g - pSrc[j - 1][i].g - pSrc[j][i - 1].g - pSrc[j + 1][i].g - pSrc[j][i + 1].g; // alpha 값으로 명암비를 조절한다.
+			Bsum = (4 + alpha) * pSrc[j][i].b - pSrc[j - 1][i].b - pSrc[j][i - 1].b - pSrc[j + 1][i].b - pSrc[j][i + 1].b; // alpha 값으로 명암비를 조절한다.
+			pDst[j][i].r = static_cast<BYTE>(limit(Rsum + 0.5f)); // 반올림하여 정수형으로 전환한다.
+			pDst[j][i].g = static_cast<BYTE>(limit(Gsum + 0.5f)); // 반올림하여 정수형으로 전환한다.
+			pDst[j][i].b = static_cast<BYTE>(limit(Bsum + 0.5f)); // 반올림하여 정수형으로 전환한다.
+		}
+}
+
+// 가우시안 임의 잡음 생성
+void IppNoiseGaussian(IppRgbImage& imgSrc, IppRgbImage& imgDst, int amount)
+{
+	int size = imgSrc.GetSize();
+
+	imgDst = imgSrc;
+	RGBBYTE* pDst = imgDst.GetPixels();
+
+	unsigned int seed = static_cast<unsigned int>(time(NULL)); //  시스템 시간을 초 단위로 불러와 시드 값으로 사용
+	std::default_random_engine generator(seed); // 
+	std::normal_distribution<double> distribution(0.0, 1.0); // 가우시안 난수(정상 분포 난수),
+
+	double rn;
+	for (int i = 0; i < size; i++)
+	{
+		rn = distribution(generator) * 255 * amount / 100;
+		pDst[i].r = static_cast<BYTE>(limit(pDst[i].r + rn));
+		pDst[i].g = static_cast<BYTE>(limit(pDst[i].g + rn));
+		pDst[i].b = static_cast<BYTE>(limit(pDst[i].b + rn));
+	}
+}
+
+// 소금& 후추 잡음 생성
+void IppNoiseSaltNPepper(IppRgbImage& imgSrc, IppRgbImage& imgDst, int amount)
+{
+	int size = imgSrc.GetSize();
+
+	imgDst = imgSrc;
+	RGBBYTE* pDst = imgDst.GetPixels();
+
+	unsigned int seed = static_cast<unsigned int>(time(NULL));
+	std::default_random_engine generator(seed);
+	std::uniform_int_distribution<int> distribution(0, size - 1); // 소금 후추 잡음 생성할 난수 생성
+
+	int num = size * amount / 100; // 잡음이 추가될 픽셀의 개수를 구함
+	for (int i = 0; i < num; i++)
+	{
+		pDst[distribution(generator)] = (i & 0x01) * 255; // 잡음이 추가될 좌표
+	}
+}
+
+// 미디언 필터
+void IppFilterMedian(IppRgbImage& imgSrc, IppRgbImage& imgDst)
+{
+	int w = imgSrc.GetWidth();
+	int h = imgSrc.GetHeight();
+
+	imgDst = imgSrc;
+
+	RGBBYTE** pSrc = imgSrc.GetPixels2D();
+	RGBBYTE** pDst = imgDst.GetPixels2D();
+
+	int i, j;
+	BYTE mR[9], mG[9], mB[9];
+
+	for (j = 1; j < h - 1; j++) // 중위 수를 계산하기 위한 반복문 밑 sort 함수 적용
+		for (i = 1; i < w - 1; i++)
+		{
+			mR[0] = pSrc[j - 1][i - 1].r; mR[1] = pSrc[j - 1][i].r; mR[2] = pSrc[j - 1][i + 1].r;
+			mR[3] = pSrc[j][i - 1].r; mR[4] = pSrc[j][i].r; mR[5] = pSrc[j][i + 1].r;
+			mR[6] = pSrc[j + 1][i - 1].r; mR[7] = pSrc[j + 1][i].r; mR[8] = pSrc[j + 1][i + 1].r;
+
+			mG[0] = pSrc[j - 1][i - 1].g; mG[1] = pSrc[j - 1][i].g; mG[2] = pSrc[j - 1][i + 1].g;
+			mG[3] = pSrc[j][i - 1].g; mG[4] = pSrc[j][i].g; mG[5] = pSrc[j][i + 1].g;
+			mG[6] = pSrc[j + 1][i - 1].g; mG[7] = pSrc[j + 1][i].g; mG[8] = pSrc[j + 1][i + 1].g;
+
+			mB[0] = pSrc[j - 1][i - 1].b; mB[1] = pSrc[j - 1][i].b; mB[2] = pSrc[j - 1][i + 1].b;
+			mB[3] = pSrc[j][i - 1].b; mB[4] = pSrc[j][i].b; mB[5] = pSrc[j][i + 1].b;
+			mB[6] = pSrc[j + 1][i - 1].b; mB[7] = pSrc[j + 1][i].b; mB[8] = pSrc[j + 1][i + 1].b;
+
+			std::sort(mR, mR + 9); // 주소를 매개변수로 사용하기 때문에 배열의 주소를 넘겨준다.
+			std::sort(mG, mG + 9); // 주소를 매개변수로 사용하기 때문에 배열의 주소를 넘겨준다.
+			std::sort(mB, mB + 9); // 주소를 매개변수로 사용하기 때문에 배열의 주소를 넘겨준다.
+
+			pDst[j][i].r = mR[4];
+			pDst[j][i].g = mG[4];
+			pDst[j][i].b = mB[4];
+		}
+}
+
+// 로버츠 엣지 검출
+void IppEdgeRoberts(IppRgbImage& img, IppRgbImage& imgEdge)
+{
+	int w = img.GetWidth();
+	int h = img.GetHeight();
+
+	imgEdge.CreateImage(w, h);
+
+	RGBBYTE** p1 = img.GetPixels2D();
+	RGBBYTE** p2 = imgEdge.GetPixels2D();
+
+	int i, j, Rh1, Rh2, Gh1, Gh2, Bh1, Bh2;
+	double Rhval, Ghval, Bhval;
+	for (j = 1; j < h; j++)
+		for (i = 1; i < w - 1; i++)
+		{
+			Rh1 = p1[j][i].r - p1[j - 1][i - 1].r;
+			Rh2 = p1[j][i].r - p1[j - 1][i + 1].r;
+
+			Gh1 = p1[j][i].g - p1[j - 1][i - 1].g;
+			Gh2 = p1[j][i].g - p1[j - 1][i + 1].g;
+
+			Bh1 = p1[j][i].b - p1[j - 1][i - 1].b;
+			Bh2 = p1[j][i].b - p1[j - 1][i + 1].b;
+
+			Rhval = sqrt(static_cast<double>(Rh1 * Rh1 + Rh2 * Rh2));
+			Ghval = sqrt(static_cast<double>(Gh1 * Gh1 + Gh2 * Gh2));
+			Bhval = sqrt(static_cast<double>(Bh1 * Bh1 + Bh2 * Bh2));
+
+			p2[j][i].r = static_cast<BYTE>(limit(Rhval + 0.5));
+			p2[j][i].g = static_cast<BYTE>(limit(Ghval + 0.5));
+			p2[j][i].b = static_cast<BYTE>(limit(Bhval + 0.5));
+		}
+}
+
+// 소벨 엣지 검출
+void IppEdgeSobel(IppRgbImage& img, IppRgbImage& imgEdge)
+{
+	int w = img.GetWidth();
+	int h = img.GetHeight();
+
+	imgEdge.CreateImage(w, h);
+
+	RGBBYTE** p1 = img.GetPixels2D();
+	RGBBYTE** p2 = imgEdge.GetPixels2D();
+
+	int i, j, Rh1, Rh2, Gh1, Gh2, Bh1, Bh2;
+	double Rhval, Ghval, Bhval;
+	for (j = 1; j < h - 1; j++)
+		for (i = 1; i < w - 1; i++)
+		{
+			Rh1 = -p1[j - 1][i - 1].r - 2 * p1[j - 1][i].r - p1[j - 1][i + 1].r
+				+ p1[j + 1][i - 1].r + 2 * p1[j + 1][i].r + p1[j + 1][i + 1].r;
+			Rh2 = -p1[j - 1][i - 1].r - 2 * p1[j][i - 1].r - p1[j + 1][i - 1].r
+				+ p1[j - 1][i + 1].r + 2 * p1[j][i + 1].r + p1[j + 1][i + 1].r;
+
+			Gh1 = -p1[j - 1][i - 1].g - 2 * p1[j - 1][i].g - p1[j - 1][i + 1].g
+				+ p1[j + 1][i - 1].g + 2 * p1[j + 1][i].g + p1[j + 1][i + 1].g;
+			Gh2 = -p1[j - 1][i - 1].g - 2 * p1[j][i - 1].g - p1[j + 1][i - 1].g
+				+ p1[j - 1][i + 1].g + 2 * p1[j][i + 1].g + p1[j + 1][i + 1].g;
+
+			Bh1 = -p1[j - 1][i - 1].b - 2 * p1[j - 1][i].b - p1[j - 1][i + 1].b
+				+ p1[j + 1][i - 1].b + 2 * p1[j + 1][i].b + p1[j + 1][i + 1].b;
+			Bh2 = -p1[j - 1][i - 1].b - 2 * p1[j][i - 1].b - p1[j + 1][i - 1].b
+				+ p1[j - 1][i + 1].b + 2 * p1[j][i + 1].b + p1[j + 1][i + 1].b;
+
+			Rhval = sqrt(static_cast<double>(Rh1 * Rh1 + Rh2 * Rh2));
+			Ghval = sqrt(static_cast<double>(Gh1 * Gh1 + Gh2 * Gh2));
+			Bhval = sqrt(static_cast<double>(Bh1 * Bh1 + Bh2 * Bh2));
+
+			p2[j][i].r = static_cast<BYTE>(limit(Rhval + 0.5));
+			p2[j][i].g = static_cast<BYTE>(limit(Ghval + 0.5));
+			p2[j][i].b = static_cast<BYTE>(limit(Bhval + 0.5));
+		}
+}
+
 void IppResizeNearest(IppRgbImage& imgSrc, IppRgbImage& imgDst, int nw, int nh)
 {
 	int w = imgSrc.GetWidth();

@@ -657,26 +657,52 @@ void CImageToolDoc::OnBitplaneSlicing()
 void CImageToolDoc::OnFilterMean()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
-	IppByteImage imgDst;
-	IppFilterMean(imgSrc, imgDst);
-	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+	if (m_Dib.GetBitCount() == 8)
+	{
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+			IppByteImage imgDst;
+		IppFilterMean(imgSrc, imgDst);
+		CONVERT_IMAGE_TO_DIB(imgDst, dib)
 
-	AfxPrintInfo(_T("[평균 값 필터] 입력 영상 : %s"), GetTitle());
-	AfxNewBitmap(dib);
+			AfxPrintInfo(_T("[평균 값 필터] 입력 영상 : %s"), GetTitle());
+		AfxNewBitmap(dib);
+	}
+	else if (m_Dib.GetBitCount() == 24)
+	{
+		CONVERT_DIB_TO_RGBIMAGE(m_Dib, imgSrc)
+		IppRgbImage imgDst;
+		IppFilterMean(imgSrc, imgDst);
+		CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+		AfxPrintInfo(_T("[평균 값 필터] 입력 영상 : %s"), GetTitle());
+		AfxNewBitmap(dib);
+	}
 }
 
 
 void CImageToolDoc::OnFilterWeightedMean()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
-	IppByteImage imgDst;
-	IppFilterWeightedMean(imgSrc, imgDst);
-	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+	if (m_Dib.GetBitCount() == 8)
+	{
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+			IppByteImage imgDst;
+		IppFilterWeightedMean(imgSrc, imgDst);
+		CONVERT_IMAGE_TO_DIB(imgDst, dib)
 
-	AfxPrintInfo(_T("[가중 평균 값 필터] 입력 영상 : %s"), GetTitle());
-	AfxNewBitmap(dib);
+			AfxPrintInfo(_T("[가중 평균 값 필터] 입력 영상 : %s"), GetTitle());
+		AfxNewBitmap(dib);
+	}
+	else if (m_Dib.GetBitCount() == 24)
+	{
+		CONVERT_DIB_TO_RGBIMAGE(m_Dib, imgSrc)
+		IppRgbImage imgDst;
+		IppFilterWeightedMean(imgSrc, imgDst);
+		CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+		AfxPrintInfo(_T("[가중 평균 값 필터] 입력 영상 : %s"), GetTitle());
+		AfxNewBitmap(dib);
+	}
 }
 
 
@@ -687,40 +713,65 @@ void CImageToolDoc::OnFilterGaussian()
 	if (dlg.DoModal() == IDOK)
 	{
 		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
-		IppFloatImage imgDst;
+			IppFloatImage imgDst;
 		IppFilterGaussian(imgSrc, imgDst, dlg.m_fSigma);
 		CONVERT_IMAGE_TO_DIB(imgDst, dib)
 
-		AfxPrintInfo(_T("[가우시안 필터] 입력 영상 : %s, Sigma: %4.2f"), GetTitle(), dlg.m_fSigma);
+			AfxPrintInfo(_T("[가우시안 필터] 입력 영상 : %s, Sigma: %4.2f"), GetTitle(), dlg.m_fSigma);
 		AfxNewBitmap(dib);
 	}
-
 }
 
 
 void CImageToolDoc::OnFilterLaplacian()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
-	IppByteImage imgDst;
-	IppFilterLaplacian(imgSrc, imgDst);
-	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+	if (m_Dib.GetBitCount() == 8)
+	{
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+		IppByteImage imgDst;
+		IppFilterLaplacian(imgSrc, imgDst);
+		CONVERT_IMAGE_TO_DIB(imgDst, dib)
 
-	AfxPrintInfo(_T("[라플라시안 필터] 입력 영상 : %s"), GetTitle());
-	AfxNewBitmap(dib);
+		AfxPrintInfo(_T("[라플라시안 필터] 입력 영상 : %s"), GetTitle());
+		AfxNewBitmap(dib);
+	}
+	else if (m_Dib.GetBitCount() == 24)
+	{
+		CONVERT_DIB_TO_RGBIMAGE(m_Dib, imgSrc)
+		IppRgbImage imgDst;
+		IppFilterLaplacian(imgSrc, imgDst);
+		CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+		AfxPrintInfo(_T("[라플라시안 필터] 입력 영상 : %s"), GetTitle());
+		AfxNewBitmap(dib);
+	}
 }
 
 
 void CImageToolDoc::OnFilterUnsharpMask()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
-	IppByteImage imgDst;
-	IppFilterUnsharpMask(imgSrc, imgDst);
-	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+	if (m_Dib.GetBitCount() == 8)
+	{
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+		IppByteImage imgDst;
+		IppFilterUnsharpMask(imgSrc, imgDst);
+		CONVERT_IMAGE_TO_DIB(imgDst, dib)
 
-	AfxPrintInfo(_T("[언샤프 마스크 필터] 입력 영상 : %s"), GetTitle());
-	AfxNewBitmap(dib);
+		AfxPrintInfo(_T("[언샤프 마스크 필터] 입력 영상 : %s"), GetTitle());
+		AfxNewBitmap(dib);
+	}
+	else if (m_Dib.GetBitCount() == 24)
+	{
+		CONVERT_DIB_TO_RGBIMAGE(m_Dib, imgSrc)
+		IppRgbImage imgDst;
+		IppFilterUnsharpMask(imgSrc, imgDst);
+		CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+		AfxPrintInfo(_T("[언샤프 마스크 필터] 입력 영상 : %s"), GetTitle());
+		AfxNewBitmap(dib);
+	}
 }
 
 
@@ -728,16 +779,33 @@ void CImageToolDoc::OnFilterHighboost()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	CHighboostDlg dlg;
-	if (dlg.DoModal() == IDOK)
+	if (m_Dib.GetBitCount() == 8)
 	{
-		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
-		IppByteImage imgDst;
-		//float alpha = 1.2f; // 대화상자를 새로 생성하여 알파값을 입력받기 때문에 삭제함
-		IppFilterHighboost(imgSrc, imgDst, dlg.m_fAlpha);
-		CONVERT_IMAGE_TO_DIB(imgDst, dib)
+		if (dlg.DoModal() == IDOK)
+		{
+			CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+				IppByteImage imgDst;
+			//float alpha = 1.2f; // 대화상자를 새로 생성하여 알파값을 입력받기 때문에 삭제함
+			IppFilterHighboost(imgSrc, imgDst, dlg.m_fAlpha);
+			CONVERT_IMAGE_TO_DIB(imgDst, dib)
 
-		AfxPrintInfo(_T("[하이부스트 필터] 입력 영상 : %s, alpha = %4.2f"), GetTitle(), dlg.m_fAlpha);
-		AfxNewBitmap(dib);
+				AfxPrintInfo(_T("[하이부스트 필터] 입력 영상 : %s, alpha = %4.2f"), GetTitle(), dlg.m_fAlpha);
+			AfxNewBitmap(dib);
+		}
+	}
+	else if (m_Dib.GetBitCount() == 24)
+	{
+		if (dlg.DoModal() == IDOK)
+		{
+			CONVERT_DIB_TO_RGBIMAGE(m_Dib, imgSrc)
+			IppRgbImage imgDst;
+			//float alpha = 1.2f; // 대화상자를 새로 생성하여 알파값을 입력받기 때문에 삭제함
+			IppFilterHighboost(imgSrc, imgDst, dlg.m_fAlpha);
+			CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+			AfxPrintInfo(_T("[하이부스트 필터] 입력 영상 : %s, alpha = %4.2f"), GetTitle(), dlg.m_fAlpha);
+			AfxNewBitmap(dib);
+		}
 	}
 }
 
@@ -746,21 +814,43 @@ void CImageToolDoc::OnAddNoise()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	CAddNoiseDlg dlg;
-	if (dlg.DoModal() == IDOK)
+	if (m_Dib.GetBitCount() == 8)
 	{
-		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
-		IppByteImage imgDst;
+		if (dlg.DoModal() == IDOK)
+		{
+			CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+				IppByteImage imgDst;
 
-		if (dlg.m_nNoiseType == 0)
-			IppNoiseGaussian(imgSrc, imgDst, dlg.m_nAmount);
-		else
-			IppNoiseSaltNPepper(imgSrc, imgDst, dlg.m_nAmount);
-		
-		CONVERT_IMAGE_TO_DIB(imgDst, dib)
+			if (dlg.m_nNoiseType == 0)
+				IppNoiseGaussian(imgSrc, imgDst, dlg.m_nAmount);
+			else
+				IppNoiseSaltNPepper(imgSrc, imgDst, dlg.m_nAmount);
 
-		TCHAR* noise[] = { _T("가우시안"), _T("소금 & 후추") };
-		AfxPrintInfo(_T("[잡음 추가] 입력 영상 : %s,  잡음 종류 : %s,  잡음 양 : %d"), GetTitle(), noise[dlg.m_nNoiseType], dlg.m_nAmount);
-		AfxNewBitmap(dib);
+			CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+				TCHAR* noise[] = { _T("가우시안"), _T("소금 & 후추") };
+			AfxPrintInfo(_T("[잡음 추가] 입력 영상 : %s,  잡음 종류 : %s,  잡음 양 : %d"), GetTitle(), noise[dlg.m_nNoiseType], dlg.m_nAmount);
+			AfxNewBitmap(dib);
+		}
+	}
+	else if (m_Dib.GetBitCount() == 24)
+	{
+		if (dlg.DoModal() == IDOK)
+		{
+			CONVERT_DIB_TO_RGBIMAGE(m_Dib, imgSrc)
+			IppRgbImage imgDst;
+
+			if (dlg.m_nNoiseType == 0)
+				IppNoiseGaussian(imgSrc, imgDst, dlg.m_nAmount);
+			else
+				IppNoiseSaltNPepper(imgSrc, imgDst, dlg.m_nAmount);
+
+			CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+				TCHAR* noise[] = { _T("가우시안"), _T("소금 & 후추") };
+			AfxPrintInfo(_T("[잡음 추가] 입력 영상 : %s,  잡음 종류 : %s,  잡음 양 : %d"), GetTitle(), noise[dlg.m_nNoiseType], dlg.m_nAmount);
+			AfxNewBitmap(dib);
+		}
 	}
 }
 
@@ -768,12 +858,24 @@ void CImageToolDoc::OnAddNoise()
 void CImageToolDoc::OnFilterMedian()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
-	IppByteImage imgDst;
-	IppFilterMedian(imgSrc, imgDst);
-	CONVERT_IMAGE_TO_DIB(imgDst, dib)
-	AfxPrintInfo(_T("[미디언 필터] 입력 영상 : %s"), GetTitle());
-	AfxNewBitmap(dib);
+	if (m_Dib.GetBitCount() == 8)
+	{
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
+			IppByteImage imgDst;
+		IppFilterMedian(imgSrc, imgDst);
+		CONVERT_IMAGE_TO_DIB(imgDst, dib)
+			AfxPrintInfo(_T("[미디언 필터] 입력 영상 : %s"), GetTitle());
+		AfxNewBitmap(dib);
+	}
+	else if (m_Dib.GetBitCount() == 24)
+	{
+		CONVERT_DIB_TO_RGBIMAGE(m_Dib, imgSrc)
+			IppRgbImage imgDst;
+		IppFilterMedian(imgSrc, imgDst);
+		CONVERT_IMAGE_TO_DIB(imgDst, dib)
+			AfxPrintInfo(_T("[미디언 필터] 입력 영상 : %s"), GetTitle());
+		AfxNewBitmap(dib);
+	}
 }
 
 
@@ -1201,39 +1303,78 @@ void CImageToolDoc::OnFreqFiltering()
 void CImageToolDoc::OnEdgeRoberts()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
-	IppByteImage imgEdge;
-	IppEdgeRoberts(img, imgEdge);
-	CONVERT_IMAGE_TO_DIB(imgEdge, dib)
+	if (m_Dib.GetBitCount() == 8)
+	{
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+			IppByteImage imgEdge;
+		IppEdgeRoberts(img, imgEdge);
+		CONVERT_IMAGE_TO_DIB(imgEdge, dib)
 
-	AfxPrintInfo(_T("[마스크 기반 엣지 검출/로버츠] 입력 영상 : %s"), GetTitle());
-	AfxNewBitmap(dib);
+			AfxPrintInfo(_T("[마스크 기반 엣지 검출/로버츠] 입력 영상 : %s"), GetTitle());
+		AfxNewBitmap(dib);
+	}
+	else if (m_Dib.GetBitCount() == 24)
+	{
+		CONVERT_DIB_TO_RGBIMAGE(m_Dib, img)
+			IppRgbImage imgEdge;
+		IppEdgeRoberts(img, imgEdge);
+		CONVERT_IMAGE_TO_DIB(imgEdge, dib)
+
+			AfxPrintInfo(_T("[마스크 기반 엣지 검출/로버츠] 입력 영상 : %s"), GetTitle());
+		AfxNewBitmap(dib);
+	}
 }
 
 
 void CImageToolDoc::OnEdgePrewitt()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
-	IppByteImage imgEdge;
-	IppEdgePrewitt(img, imgEdge);
-	CONVERT_IMAGE_TO_DIB(imgEdge, dib)
+	if (m_Dib.GetBitCount() == 8)
+	{
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+		IppByteImage imgEdge;
+		IppEdgePrewitt(img, imgEdge);
+		CONVERT_IMAGE_TO_DIB(imgEdge, dib)
 
-	AfxPrintInfo(_T("[마스크 기반 엣지 검출/프리윗] 입력 영상 : %s"), GetTitle());
-	AfxNewBitmap(dib);
+			AfxPrintInfo(_T("[마스크 기반 엣지 검출/프리윗] 입력 영상 : %s"), GetTitle());
+		AfxNewBitmap(dib);
+	}
+	else if (m_Dib.GetBitCount() == 24)
+	{
+		CONVERT_DIB_TO_RGBIMAGE(m_Dib, img)
+		IppByteImage imgEdge;
+		IppColorEdge(img, imgEdge);
+		CONVERT_IMAGE_TO_DIB(imgEdge, dib)
+
+			AfxPrintInfo(_T("[마스크 기반 엣지 검출/프리윗] 입력 영상 : %s"), GetTitle());
+		AfxNewBitmap(dib);
+	}
 }
 
 
 void CImageToolDoc::OnEdgeSobel()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
-	IppByteImage imgEdge;
-	IppEdgeSobel(img, imgEdge);
-	CONVERT_IMAGE_TO_DIB(imgEdge, dib)
+	if (m_Dib.GetBitCount() == 8)
+	{
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+			IppByteImage imgEdge;
+		IppEdgeSobel(img, imgEdge);
+		CONVERT_IMAGE_TO_DIB(imgEdge, dib)
 
-	AfxPrintInfo(_T("[마스크 기반 엣지 검출/소벨] 입력 영상 : %s"), GetTitle());
-	AfxNewBitmap(dib);
+			AfxPrintInfo(_T("[마스크 기반 엣지 검출/소벨] 입력 영상 : %s"), GetTitle());
+		AfxNewBitmap(dib);
+	}
+	else if (m_Dib.GetBitCount() == 24)
+	{
+		CONVERT_DIB_TO_RGBIMAGE(m_Dib, img)
+			IppRgbImage imgEdge;
+		IppEdgeSobel(img, imgEdge);
+		CONVERT_IMAGE_TO_DIB(imgEdge, dib)
+
+			AfxPrintInfo(_T("[마스크 기반 엣지 검출/소벨] 입력 영상 : %s"), GetTitle());
+		AfxNewBitmap(dib);
+	}
 }
 
 

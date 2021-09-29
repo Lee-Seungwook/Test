@@ -19,7 +19,20 @@ void IppResizeNearest(IppRgbImage& imgSrc, IppRgbImage& imgDst, int nw, int nh);
 void IppResizeBilinear(IppRgbImage& imgSrc, IppRgbImage& imgDst, int nw, int nh);
 void IppResizeCubic(IppRgbImage& imgSrc, IppRgbImage& imgDst, int nw, int nh);
 
-void IppFilterMean(IppByteImage& imgSrc, IppByteImage& imgDst);
+void IppFilterMean(IppRgbImage& imgSrc, IppRgbImage& imgDst);
+void IppFilterWeightedMean(IppRgbImage& imgSrc, IppRgbImage& imgDst);
+
+void IppFilterLaplacian(IppRgbImage& imgSrc, IppRgbImage& imgDst);
+void IppFilterUnsharpMask(IppRgbImage& imgSrc, IppRgbImage& imgDst);
+void IppFilterHighboost(IppRgbImage& imgSrc, IppRgbImage& imgDst, float alpha);
+
+void IppNoiseGaussian(IppRgbImage& imgSrc, IppRgbImage& imgDst, int amount);
+void IppNoiseSaltNPepper(IppRgbImage& imgSrc, IppRgbImage& imgDst, int amount);
+
+void IppFilterMedian(IppRgbImage& imgSrc, IppRgbImage& imgDst);
+
+void IppEdgeRoberts(IppRgbImage& img, IppRgbImage& imgEdge);
+void IppEdgeSobel(IppRgbImage& img, IppRgbImage& imgEdge);
 
 void RGB_TO_HSI(double R, double G, double B, double& H, double& S, double& I);
 void HSI_TO_RGB(double H, double S, double I, double& R, double& G, double& B);
