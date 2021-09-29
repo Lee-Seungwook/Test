@@ -56,7 +56,7 @@ BOOL CArithmeticLogicalDlg::OnInitDialog()
 	while (pos != NULL) // 도큐먼트 템플릿에 연결된 모든 도큐먼트에 접근
 	{
 		CImageToolDoc* pDoc = (CImageToolDoc*)pApp->m_pImageDocTemplate->GetNextDoc(pos);
-		if (pDoc->m_Dib.GetBitCount() != 8) // 트루 컬러 영상은 콤보 박스에 추가하지 않는다.
+		if (pDoc->m_Dib.GetBitCount() != 8 && pDoc->m_Dib.GetBitCount() != 24) // 트루 컬러 영상은 콤보 박스에 추가하지 않는다.
 			continue;
 
 		strTitle = pDoc->GetTitle();

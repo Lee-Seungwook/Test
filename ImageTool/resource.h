@@ -52,6 +52,7 @@
 #define IDD_CANNY_EDGE                  358
 #define IDD_HARRIS_CORNER               360
 #define IDD_COLOR_COMBINE               362
+#define IDD_BINARIZATION                364
 #define IDC_WIDTH                       1000
 #define IDC_HEIGHT                      1001
 #define IDC_IMAGE_TYPE                  1002
@@ -78,6 +79,7 @@
 #define IDC_CANNY_SIGMA                 1010
 #define IDC_HARRIS_THRESHOLD            1010
 #define IDC_COLOR_SPACE                 1010
+#define IDC_THRESHOLD_EDIT              1010
 #define IDC_FUNCTION5                   1011
 #define IDC_ALPHA_SLIDER                1011
 #define IDC_DIFFUSION_ITER              1011
@@ -114,6 +116,8 @@
 #define IDC_RADIO_DASHDOTDOT            1035
 #define IDC_RADIO_NULL                  1036
 #define IDC_COMBO_IMAGE3                1037
+#define IDC_IMAGE_PREVIEW               1037
+#define IDC_THRESHOLD_SLIDER            1038
 #define ID_32771                        32771
 #define ID_WINDOW_DUPLICATE             32772
 #define ID_32773                        32773
@@ -256,14 +260,42 @@
 #define ID_COLOR_COMBINE_RGB            32930
 #define ID_COLOR_COMBINE_HSI            32931
 #define ID_COLOR_COMBINE_YUV            32932
+#define ID_32933                        32933
+#define ID_COLOR_EDGE                   32934
+#define ID_32935                        32935
+#define ID_COLOR_HISTO                  32936
+#define ID_32937                        32937
+#define ID_SEGMENT_BINARIZATION         32938
+#define ID_32939                        32939
+#define ID_SEGMENT_LABELING             32940
+#define ID_32941                        32941
+#define ID_CONTOUR_TACING               32942
+#define ID_32943                        32943
+#define ID_32944                        32944
+#define ID_32945                        32945
+#define ID_32946                        32946
+#define ID_32947                        32947
+#define ID_MORPOLOGY_EROSION            32948
+#define ID_MORPOLOGY_DILATION           32949
+#define ID_MORPOLOGY_OPENING            32950
+#define ID_MORPOLOGY_CLOSING            32951
+#define ID_32952                        32952
+#define ID_32953                        32953
+#define ID_32954                        32954
+#define ID_32955                        32955
+#define ID_32956                        32956
+#define ID_GRAYMORPH_EROSION            32957
+#define ID_GRAYMORPH_DILATION           32958
+#define ID_GRAYMORPH_OPENING            32959
+#define ID_GRAYMORPH_CLOSING            32960
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        364
-#define _APS_NEXT_COMMAND_VALUE         32933
-#define _APS_NEXT_CONTROL_VALUE         1036
+#define _APS_NEXT_RESOURCE_VALUE        366
+#define _APS_NEXT_COMMAND_VALUE         32961
+#define _APS_NEXT_CONTROL_VALUE         1039
 #define _APS_NEXT_SYMED_VALUE           311
 #endif
 #endif
