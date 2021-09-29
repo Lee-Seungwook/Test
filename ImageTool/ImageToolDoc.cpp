@@ -1382,15 +1382,33 @@ void CImageToolDoc::OnEdgeCanny()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	CCannyEdgeDlg dlg;
-	if (dlg.DoModal() == IDOK)
+	if (m_Dib.GetBitCount() == 8)
 	{
-		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
-		IppByteImage imgEdge;
-		IppEdgeCanny(img, imgEdge, dlg.m_fSigma, dlg.m_fLowTh, dlg.m_fHighTh);
-		CONVERT_IMAGE_TO_DIB(imgEdge, dib)
+		if (dlg.DoModal() == IDOK)
+		{
+			CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+				IppByteImage imgEdge;
+			IppEdgeCanny(img, imgEdge, dlg.m_fSigma, dlg.m_fLowTh, dlg.m_fHighTh);
+			CONVERT_IMAGE_TO_DIB(imgEdge, dib)
 
-		AfxPrintInfo(_T("[캐니 엣지 검출] 입력 영상 : %s, sigma : %4.2f, Low Th : %4.2f, High Th : %4.2f"), GetTitle(), dlg.m_fSigma, dlg.m_fLowTh, dlg.m_fHighTh);
-		AfxNewBitmap(dib);
+				AfxPrintInfo(_T("[캐니 엣지 검출] 입력 영상 : %s, sigma : %4.2f, Low Th : %4.2f, High Th : %4.2f"), GetTitle(), dlg.m_fSigma, dlg.m_fLowTh, dlg.m_fHighTh);
+			AfxNewBitmap(dib);
+		}
+	}
+	else if (m_Dib.GetBitCount() == 24)
+	{
+		if (dlg.DoModal() == IDOK)
+		{
+			CONVERT_DIB_TO_RGBIMAGE(m_Dib, imgColor)
+			IppByteImage imgGray;
+			IppByteImage imgEdge;
+			imgGray.Convert(imgColor);
+			IppEdgeCanny(imgGray, imgEdge, dlg.m_fSigma, dlg.m_fLowTh, dlg.m_fHighTh);
+			CONVERT_IMAGE_TO_DIB(imgEdge, dib)
+
+				AfxPrintInfo(_T("[캐니 엣지 검출] 입력 영상 : %s, sigma : %4.2f, Low Th : %4.2f, High Th : %4.2f"), GetTitle(), dlg.m_fSigma, dlg.m_fLowTh, dlg.m_fHighTh);
+			AfxNewBitmap(dib);
+		}
 	}
 }
 

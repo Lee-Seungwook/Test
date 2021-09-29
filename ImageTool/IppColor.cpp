@@ -5,6 +5,7 @@
 #include "IppGeometry.h"
 #include "IppImage/IppEnhance.h"
 #include "IppFilter.h"
+#include "IppSegment.h"
 
 #include <math.h>
 #include <time.h>
