@@ -2193,28 +2193,83 @@ void CImageToolDoc::OnUpdateTruecolorClosing(CCmdUI *pCmdUI)
 void CImageToolDoc::OnSearchDot()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CBinarizationDlg dlg;
 	if (m_Dib.GetBitCount() == 8)
 	{
 		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
 		IppByteImage imgDst;
-		IppMorphologyGrayErosion(img, imgDst);
+		IppByteImage imgDot;
+		imgDot = img;
+
+		dlg.SetImage(m_Dib);
+		if (dlg.DoModal() == IDOK)
+			IppBinarization(img, imgDst, dlg.m_nThreshold);
+		
+		IppInverse(imgDst);
 		IppByteImage imgRes;
 		IppEdgeSobel(imgDst, imgRes);
-		CONVERT_IMAGE_TO_DIB(imgRes, dib)
+		IppIntImage imgLabel;
+		std::vector<IppLabelInfo> labels;
+		int label_cnt = IppLabeling(imgRes, imgLabel, labels);
+		
 
-		AfxPrintInfo(_T("[점 검출 / 데드 픽셀 검출] 입력 영상 : %s"), GetTitle());
+		// 객체를 감싸는 사각형 그리기
+		BYTE** ptr = imgDot.GetPixels2D();
+		for (IppLabelInfo& info : labels)
+		{
+			for (int j = info.miny; j <= info.maxy; j++)
+				ptr[j-1][info.minx] = ptr[j][info.minx] = ptr[j+1][info.minx] = ptr[j-1][info.maxx] = ptr[j][info.maxx] = ptr[j+1][info.maxx] =  255;
+			
+
+			for (int i = info.minx; i <= info.maxx; i++)
+				ptr[info.miny][i-1] = ptr[info.miny][i] = ptr[info.miny][i+1] = ptr[info.maxy][i-1] = ptr[info.maxy][i] = ptr[info.maxy][i+1] = 255;
+		}
+		CONVERT_IMAGE_TO_DIB(imgDot, dib)
+
+		AfxPrintInfo(_T("[점 검출 / 데드 픽셀 검출] 입력 영상 : %s, 검출 개수 : %d"), GetTitle(), label_cnt);
 		AfxNewBitmap(dib);
 	}
 	else if (m_Dib.GetBitCount() == 24)
 	{
+		
 		CONVERT_DIB_TO_RGBIMAGE(m_Dib, img)
-		IppRgbImage imgDst;
-		IppMorphologyColorErosion(img, imgDst);
-		IppRgbImage imgRes;
-		IppEdgeSobel(imgDst, imgRes);
-		CONVERT_IMAGE_TO_DIB(imgRes, dib)
+		IppByteImage imgDst;
+		IppByteImage imgGray;
+		
+		IppRgbImage imgDot;
+		imgDot = img;
+		
+		imgGray.Convert(img);
+		CONVERT_IMAGE_TO_DIB(imgGray, c_Dib)
+		
+		dlg.SetImage(c_Dib);
+		if (dlg.DoModal() == IDOK)
+			IppBinarization(imgGray, imgDst, dlg.m_nThreshold);
 
-		AfxPrintInfo(_T("[점 검출 / 데드 픽셀 검출] 입력 영상 : %s"), GetTitle());
+		
+		IppInverse(imgDst);
+		IppByteImage imgRes;
+		IppEdgeSobel(imgDst, imgRes);
+		IppIntImage imgLabel;
+		std::vector<IppLabelInfo> labels;
+		int label_cnt = IppLabeling(imgRes, imgLabel, labels);
+
+		
+		// 객체를 감싸는 사각형 그리기
+		RGBBYTE** ptr = imgDot.GetPixels2D();
+		for (IppLabelInfo& info : labels)
+		{
+			for (int j = info.miny; j <= info.maxy; j++)
+				ptr[j - 1][info.minx].r = ptr[j][info.minx].r = ptr[j + 1][info.minx].r = ptr[j - 1][info.maxx].r = ptr[j][info.maxx].r = ptr[j + 1][info.maxx].r = 255;
+
+
+			for (int i = info.minx; i <= info.maxx; i++)
+				ptr[info.miny][i - 1].r = ptr[info.miny][i].r = ptr[info.miny][i + 1].r = ptr[info.maxy][i - 1].r = ptr[info.maxy][i].r = ptr[info.maxy][i + 1].r = 255;
+		}
+		
+		CONVERT_IMAGE_TO_DIB(imgDot, dib)
+
+			AfxPrintInfo(_T("[점 검출 / 데드 픽셀 검출] 입력 영상 : %s, 검출 개수 : %d"), GetTitle(), label_cnt);
 		AfxNewBitmap(dib);
 	}
 }
@@ -2226,66 +2281,40 @@ void CImageToolDoc::OnSearchNoise()
 	if (m_Dib.GetBitCount() == 8)
 	{
 		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
-		IppByteImage imgDst;
-		for (int i = 0; i < 2; i++)
-		IppMorphologyGrayErosion(img, imgDst);
-		CONVERT_IMAGE_TO_DIB(imgDst, tempdib)
+		IppByteImage imgEdge;
+	
+		IppEdgeSobel(img, imgEdge);
+		CONVERT_IMAGE_TO_DIB(imgEdge, tempdib)
 		AfxNewBitmap(tempdib);
+	
+		IppByteImage imgRes;
+
+		IppAdd(img, imgEdge, imgRes);
 		
-		CSelectDiffImageDlg dlg;
-		if (dlg.DoModal() == IDOK)
-		{
-			CImageToolDoc* pDoc1 = (CImageToolDoc*)dlg.m_pDoc1;
-			CImageToolDoc* pDoc2 = (CImageToolDoc*)dlg.m_pDoc2;
-
-			CONVERT_DIB_TO_BYTEIMAGE(pDoc1->m_Dib, img1)
-			CONVERT_DIB_TO_BYTEIMAGE(pDoc2->m_Dib, img2)
-			IppByteImage img3;
-			IppByteImage img4;
-
-			IppDiff(img1, img2, img3);
-			CONVERT_IMAGE_TO_DIB(img3, tdib) // 영상 출력을 위해 비트맵이미지로 재변환
-			AfxNewBitmap(tdib);
-
-			IppDiff(img1, img3, img4);
-			CONVERT_IMAGE_TO_DIB(img4, dib) // 영상 출력을 위해 비트맵이미지로 재변환
-			AfxPrintInfo(_T("[노이즈 검출] 입력 영상 #1 : %s, 입력 영상 #2 : %s"), pDoc1->GetTitle(), pDoc2->GetTitle());
-			AfxNewBitmap(dib); // 영상 출력
-			
-			
-		}
+		CONVERT_IMAGE_TO_DIB(imgRes, dib) // 영상 출력을 위해 비트맵이미지로 재변환
+		AfxPrintInfo(_T("[노이즈 검출] 입력 영상 : %s"), GetTitle());
+		AfxNewBitmap(dib); // 영상 출력
+		
+		
+		
 	}
 	else if (m_Dib.GetBitCount() == 24)
 	{
 		CONVERT_DIB_TO_RGBIMAGE(m_Dib, img)
-			IppRgbImage imgDst;
-		for (int i = 0; i < 2; i++)
-			IppMorphologyColorErosion(img, imgDst);
-		CONVERT_IMAGE_TO_DIB(imgDst, tempdib)
-			AfxNewBitmap(tempdib);
+		IppRgbImage imgEdge;
+		
+		IppEdgeSobel(img, imgEdge);
+		
+		CONVERT_IMAGE_TO_DIB(imgEdge, tempdib)
+		AfxNewBitmap(tempdib);
 
-		CSelectDiffImageDlg dlg;
-		if (dlg.DoModal() == IDOK)
-		{
-			CImageToolDoc* pDoc1 = (CImageToolDoc*)dlg.m_pDoc1;
-			CImageToolDoc* pDoc2 = (CImageToolDoc*)dlg.m_pDoc2;
+		IppRgbImage imgRes;
 
-			CONVERT_DIB_TO_RGBIMAGE(pDoc1->m_Dib, img1)
-			CONVERT_DIB_TO_RGBIMAGE(pDoc2->m_Dib, img2)
-			IppRgbImage img3;
-			IppRgbImage img4;
-
-			IppDiff(img1, img2, img3);
-			CONVERT_IMAGE_TO_DIB(img3, tdib) // 영상 출력을 위해 비트맵이미지로 재변환
-			AfxNewBitmap(tdib); // 영상 출력
-
-			IppDiff(img1, img3, img4);
-			CONVERT_IMAGE_TO_DIB(img4, dib)
-			AfxPrintInfo(_T("[노이즈 검출] 입력 영상 #1 : %s, 입력 영상 #2 : %s"), pDoc1->GetTitle(), pDoc2->GetTitle());
-			AfxNewBitmap(dib);
-
-
-		}
+		IppAdd(img, imgEdge, imgRes);
+		
+		CONVERT_IMAGE_TO_DIB(imgRes, dib) // 영상 출력을 위해 비트맵이미지로 재변환
+			AfxPrintInfo(_T("[노이즈 검출] 입력 영상 : %s"), GetTitle());
+		AfxNewBitmap(dib); // 영상 출력
 	}
 }
 
