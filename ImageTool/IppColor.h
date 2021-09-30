@@ -54,3 +54,5 @@ bool IppColorCombineHSI(IppByteImage& imgH, IppByteImage& imgS, IppByteImage& im
 bool IppColorCombineYUV(IppByteImage& imgY, IppByteImage& imgU, IppByteImage& imgV, IppRgbImage& imgColor);
 
 void IppColorEdge(IppRgbImage& imgSrc, IppByteImage& imgEdge);
+
+void IppColorDot(IppRgbImage& imgSrc, IppByteImage& imgDot);

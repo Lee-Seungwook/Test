@@ -119,7 +119,6 @@
 #define IDC_COMBO_IMAGE3                1037
 #define IDC_IMAGE_PREVIEW               1037
 #define IDC_THRESHOLD_SLIDER            1038
-#define IDC_COMBO2                      1040
 #define ID_32771                        32771
 #define ID_WINDOW_DUPLICATE             32772
 #define ID_32773                        32773

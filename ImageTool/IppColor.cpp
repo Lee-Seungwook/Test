@@ -594,6 +594,7 @@ void IppEdgeSobel(IppRgbImage& img, IppRgbImage& imgEdge)
 			p2[j][i].r = static_cast<BYTE>(limit(Rhval + 0.5));
 			p2[j][i].g = static_cast<BYTE>(limit(Ghval + 0.5));
 			p2[j][i].b = static_cast<BYTE>(limit(Bhval + 0.5));
+
 		}
 }
 
@@ -1134,4 +1135,6 @@ void IppColorEdge(IppRgbImage& imgSrc, IppByteImage& imgEdge)
 			(0.5 * pV[i]) * (0.5 * pV[i]);
 		pEdge[i] = static_cast<BYTE>(limit(sqrt(dist)));
 	}
+	
 }
+

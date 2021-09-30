@@ -112,6 +112,7 @@ CImageToolView::CImageToolView() noexcept : m_nZoom(1)
 	m_bMouseFill = FALSE;
 	m_bMouseErase = FALSE;
 	m_bMousePoly = FALSE;
+	m_bAErase = FALSE;
 	
 	m_color = RGB(0, 0, 0);
 	m_FillColor = RGB(255, 255, 255);
@@ -1394,6 +1395,7 @@ void CImageToolView::OnThick()
 void CImageToolView::OnAllerase()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_bAErase = TRUE;
 	Invalidate(TRUE);
 }
 

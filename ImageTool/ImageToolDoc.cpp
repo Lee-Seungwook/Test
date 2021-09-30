@@ -2241,11 +2241,14 @@ void CImageToolDoc::OnSearchNoise()
 			CONVERT_DIB_TO_BYTEIMAGE(pDoc1->m_Dib, img1)
 			CONVERT_DIB_TO_BYTEIMAGE(pDoc2->m_Dib, img2)
 			IppByteImage img3;
+			IppByteImage img4;
 
-			
 			IppDiff(img1, img2, img3);
-			CONVERT_IMAGE_TO_DIB(img3, dib) // 영상 출력을 위해 비트맵이미지로 재변환
-				
+			CONVERT_IMAGE_TO_DIB(img3, tdib) // 영상 출력을 위해 비트맵이미지로 재변환
+			AfxNewBitmap(tdib);
+
+			IppDiff(img1, img3, img4);
+			CONVERT_IMAGE_TO_DIB(img4, dib) // 영상 출력을 위해 비트맵이미지로 재변환
 			AfxPrintInfo(_T("[노이즈 검출] 입력 영상 #1 : %s, 입력 영상 #2 : %s"), pDoc1->GetTitle(), pDoc2->GetTitle());
 			AfxNewBitmap(dib); // 영상 출력
 			
@@ -2268,15 +2271,18 @@ void CImageToolDoc::OnSearchNoise()
 			CImageToolDoc* pDoc2 = (CImageToolDoc*)dlg.m_pDoc2;
 
 			CONVERT_DIB_TO_RGBIMAGE(pDoc1->m_Dib, img1)
-				CONVERT_DIB_TO_RGBIMAGE(pDoc2->m_Dib, img2)
-				IppRgbImage img3;
-
+			CONVERT_DIB_TO_RGBIMAGE(pDoc2->m_Dib, img2)
+			IppRgbImage img3;
+			IppRgbImage img4;
 
 			IppDiff(img1, img2, img3);
-			CONVERT_IMAGE_TO_DIB(img3, dib) // 영상 출력을 위해 비트맵이미지로 재변환
+			CONVERT_IMAGE_TO_DIB(img3, tdib) // 영상 출력을 위해 비트맵이미지로 재변환
+			AfxNewBitmap(tdib); // 영상 출력
 
-				AfxPrintInfo(_T("[노이즈 검출] 입력 영상 #1 : %s, 입력 영상 #2 : %s"), pDoc1->GetTitle(), pDoc2->GetTitle());
-			AfxNewBitmap(dib); // 영상 출력
+			IppDiff(img1, img3, img4);
+			CONVERT_IMAGE_TO_DIB(img4, dib)
+			AfxPrintInfo(_T("[노이즈 검출] 입력 영상 #1 : %s, 입력 영상 #2 : %s"), pDoc1->GetTitle(), pDoc2->GetTitle());
+			AfxNewBitmap(dib);
 
 
 		}
