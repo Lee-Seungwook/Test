@@ -158,4 +158,12 @@ public:
 	afx_msg void OnUpdateGraymorphDilation(CCmdUI *pCmdUI);
 	afx_msg void OnUpdateGraymorphErosion(CCmdUI *pCmdUI);
 	afx_msg void OnUpdateGraymorphOpening(CCmdUI *pCmdUI);
+	afx_msg void OnTruecolorErosion();
+	afx_msg void OnTruecolorDilation();
+	afx_msg void OnTruecolorOpening();
+	afx_msg void OnTruecolorClosing();
+	afx_msg void OnUpdateTruecolorErosion(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateTruecolorDilation(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateTruecolorOpening(CCmdUI *pCmdUI);
+	afx_msg void OnUpdateTruecolorClosing(CCmdUI *pCmdUI);
 };

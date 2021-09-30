@@ -34,6 +34,11 @@ void IppFilterMedian(IppRgbImage& imgSrc, IppRgbImage& imgDst);
 void IppEdgeRoberts(IppRgbImage& img, IppRgbImage& imgEdge);
 void IppEdgeSobel(IppRgbImage& img, IppRgbImage& imgEdge);
 
+void IppMorphologyColorErosion(IppRgbImage& imgSrc, IppRgbImage& imgDst);
+void IppMorphologyColorDilation(IppRgbImage& imgSrc, IppRgbImage& imgDst);
+void IppMorphologyColorOpening(IppRgbImage& imgSrc, IppRgbImage& imgDst);
+void IppMorphologyColorClosing(IppRgbImage& imgSrc, IppRgbImage& imgDst);
+
 void RGB_TO_HSI(double R, double G, double B, double& H, double& S, double& I);
 void HSI_TO_RGB(double H, double S, double I, double& R, double& G, double& B);
 

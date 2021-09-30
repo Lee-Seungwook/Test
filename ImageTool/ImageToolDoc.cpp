@@ -184,6 +184,14 @@ ON_UPDATE_COMMAND_UI(ID_GRAYMORPH_CLOSING, &CImageToolDoc::OnUpdateGraymorphClos
 ON_UPDATE_COMMAND_UI(ID_GRAYMORPH_DILATION, &CImageToolDoc::OnUpdateGraymorphDilation)
 ON_UPDATE_COMMAND_UI(ID_GRAYMORPH_EROSION, &CImageToolDoc::OnUpdateGraymorphErosion)
 ON_UPDATE_COMMAND_UI(ID_GRAYMORPH_OPENING, &CImageToolDoc::OnUpdateGraymorphOpening)
+ON_COMMAND(ID_TRUECOLOR_EROSION, &CImageToolDoc::OnTruecolorErosion)
+ON_COMMAND(ID_TRUECOLOR_DILATION, &CImageToolDoc::OnTruecolorDilation)
+ON_COMMAND(ID_TRUECOLOR_OPENING, &CImageToolDoc::OnTruecolorOpening)
+ON_COMMAND(ID_TRUECOLOR_CLOSING, &CImageToolDoc::OnTruecolorClosing)
+ON_UPDATE_COMMAND_UI(ID_TRUECOLOR_EROSION, &CImageToolDoc::OnUpdateTruecolorErosion)
+ON_UPDATE_COMMAND_UI(ID_TRUECOLOR_DILATION, &CImageToolDoc::OnUpdateTruecolorDilation)
+ON_UPDATE_COMMAND_UI(ID_TRUECOLOR_OPENING, &CImageToolDoc::OnUpdateTruecolorOpening)
+ON_UPDATE_COMMAND_UI(ID_TRUECOLOR_CLOSING, &CImageToolDoc::OnUpdateTruecolorClosing)
 END_MESSAGE_MAP()
 
 
@@ -2095,4 +2103,84 @@ void CImageToolDoc::OnUpdateGraymorphOpening(CCmdUI *pCmdUI)
 {
 	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
 	pCmdUI->Enable(m_Dib.GetBitCount() == 8);
+}
+
+
+void CImageToolDoc::OnTruecolorErosion()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_RGBIMAGE(m_Dib, img)
+	IppRgbImage imgDst;
+	IppMorphologyColorErosion(img, imgDst);
+	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+		AfxPrintInfo(_T("[트루 컬러 모폴로지 / 침식] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnTruecolorDilation()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_RGBIMAGE(m_Dib, img)
+	IppRgbImage imgDst;
+	IppMorphologyColorDilation(img, imgDst);
+	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+	AfxPrintInfo(_T("[트루 컬러 모폴로지 / 팽창] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnTruecolorOpening()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_RGBIMAGE(m_Dib, img)
+	IppRgbImage imgDst;
+	IppMorphologyColorOpening(img, imgDst);
+	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+		AfxPrintInfo(_T("[트루 컬러 모폴로지 / 열기] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnTruecolorClosing()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CONVERT_DIB_TO_RGBIMAGE(m_Dib, img)
+	IppRgbImage imgDst;
+	IppMorphologyColorClosing(img, imgDst);
+	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+
+		AfxPrintInfo(_T("[트루 컬러 모폴로지 / 닫기] 입력 영상 : %s"), GetTitle());
+	AfxNewBitmap(dib);
+}
+
+
+void CImageToolDoc::OnUpdateTruecolorErosion(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 24);
+}
+
+
+void CImageToolDoc::OnUpdateTruecolorDilation(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 24);
+}
+
+
+void CImageToolDoc::OnUpdateTruecolorOpening(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 24);
+}
+
+
+void CImageToolDoc::OnUpdateTruecolorClosing(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 24);
 }
