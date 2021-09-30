@@ -1,5 +1,4 @@
-﻿
-// ImageToolView.h: CImageToolView 클래스의 인터페이스
+﻿// ImageToolView.h: CImageToolView 클래스의 인터페이스
 //
 
 #pragma once
@@ -71,6 +70,7 @@ public:
 	BOOL m_bPartErase; // 지우개 (부분 지우기)
 	BOOL m_bMouseErase; // 지우개 커서
 	BOOL m_bMousePoly; // 도형 커서
+	BOOL m_bAErase; // 전체 지우기
 	
 
 // 재정의입니다.

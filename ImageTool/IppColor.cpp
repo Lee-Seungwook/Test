@@ -594,6 +594,7 @@ void IppEdgeSobel(IppRgbImage& img, IppRgbImage& imgEdge)
 			p2[j][i].r = static_cast<BYTE>(limit(Rhval + 0.5));
 			p2[j][i].g = static_cast<BYTE>(limit(Ghval + 0.5));
 			p2[j][i].b = static_cast<BYTE>(limit(Bhval + 0.5));
+
 		}
 }
 
@@ -667,6 +668,110 @@ void IppResizeBilinear(IppRgbImage& imgSrc, IppRgbImage& imgDst, int nw, int nh)
 			pDst[j][i].g = static_cast<BYTE>(limit(Gvalue + .5)); // 반올림하여 픽셀 값으로 저장
 			pDst[j][i].b = static_cast<BYTE>(limit(Bvalue + .5)); // 반올림하여 픽셀 값으로 저장
 		}
+}
+
+// 모폴로지 연산
+void IppMorphologyColorErosion(IppRgbImage& imgSrc, IppRgbImage& imgDst)
+{
+	int i, j, m, n, x, y, Rpmin, Gpmin, Bpmin;
+	int w = imgSrc.GetWidth();
+	int h = imgSrc.GetHeight();
+
+	imgDst = imgSrc;
+
+	RGBBYTE** pDst = imgDst.GetPixels2D();
+	RGBBYTE** pSrc = imgSrc.GetPixels2D();
+
+	for (j = 0; j < h; j++)
+		for (i = 0; i < w; i++)
+		{
+			Rpmin = 255;
+			Gpmin = 255;
+			Bpmin = 255;
+
+			for (n = -1; n <= 1; n++)
+				for (m = -1; m <= 1; m++)
+				{
+					x = i + m;
+					y = j + n;
+
+					if (x >= 0 && x < w && y >= 0 && y < h)
+					{
+						if (pSrc[y][x].r < Rpmin)
+							Rpmin = pSrc[y][x].r;
+
+						if (pSrc[y][x].g < Gpmin)
+							Gpmin = pSrc[y][x].g;
+
+						if (pSrc[y][x].b < Bpmin)
+							Bpmin = pSrc[y][x].b;
+					}
+				}
+
+			pDst[j][i].r = Rpmin;
+			pDst[j][i].g = Gpmin;
+			pDst[j][i].b = Bpmin;
+		}
+}
+
+// 모폴로지 팽창
+void IppMorphologyColorDilation(IppRgbImage& imgSrc, IppRgbImage& imgDst)
+{
+	int i, j, m, n, x, y, Rpmax, Gpmax, Bpmax;
+	int w = imgSrc.GetWidth();
+	int h = imgSrc.GetHeight();
+
+	imgDst = imgSrc;
+
+	RGBBYTE** pDst = imgDst.GetPixels2D();
+	RGBBYTE** pSrc = imgSrc.GetPixels2D();
+
+	for (j = 0; j < h; j++)
+		for (i = 0; i < w; i++)
+		{
+			Rpmax = 0;
+			Gpmax = 0;
+			Bpmax = 0;
+
+			for (n = -1; n <= 1; n++)
+				for (m = -1; m <= 1; m++)
+				{
+					x = i + m;
+					y = j + n;
+
+					if (x >= 0 && x < w && y >= 0 && y < h)
+					{
+						if (pSrc[y][x].r > Rpmax)
+							Rpmax = pSrc[y][x].r;
+
+						if (pSrc[y][x].g > Gpmax)
+							Gpmax = pSrc[y][x].g;
+
+						if (pSrc[y][x].b > Bpmax)
+							Bpmax = pSrc[y][x].b;
+					}
+				}
+
+			pDst[j][i].r = Rpmax;
+			pDst[j][i].g = Gpmax;
+			pDst[j][i].b = Bpmax;
+		}
+}
+
+// 영상의 열기
+void IppMorphologyColorOpening(IppRgbImage& imgSrc, IppRgbImage& imgDst)
+{
+	IppRgbImage imgTmp;
+	IppMorphologyColorErosion(imgSrc, imgTmp);
+	IppMorphologyColorDilation(imgTmp, imgDst);
+}
+
+// 영상의 닫기
+void IppMorphologyColorClosing(IppRgbImage& imgSrc, IppRgbImage& imgDst)
+{
+	IppRgbImage imgTmp;
+	IppMorphologyColorDilation(imgSrc, imgTmp);
+	IppMorphologyColorErosion(imgTmp, imgDst);
 }
 
 void IppResizeCubic(IppRgbImage& imgSrc, IppRgbImage& imgDst, int nw, int nh)
@@ -1030,4 +1135,6 @@ void IppColorEdge(IppRgbImage& imgSrc, IppByteImage& imgEdge)
 			(0.5 * pV[i]) * (0.5 * pV[i]);
 		pEdge[i] = static_cast<BYTE>(limit(sqrt(dist)));
 	}
+	
 }
+

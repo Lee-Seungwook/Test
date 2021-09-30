@@ -235,6 +235,7 @@
     <ClInclude Include="ResizeDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="RotateDlg.h" />
+    <ClInclude Include="SelectDiffImageDlg.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ThickDlg.h" />
@@ -291,6 +292,7 @@
     </ClCompile>
     <ClCompile Include="ResizeDlg.cpp" />
     <ClCompile Include="RotateDlg.cpp" />
+    <ClCompile Include="SelectDiffImageDlg.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="ThickDlg.cpp" />
   </ItemGroup>
