@@ -57,6 +57,7 @@
 
 #include "IppSegment.h"
 #include "BinarizationDlg.h"
+#include "SelectDiffImageDlg.h"
 
 #include "MyData.h"
 #include "MyStick.h"
@@ -192,6 +193,9 @@ ON_UPDATE_COMMAND_UI(ID_TRUECOLOR_EROSION, &CImageToolDoc::OnUpdateTruecolorEros
 ON_UPDATE_COMMAND_UI(ID_TRUECOLOR_DILATION, &CImageToolDoc::OnUpdateTruecolorDilation)
 ON_UPDATE_COMMAND_UI(ID_TRUECOLOR_OPENING, &CImageToolDoc::OnUpdateTruecolorOpening)
 ON_UPDATE_COMMAND_UI(ID_TRUECOLOR_CLOSING, &CImageToolDoc::OnUpdateTruecolorClosing)
+ON_COMMAND(ID_SEARCH_DOT, &CImageToolDoc::OnSearchDot)
+ON_COMMAND(ID_SEARCH_NOISE, &CImageToolDoc::OnSearchNoise)
+ON_UPDATE_COMMAND_UI(ID_BITPLANE_SLICING, &CImageToolDoc::OnUpdateBitplaneSlicing)
 END_MESSAGE_MAP()
 
 
@@ -602,7 +606,7 @@ void CImageToolDoc::OnArithmeticLogical()
 		if (m_Dib.GetBitCount() == 8)
 		{
 			CONVERT_DIB_TO_BYTEIMAGE(pDoc1->m_Dib, img1)
-				CONVERT_DIB_TO_BYTEIMAGE(pDoc2->m_Dib, img2)
+			CONVERT_DIB_TO_BYTEIMAGE(pDoc2->m_Dib, img2)
 				IppByteImage img3;
 
 			bool ret = false;
@@ -1546,7 +1550,7 @@ void CImageToolDoc::OnHarrisCorner()
 		if (dlg.DoModal() == IDOK)
 		{
 			CONVERT_DIB_TO_RGBIMAGE(m_Dib, imgColor)
-				IppByteImage img;
+			IppByteImage img;
 			img.Convert(imgColor);
 			std::vector<IppPoint> corners;
 			IppHarrisCorner(img, corners, dlg.m_nHarrisTh); // 입력 받은 임계값과 좌표를 저장할 배열을 넘겨줌
@@ -2183,4 +2187,105 @@ void CImageToolDoc::OnUpdateTruecolorClosing(CCmdUI *pCmdUI)
 {
 	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
 	pCmdUI->Enable(m_Dib.GetBitCount() == 24);
+}
+
+
+void CImageToolDoc::OnSearchDot()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	if (m_Dib.GetBitCount() == 8)
+	{
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+		IppByteImage imgDst;
+		IppMorphologyGrayErosion(img, imgDst);
+		IppByteImage imgRes;
+		IppEdgeSobel(imgDst, imgRes);
+		CONVERT_IMAGE_TO_DIB(imgRes, dib)
+
+		AfxPrintInfo(_T("[점 검출 / 데드 픽셀 검출] 입력 영상 : %s"), GetTitle());
+		AfxNewBitmap(dib);
+	}
+	else if (m_Dib.GetBitCount() == 24)
+	{
+		CONVERT_DIB_TO_RGBIMAGE(m_Dib, img)
+		IppRgbImage imgDst;
+		IppMorphologyColorErosion(img, imgDst);
+		IppRgbImage imgRes;
+		IppEdgeSobel(imgDst, imgRes);
+		CONVERT_IMAGE_TO_DIB(imgRes, dib)
+
+		AfxPrintInfo(_T("[점 검출 / 데드 픽셀 검출] 입력 영상 : %s"), GetTitle());
+		AfxNewBitmap(dib);
+	}
+}
+
+
+void CImageToolDoc::OnSearchNoise()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	if (m_Dib.GetBitCount() == 8)
+	{
+		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, img)
+		IppByteImage imgDst;
+		for (int i = 0; i < 2; i++)
+		IppMorphologyGrayErosion(img, imgDst);
+		CONVERT_IMAGE_TO_DIB(imgDst, tempdib)
+		AfxNewBitmap(tempdib);
+		
+		CSelectDiffImageDlg dlg;
+		if (dlg.DoModal() == IDOK)
+		{
+			CImageToolDoc* pDoc1 = (CImageToolDoc*)dlg.m_pDoc1;
+			CImageToolDoc* pDoc2 = (CImageToolDoc*)dlg.m_pDoc2;
+
+			CONVERT_DIB_TO_BYTEIMAGE(pDoc1->m_Dib, img1)
+			CONVERT_DIB_TO_BYTEIMAGE(pDoc2->m_Dib, img2)
+			IppByteImage img3;
+
+			
+			IppDiff(img1, img2, img3);
+			CONVERT_IMAGE_TO_DIB(img3, dib) // 영상 출력을 위해 비트맵이미지로 재변환
+				
+			AfxPrintInfo(_T("[노이즈 검출] 입력 영상 #1 : %s, 입력 영상 #2 : %s"), pDoc1->GetTitle(), pDoc2->GetTitle());
+			AfxNewBitmap(dib); // 영상 출력
+			
+			
+		}
+	}
+	else if (m_Dib.GetBitCount() == 24)
+	{
+		CONVERT_DIB_TO_RGBIMAGE(m_Dib, img)
+			IppRgbImage imgDst;
+		for (int i = 0; i < 2; i++)
+			IppMorphologyColorErosion(img, imgDst);
+		CONVERT_IMAGE_TO_DIB(imgDst, tempdib)
+			AfxNewBitmap(tempdib);
+
+		CSelectDiffImageDlg dlg;
+		if (dlg.DoModal() == IDOK)
+		{
+			CImageToolDoc* pDoc1 = (CImageToolDoc*)dlg.m_pDoc1;
+			CImageToolDoc* pDoc2 = (CImageToolDoc*)dlg.m_pDoc2;
+
+			CONVERT_DIB_TO_RGBIMAGE(pDoc1->m_Dib, img1)
+				CONVERT_DIB_TO_RGBIMAGE(pDoc2->m_Dib, img2)
+				IppRgbImage img3;
+
+
+			IppDiff(img1, img2, img3);
+			CONVERT_IMAGE_TO_DIB(img3, dib) // 영상 출력을 위해 비트맵이미지로 재변환
+
+				AfxPrintInfo(_T("[노이즈 검출] 입력 영상 #1 : %s, 입력 영상 #2 : %s"), pDoc1->GetTitle(), pDoc2->GetTitle());
+			AfxNewBitmap(dib); // 영상 출력
+
+
+		}
+	}
+}
+
+
+void CImageToolDoc::OnUpdateBitplaneSlicing(CCmdUI *pCmdUI)
+{
+	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
+	pCmdUI->Enable(m_Dib.GetBitCount() == 8);
 }

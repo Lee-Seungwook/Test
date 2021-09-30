@@ -166,4 +166,7 @@ public:
 	afx_msg void OnUpdateTruecolorDilation(CCmdUI *pCmdUI);
 	afx_msg void OnUpdateTruecolorOpening(CCmdUI *pCmdUI);
 	afx_msg void OnUpdateTruecolorClosing(CCmdUI *pCmdUI);
+	afx_msg void OnSearchDot();
+	afx_msg void OnSearchNoise();
+	afx_msg void OnUpdateBitplaneSlicing(CCmdUI *pCmdUI);
 };

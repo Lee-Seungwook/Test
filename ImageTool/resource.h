@@ -53,6 +53,7 @@
 #define IDD_HARRIS_CORNER               360
 #define IDD_COLOR_COMBINE               362
 #define IDD_BINARIZATION                364
+#define IDD_SELECT_DIFFIMG              366
 #define IDC_WIDTH                       1000
 #define IDC_HEIGHT                      1001
 #define IDC_IMAGE_TYPE                  1002
@@ -118,6 +119,7 @@
 #define IDC_COMBO_IMAGE3                1037
 #define IDC_IMAGE_PREVIEW               1037
 #define IDC_THRESHOLD_SLIDER            1038
+#define IDC_COMBO2                      1040
 #define ID_32771                        32771
 #define ID_WINDOW_DUPLICATE             32772
 #define ID_32773                        32773
@@ -300,14 +302,21 @@
 #define ID_TRUECOLOR_CLOSING            32970
 #define ID_TRUECOLOR_OPENING            32971
 #define ID_TRUECOLOR_DILATION           32972
+#define ID_32973                        32973
+#define ID_32974                        32974
+#define ID_SEARCH_DOT                   32975
+#define ID_SEARCH_NOISE                 32976
+#define ID_32977                        32977
+#define ID_32978                        32978
+#define ID_32979                        32979
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        366
-#define _APS_NEXT_COMMAND_VALUE         32973
-#define _APS_NEXT_CONTROL_VALUE         1039
+#define _APS_NEXT_RESOURCE_VALUE        368
+#define _APS_NEXT_COMMAND_VALUE         32980
+#define _APS_NEXT_CONTROL_VALUE         1040
 #define _APS_NEXT_SYMED_VALUE           311
 #endif
 #endif

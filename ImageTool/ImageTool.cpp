@@ -193,6 +193,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnSegmentLabeling();
+//	afx_msg void OnSearchDot();
+//	afx_msg void OnSearchNoise();
 };
 
 CAboutDlg::CAboutDlg() noexcept : CDialogEx(IDD_ABOUTBOX)
@@ -206,6 +208,8 @@ void CAboutDlg::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
 	
+//	ON_COMMAND(ID_SEARCH_DOT, &CAboutDlg::OnSearchDot)
+//	ON_COMMAND(ID_SEARCH_NOISE, &CAboutDlg::OnSearchNoise)
 END_MESSAGE_MAP()
 
 // 대화 상자를 실행하기 위한 응용 프로그램 명령입니다.
@@ -286,3 +290,16 @@ void CImageToolApp::OnWindowCloseall()
 
 
 
+
+
+//void CAboutDlg::OnSearchDot()
+//{
+//	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+//
+//}
+
+
+//void CAboutDlg::OnSearchNoise()
+//{
+//	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+//}
