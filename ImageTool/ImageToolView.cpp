@@ -85,6 +85,7 @@ BEGIN_MESSAGE_MAP(CImageToolView, CScrollView)
 	//ON_WM_SETCURSOR()
 	//ON_WM_DESTROY()
 	ON_WM_SETCURSOR()
+	ON_COMMAND(ID_ALL_ERASE, &CImageToolView::OnAllErase)
 END_MESSAGE_MAP()
 
 // CImageToolView 생성/소멸
@@ -150,6 +151,16 @@ void CImageToolView::OnDraw(CDC* pDC)
 		int w = pDoc->m_Dib.GetWidth(); // 영상의 가로
 		int h = pDoc->m_Dib.GetHeight(); // 영상의 세로
 		pDoc->m_Dib.Draw(pDC->m_hDC, 0, 0, w * m_nZoom, h * m_nZoom); // 확대 및 영상의 가로, 세로를 반영하여 그린다.
+	}
+
+	if (m_bAErase == TRUE)
+	{
+		pDC->SelectStockObject(WHITE_PEN);
+		pDC->SelectStockObject(WHITE_BRUSH);
+		CRect rect;
+		GetClientRect(&rect);
+		pDC->Rectangle(&rect);
+		m_bAErase = FALSE;
 	}
 
 	// GetHeadPosition() 함수는 while 문안의 GetNext() 함수와 쌍으로 리스트의 모든 항목을 참조하도록 해준다.
@@ -1670,4 +1681,17 @@ BOOL CImageToolView::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)
 	}
 
 	return CScrollView::OnSetCursor(pWnd, nHitTest, message);
+}
+
+
+void CImageToolView::OnAllErase()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	m_bAErase = TRUE;
+	CClientDC dc(this);
+	dc.SelectStockObject(WHITE_PEN);
+	dc.SelectStockObject(WHITE_BRUSH);
+	CRect rect;
+	GetClientRect(&rect);
+	dc.Rectangle(&rect);
 }

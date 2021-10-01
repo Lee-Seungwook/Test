@@ -196,7 +196,17 @@ ON_UPDATE_COMMAND_UI(ID_TRUECOLOR_CLOSING, &CImageToolDoc::OnUpdateTruecolorClos
 ON_COMMAND(ID_SEARCH_DOT, &CImageToolDoc::OnSearchDot)
 ON_COMMAND(ID_SEARCH_NOISE, &CImageToolDoc::OnSearchNoise)
 ON_UPDATE_COMMAND_UI(ID_BITPLANE_SLICING, &CImageToolDoc::OnUpdateBitplaneSlicing)
+//ON_COMMAND(ID_ALL_ERASE, &CImageToolDoc::OnAllErase)
 END_MESSAGE_MAP()
+
+	
+struct ThreadParams
+{
+
+	IppByteImage imgT;
+
+	IppRgbImage imgC;
+};
 
 
 // CImageToolDoc 생성/소멸
@@ -204,7 +214,7 @@ END_MESSAGE_MAP()
 CImageToolDoc::CImageToolDoc() noexcept
 {
 	// TODO: 여기에 일회성 생성 코드를 추가합니다.
-
+	ThreadP = 0;
 }
 
 CImageToolDoc::~CImageToolDoc()
@@ -356,6 +366,7 @@ BOOL CImageToolDoc::OnOpenDocument(LPCTSTR lpszPathName) // 파일 경로를 매
 		AfxPrintInfo(_T("[파일 열기] 파일 경로: %s, 가로 크기: %d픽셀, 세로 크기: %d픽셀, 색상수: %d"),
 			lpszPathName, m_Dib.GetWidth(), m_Dib.GetHeight(), 0x01 << m_Dib.GetBitCount());
 
+
 	return res;
 }
 
@@ -364,8 +375,24 @@ BOOL CImageToolDoc::OnSaveDocument(LPCTSTR lpszPathName)
 {
 	// TODO: 여기에 특수화된 코드를 추가 및/또는 기본 클래스를 호출합니다.
 
+
 	return m_Dib.Save(CT2A(lpszPathName)); // 경로의 파일을 저장
 }
+
+UINT IntThread(LPVOID targ)
+{
+	
+	ThreadParams *pra = (ThreadParams*)targ;
+	
+	IppByteImage imgSrc = pra->imgT;
+	IppByteImage imgDst;
+	IppFilterMedian(imgSrc, imgDst);
+	
+	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+	AfxNewBitmap(dib);
+	return 0;
+}
+
 
 
 void CImageToolDoc::OnWindowDuplicate() // 중복창 띄우기 이벤트 처리
@@ -895,12 +922,18 @@ void CImageToolDoc::OnFilterMedian()
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 	if (m_Dib.GetBitCount() == 8)
 	{
+		ThreadParams arg1;
+		
 		CONVERT_DIB_TO_BYTEIMAGE(m_Dib, imgSrc)
-			IppByteImage imgDst;
-		IppFilterMedian(imgSrc, imgDst);
-		CONVERT_IMAGE_TO_DIB(imgDst, dib)
-			AfxPrintInfo(_T("[미디언 필터] 입력 영상 : %s"), GetTitle());
-		AfxNewBitmap(dib);
+		
+		IppByteImage imgDst;
+		arg1.imgT = imgSrc;
+		
+		AfxBeginThread(IntThread, &arg1);
+		// CONVERT_IMAGE_TO_DIB(imgSrc, dib)
+		AfxPrintInfo(_T("[미디언 필터] 입력 영상 : %s"), GetTitle());
+		
+		// AfxNewBitmap(dib);
 	}
 	else if (m_Dib.GetBitCount() == 24)
 	{
@@ -2324,3 +2357,12 @@ void CImageToolDoc::OnUpdateBitplaneSlicing(CCmdUI *pCmdUI)
 	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
 	pCmdUI->Enable(m_Dib.GetBitCount() == 8);
 }
+
+
+//void CImageToolDoc::OnAllErase()
+//{
+//	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+//	m_bAErase = TRUE;
+//}
+
+

@@ -17,6 +17,7 @@ class CMyRhombus;
 class CMyPentagon;
 class CMyErase;
 class CMyColorFill;
+
 class CImageToolDoc : public CDocument
 {
 protected: // serialization에서만 만들어집니다.
@@ -38,7 +39,9 @@ public:
 	CTypedPtrList<CObList, CMyColorFill*> m_MyColorFillList;
 // 작업입니다.
 public:
-
+	CWinThread *pThread1;
+	BYTE* ThreadP;
+	
 // 재정의입니다.
 public:
 	virtual BOOL OnNewDocument();
@@ -54,6 +57,7 @@ public:
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
+	
 #endif
 
 protected:
@@ -169,4 +173,7 @@ public:
 	afx_msg void OnSearchDot();
 	afx_msg void OnSearchNoise();
 	afx_msg void OnUpdateBitplaneSlicing(CCmdUI *pCmdUI);
+//	afx_msg void OnAllErase();
 };
+
+
