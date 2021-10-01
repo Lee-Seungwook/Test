@@ -35,3 +35,5 @@ void IppMorphologyGrayDilation(IppByteImage& imgSrc, IppByteImage& imgDst);
 
 void IppMorphologyGrayOpening(IppByteImage& imgSrc, IppByteImage& imgDst);
 void IppMorphologyGrayClosing(IppByteImage& imgSrc, IppByteImage& imgDst);
+
+int LabelingDot(IppByteImage& imgSrc, IppIntImage& imgDst, std::vector<IppLabelInfo>& labels);
