@@ -205,7 +205,12 @@ struct ThreadParams
 
 	IppByteImage imgT;
 
+	IppByteImage imgTy;
+	IppByteImage imgTu;
+	IppByteImage imgTv;
+
 	IppRgbImage imgC;
+	IppRgbImage imgTemp = imgC;
 };
 
 
@@ -391,6 +396,34 @@ UINT IntThread(LPVOID targ)
 	CONVERT_IMAGE_TO_DIB(imgDst, dib)
 	AfxNewBitmap(dib);
 	return 0;
+}
+
+UINT CMedianThread(LPVOID targ)
+{
+	ThreadParams *pra1 = (ThreadParams*)targ;
+	// IppByteImage imgY = pra1->imgTy;
+	
+
+	IppByteImage imgSrcY = pra1->imgTy;
+	IppByteImage imgSrcU = pra1->imgTu;
+	IppByteImage imgSrcV = pra1->imgTv;
+
+	IppByteImage imgY;
+	IppByteImage imgU;
+	IppByteImage imgV;
+	
+	IppRgbImage imgDst;
+
+	IppFilterMedian(imgSrcY, imgY);
+	IppFilterMedian(imgSrcU, imgU);
+	IppFilterMedian(imgSrcV, imgV);
+	
+	IppColorCombineYUV(imgY, imgU, imgV, imgDst);
+
+	CONVERT_IMAGE_TO_DIB(imgDst, dib)
+	AfxNewBitmap(dib);
+	return 0;
+
 }
 
 
@@ -937,12 +970,19 @@ void CImageToolDoc::OnFilterMedian()
 	}
 	else if (m_Dib.GetBitCount() == 24)
 	{
+		ThreadParams arg1;
 		CONVERT_DIB_TO_RGBIMAGE(m_Dib, imgSrc)
-			IppRgbImage imgDst;
-		IppFilterMedian(imgSrc, imgDst);
-		CONVERT_IMAGE_TO_DIB(imgDst, dib)
-			AfxPrintInfo(_T("[미디언 필터] 입력 영상 : %s"), GetTitle());
-		AfxNewBitmap(dib);
+		IppByteImage imgY, imgU, imgV;
+		arg1.imgC = imgSrc;
+		IppColorSplitYUV(imgSrc, imgY, imgU, imgV);
+		arg1.imgTy = imgY;
+		arg1.imgTu = imgU;
+		arg1.imgTv = imgV;
+
+		AfxBeginThread(CMedianThread, &arg1);
+		
+		AfxPrintInfo(_T("[미디언 필터] 입력 영상 : %s"), GetTitle());
+		
 	}
 }
 
