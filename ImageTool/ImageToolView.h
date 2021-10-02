@@ -149,6 +149,7 @@ public:
 	//	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
 	//	afx_msg void OnDestroy();
 	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
+	afx_msg void OnAllErase();
 };
 
 #ifndef _DEBUG  // ImageToolView.cpp의 디버그 버전

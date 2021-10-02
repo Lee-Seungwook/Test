@@ -308,13 +308,15 @@
 #define ID_32977                        32977
 #define ID_32978                        32978
 #define ID_32979                        32979
+#define ID_32980                        32980
+#define ID_ALL_ERASE                    32981
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        368
-#define _APS_NEXT_COMMAND_VALUE         32980
+#define _APS_NEXT_COMMAND_VALUE         32982
 #define _APS_NEXT_CONTROL_VALUE         1040
 #define _APS_NEXT_SYMED_VALUE           311
 #endif
