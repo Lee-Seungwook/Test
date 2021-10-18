@@ -2,6 +2,8 @@
 
 #include "IppImage.h"
 
+
+
 // 색상 반전
 void IppInverse(IppByteImage& img);
 //void IppInverse(IppRgbImage& img);

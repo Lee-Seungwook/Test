@@ -53,9 +53,6 @@ void CMyStick::Draw(CDC *pDC)
 	int m_nend = m_ptArray.GetSize() - 1;
 	pDC->MoveTo(m_ptArray[0]);
 	pDC->LineTo(m_ptArray[m_nend]);
-	/*for (int i = 1; i < m_ptArray.GetSize(); i++)
-	{
-		pDC->LineTo(m_ptArray[i]);
-	}*/
+	
 	pDC->SelectObject(pOldPen);
 }

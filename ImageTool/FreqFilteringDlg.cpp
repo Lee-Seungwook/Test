@@ -30,7 +30,6 @@ void CFreqFilteringDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_CUTOFF_FREQ, m_nCutoff);
-	//  DDX_CBIndex(pDX, IDC_FILTER_SHAPE, m_nFilter);
 	DDX_CBIndex(pDX, IDC_FILTER_SHAPE, m_nFilterShape);
 	DDX_CBIndex(pDX, IDC_FILTER_TYPE, m_nFilterType);
 	DDX_Text(pDX, IDC_RADIUS_RANGE, m_strRange);

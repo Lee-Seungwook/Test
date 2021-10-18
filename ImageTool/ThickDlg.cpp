@@ -13,7 +13,7 @@ IMPLEMENT_DYNAMIC(CThickDlg, CDialogEx)
 
 CThickDlg::CThickDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_THICK, pParent)
-	// , m_nThick(0)
+	
 	, m_nThick(0)
 {
 
@@ -26,7 +26,7 @@ CThickDlg::~CThickDlg()
 void CThickDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	// DDX_LBIndex(pDX, IDC_LIST, m_nThick);
+	
 	DDX_Text(pDX, IDC_EDIT, m_nThick);
 }
 

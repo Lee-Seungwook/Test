@@ -59,10 +59,7 @@ void CMyRect::Draw(CDC *pDC)
 	int m_nend = m_ptArray.GetSize() - 1;
 
 	pDC->Rectangle(m_ptArray[0].x, m_ptArray[0].y, m_ptArray[m_nend].x, m_ptArray[m_nend].y);
-	/*for (int i = 1; i < m_ptArray.GetSize(); i++)
-	{
-		pDC->LineTo(m_ptArray[i]);
-	}*/
+	
 	pDC->SelectObject(pOldPen);
 	pDC->SelectObject(oldBrush);
 }

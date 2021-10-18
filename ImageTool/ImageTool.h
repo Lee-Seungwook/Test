@@ -41,6 +41,10 @@ public:
 	afx_msg void OnEditPaste();
 	afx_msg void OnUpdateEditPaste(CCmdUI *pCmdUI);
 	afx_msg void OnWindowCloseall();
+
+	afx_msg void OnChatServer();
+
+	afx_msg void OnChatClient();
 };
 
 extern CImageToolApp theApp;

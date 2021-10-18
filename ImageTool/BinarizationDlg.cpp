@@ -70,6 +70,8 @@ void CBinarizationDlg::MakePreviewImage()
 BOOL CBinarizationDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
+	
+		
 
 	// TODO:  여기에 추가 초기화 작업을 추가합니다.
 	m_SliderThreshold.SetRange(0, 255);

@@ -11,6 +11,8 @@ struct Line
 	int width;
 };
 
+class CChattingClientDlg;
+
 class CImageToolView : public CScrollView
 {
 protected: // serialization에서만 만들어집니다.
@@ -126,17 +128,14 @@ public:
 	int m_nDrawMode;
 	afx_msg void OnUpdateEllipse(CCmdUI *pCmdUI);
 	afx_msg void OnUpdateRectangle(CCmdUI *pCmdUI);
-	//	afx_msg void OnDrawline();
 	afx_msg void OnDrawLine();
 	afx_msg void OnEndLine();
 	afx_msg void OnUpdateDrawLine(CCmdUI *pCmdUI);
 	afx_msg void OnUpdateEndLine(CCmdUI *pCmdUI);
-	//	afx_msg void OnPaint();
 	afx_msg void OnDrawColor();
 	afx_msg void OnThick();
 	afx_msg void OnAllerase();
 	afx_msg void OnParterase();
-	//	afx_msg void OnPaint();
 	afx_msg void OnStraightline();
 	afx_msg void OnLineStyle();
 	afx_msg void OnFillColor();
@@ -146,10 +145,9 @@ public:
 	afx_msg void OnRhombus();
 	afx_msg void OnPentagon();
 	afx_msg void OnColorfill();
-	//	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
-	//	afx_msg void OnDestroy();
 	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
 	afx_msg void OnAllErase();
+	afx_msg void OnChatServer();
 };
 
 #ifndef _DEBUG  // ImageToolView.cpp의 디버그 버전

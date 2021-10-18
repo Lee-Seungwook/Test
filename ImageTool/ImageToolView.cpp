@@ -14,6 +14,11 @@
 #include "ImageToolDoc.h"
 #include "ImageToolView.h"
 
+#include "ChattingClientDlg.h"
+#include "ChattingServerDlg.h"
+#include "UIThread.h"
+#include "UIServerThread.h"
+
 #include "ThickDlg.h"
 #include "LineStyleDlg.h"
 #include "MyData.h"
@@ -62,17 +67,14 @@ BEGIN_MESSAGE_MAP(CImageToolView, CScrollView)
 	ON_WM_LBUTTONDOWN()
 	ON_UPDATE_COMMAND_UI(ID_ELLIPSE, &CImageToolView::OnUpdateEllipse)
 	ON_UPDATE_COMMAND_UI(ID_RECTANGLE, &CImageToolView::OnUpdateRectangle)
-	//	ON_COMMAND(ID_DRAWLINE, &CImageToolView::OnDrawline)
 	ON_COMMAND(ID_DRAW_LINE, &CImageToolView::OnDrawLine)
 	ON_COMMAND(ID_END_LINE, &CImageToolView::OnEndLine)
 	ON_UPDATE_COMMAND_UI(ID_DRAW_LINE, &CImageToolView::OnUpdateDrawLine)
 	ON_UPDATE_COMMAND_UI(ID_END_LINE, &CImageToolView::OnUpdateEndLine)
-	//ON_WM_PAINT()
 	ON_COMMAND(ID_DRAW_COLOR, &CImageToolView::OnDrawColor)
 	ON_COMMAND(ID_THICK, &CImageToolView::OnThick)
 	ON_COMMAND(ID_ALLERASE, &CImageToolView::OnAllerase)
 	ON_COMMAND(ID_PARTERASE, &CImageToolView::OnParterase)
-	//ON_WM_PAINT()
 	ON_COMMAND(ID_STRAIGHTLINE, &CImageToolView::OnStraightline)
 	ON_COMMAND(ID_LINE_STYLE, &CImageToolView::OnLineStyle)
 	ON_COMMAND(ID_FILL_COLOR, &CImageToolView::OnFillColor)
@@ -82,10 +84,10 @@ BEGIN_MESSAGE_MAP(CImageToolView, CScrollView)
 	ON_COMMAND(ID_RHOMBUS, &CImageToolView::OnRhombus)
 	ON_COMMAND(ID_PENTAGON, &CImageToolView::OnPentagon)
 	ON_COMMAND(ID_COLORFILL, &CImageToolView::OnColorfill)
-	//ON_WM_SETCURSOR()
-	//ON_WM_DESTROY()
 	ON_WM_SETCURSOR()
 	ON_COMMAND(ID_ALL_ERASE, &CImageToolView::OnAllErase)
+
+ON_COMMAND(ID_CHAT_SERVER, &CImageToolView::OnChatServer)
 END_MESSAGE_MAP()
 
 // CImageToolView 생성/소멸
@@ -443,7 +445,7 @@ void CImageToolView::OnLButtonUp(UINT nFlags, CPoint point)
 	if (m_bRect == TRUE)
 	{
 		CClientDC dc(this);
-		// CPen pen;
+		
 		LOGBRUSH lbr;
 		lbr.lbStyle = BS_SOLID;
 		lbr.lbColor = m_color;
@@ -457,8 +459,6 @@ void CImageToolView::OnLButtonUp(UINT nFlags, CPoint point)
 		CBrush* oldBrush = dc.SelectObject(&brush);
 
 		dc.SetROP2(R2_COPYPEN);
-		/*dc.MoveTo(m_nowP);
-		dc.LineTo(m_afterP);*/
 		dc.Rectangle(m_nowP.x, m_nowP.y, m_afterP.x, m_afterP.y);
 
 		dc.SelectObject(oldBrush);
@@ -468,7 +468,6 @@ void CImageToolView::OnLButtonUp(UINT nFlags, CPoint point)
 	if (m_bEllipse == TRUE)
 	{
 		CClientDC dc(this);
-		// CPen pen;
 		LOGBRUSH lbr;
 		lbr.lbStyle = BS_SOLID;
 		lbr.lbColor = m_color;
@@ -482,8 +481,6 @@ void CImageToolView::OnLButtonUp(UINT nFlags, CPoint point)
 		CBrush* oldBrush = dc.SelectObject(&brush);
 
 		dc.SetROP2(R2_COPYPEN);
-		/*dc.MoveTo(m_nowP);
-		dc.LineTo(m_afterP);*/
 		dc.Ellipse(m_nowP.x, m_nowP.y, m_afterP.x, m_afterP.y);
 
 		dc.SelectObject(oldBrush);
@@ -493,7 +490,6 @@ void CImageToolView::OnLButtonUp(UINT nFlags, CPoint point)
 	if (m_bRoundRect == TRUE)
 	{
 		CClientDC dc(this);
-		// CPen pen;
 		LOGBRUSH lbr;
 		lbr.lbStyle = BS_SOLID;
 		lbr.lbColor = m_color;
@@ -507,8 +503,6 @@ void CImageToolView::OnLButtonUp(UINT nFlags, CPoint point)
 		CBrush* oldBrush = dc.SelectObject(&brush);
 
 		dc.SetROP2(R2_COPYPEN);
-		/*dc.MoveTo(m_nowP);
-		dc.LineTo(m_afterP);*/
 		dc.RoundRect(m_nowP.x, m_nowP.y, m_afterP.x, m_afterP.y, 50, 50);
 
 		dc.SelectObject(oldBrush);
@@ -518,7 +512,7 @@ void CImageToolView::OnLButtonUp(UINT nFlags, CPoint point)
 	if (m_bTriangle == TRUE)
 	{
 		CClientDC dc(this);
-		// CPen pen;
+
 		CPoint m_point1, m_point2, m_point3;
 		m_point1 = m_point2 = m_point3 = point;
 
@@ -899,7 +893,7 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 		{
 			CClientDC dc(this);
 			m_pCurrentMyStick->m_ptArray.Add(point);
-			// CPen pen;
+	
 			LOGBRUSH lbr;
 			lbr.lbStyle = BS_SOLID;
 			lbr.lbColor = m_color;
@@ -927,7 +921,7 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 		{
 			CClientDC dc(this);
 			m_pCurrentMyRect->m_ptArray.Add(point);
-			// CPen pen;
+		
 			LOGBRUSH lbr;
 			lbr.lbStyle = BS_SOLID;
 			lbr.lbColor = m_color;
@@ -941,13 +935,9 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 			CBrush* oldBrush = dc.SelectObject(&brush);
 			// 이전에 그린 직선을 지우기 위해서 레스터 오퍼레이션을 R2_NOT으로 지정
 			dc.SetROP2(R2_NOT);
-			/*dc.MoveTo(m_nowP);
-			dc.LineTo(m_afterP);*/
 			dc.Rectangle(m_nowP.x, m_nowP.y, m_afterP.x, m_afterP.y);
 			// 새로운 직선을 그린다.
 			dc.SetROP2(R2_NOT);
-			/*dc.MoveTo(m_nowP);
-			dc.LineTo(point);*/
 			dc.Rectangle(m_nowP.x, m_nowP.y, point.x, point.y);
 			dc.SelectObject(oldBrush);
 			dc.SelectObject(oldPen);
@@ -962,7 +952,7 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 		{
 			CClientDC dc(this);
 			m_pCurrentMyEllipse->m_ptArray.Add(point);
-			// CPen pen;
+		
 			LOGBRUSH lbr;
 			lbr.lbStyle = BS_SOLID;
 			lbr.lbColor = m_color;
@@ -976,13 +966,9 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 			CBrush* oldBrush = dc.SelectObject(&brush);
 			// 이전에 그린 직선을 지우기 위해서 레스터 오퍼레이션을 R2_NOT으로 지정
 			dc.SetROP2(R2_NOT);
-			/*dc.MoveTo(m_nowP);
-			dc.LineTo(m_afterP);*/
 			dc.Ellipse(m_nowP.x, m_nowP.y, m_afterP.x, m_afterP.y);
 			// 새로운 직선을 그린다.
 			dc.SetROP2(R2_NOT);
-			/*dc.MoveTo(m_nowP);
-			dc.LineTo(point);*/
 			dc.Ellipse(m_nowP.x, m_nowP.y, point.x, point.y);
 			dc.SelectObject(oldBrush);
 			dc.SelectObject(oldPen);
@@ -997,7 +983,7 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 		{
 			CClientDC dc(this);
 			m_pCurrentMyRoundRect->m_ptArray.Add(point);
-			// CPen pen;
+			
 			LOGBRUSH lbr;
 			lbr.lbStyle = BS_SOLID;
 			lbr.lbColor = m_color;
@@ -1011,13 +997,9 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 			CBrush* oldBrush = dc.SelectObject(&brush);
 			// 이전에 그린 직선을 지우기 위해서 레스터 오퍼레이션을 R2_NOT으로 지정
 			dc.SetROP2(R2_NOT);
-			/*dc.MoveTo(m_nowP);
-			dc.LineTo(m_afterP);*/
 			dc.RoundRect(m_nowP.x, m_nowP.y, m_afterP.x, m_afterP.y, 50, 50);
 			// 새로운 직선을 그린다.
 			dc.SetROP2(R2_NOT);
-			/*dc.MoveTo(m_nowP);
-			dc.LineTo(point);*/
 			dc.RoundRect(m_nowP.x, m_nowP.y, point.x, point.y, 50, 50);
 			dc.SelectObject(oldBrush);
 			dc.SelectObject(oldPen);
@@ -1032,7 +1014,7 @@ void CImageToolView::OnMouseMove(UINT nFlags, CPoint point)
 		{
 			CClientDC dc(this);
 			m_pCurrentMyTriangle->m_ptArray.Add(point);
-			// CPen pen;
+			
 			CPoint m_point1, m_point2, m_point3;
 			m_point1 = m_point2 = m_point3 = point;
 
@@ -1239,12 +1221,6 @@ void CImageToolView::ShowImageInfo(CPoint point)
 	pFrame->m_wndStatusBar.SetPaneText(1, strText); // 오른쪽에 출력
 }
 
-//void CImageToolView::OnDrawline()
-//{
-//	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-//	m_nLine = TRUE;
-//}
-
 
 void CImageToolView::OnDrawLine()
 {
@@ -1288,23 +1264,6 @@ void CImageToolView::OnUpdateEndLine(CCmdUI *pCmdUI)
 	// TODO: 여기에 명령 업데이트 UI 처리기 코드를 추가합니다.
 	pCmdUI->SetCheck(m_nLine == 0);
 }
-
-
-//void CImageToolView::OnPaint()
-//{
-//	CPaintDC dc(this); // device context for painting
-//					   // TODO: 여기에 메시지 처리기 코드를 추가합니다.
-//					   // 그리기 메시지에 대해서는 CScrollView::OnPaint()을(를) 호출하지 마십시오.
-//	/*for (int i = 0; i < m_lines.GetSize(); i++) // Invalidate시에 복원해주는 루틴... 적
-//	{
-//		Line line = m_lines.GetAt(i);
-//		CPen pen(PS_SOLID, line.width, line.color);
-//		CPen* oldPen = dc.SelectObject(&pen);
-//		dc.MoveTo(line.ptFrom);
-//		dc.LineTo(line.ptTo);
-//		dc.SelectObject(oldPen);
-//	}*/
-//}
 
 void CImageToolView::OnEllipse()
 {	
@@ -1392,17 +1351,6 @@ void CImageToolView::OnThick()
 	}
 }
 
-//void CImageToolView::DrawLine(CDC *pDC, CPoint point)
-//{
-//	CPen pen;
-//	pen.CreatePen(PS_SOLID, 1, m_color);
-//	CPen * pOldPen = (CPen *)pDC->SelectObject(&pen);
-//
-//	pDC->MoveTo(m_nowP.x, m_nowP.y);
-//	pDC->LineTo(m_afterP.x, m_afterP.y);
-//}
-
-
 void CImageToolView::OnAllerase()
 {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
@@ -1430,18 +1378,6 @@ void CImageToolView::OnParterase()
 	m_bStick = FALSE;
 	m_nLine = FALSE;
 }
-
-
-//void CImageToolView::OnPaint()
-//{
-//	CPaintDC dc(this); // device context for painting
-//					   // TODO: 여기에 메시지 처리기 코드를 추가합니다.
-//					   // 그리기 메시지에 대해서는 CScrollView::OnPaint()을(를) 호출하지 마십시오.
-//
-//	dc.MoveTo(m_nowP);
-//	dc.LineTo(m_afterP);
-//}
-
 
 void CImageToolView::OnStraightline()
 {
@@ -1694,4 +1630,11 @@ void CImageToolView::OnAllErase()
 	CRect rect;
 	GetClientRect(&rect);
 	dc.Rectangle(&rect);
+}
+
+void CImageToolView::OnChatServer()
+{
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	
+	AfxBeginThread(RUNTIME_CLASS(CUIServerThread));
 }

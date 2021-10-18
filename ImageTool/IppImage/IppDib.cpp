@@ -129,6 +129,8 @@ BOOL IppDib::Load(const char* filename) {
 	const char* ext = strrchr(filename, '.');
 	if (!_strcmpi(ext, ".bmp"))
 		return LoadBMP(filename);
+	else if (!_strcmpi(ext, ".jpg"))
+		return LoadJPG(filename);
 	else
 		return FALSE;
 }
@@ -137,6 +139,8 @@ BOOL IppDib::Save(const char* filename) {
 	const char* ext = strrchr(filename, '.');
 	if (!_strcmpi(ext, ".bmp"))
 		return SaveBMP(filename);
+	else if (!_strcmpi(ext, ".jpg"))
+		return SaveJPG(filename);
 	else
 		return FALSE;
 }

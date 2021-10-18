@@ -21,6 +21,5 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-//	int m_nThick;
 	int m_nThick;
 };

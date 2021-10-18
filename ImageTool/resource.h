@@ -5,6 +5,7 @@
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             100
 #define ID_INDICATOR_POINT              101
+#define IDP_SOCKETS_INIT_FAILED         103
 #define IDC_POINTER                     104
 #define IDC_CURSOR_DEFAULT              104
 #define IDR_POPUP_EDIT                  119
@@ -54,6 +55,11 @@
 #define IDD_COLOR_COMBINE               362
 #define IDD_BINARIZATION                364
 #define IDD_SELECT_DIFFIMG              366
+#define IDD_DIALOG1                     368
+#define IDD_CHAT_CLIENT                 370
+#define IDD_IPCONNECT                   372
+#define IDD_CHAT_SERVER                 374
+#define IDD_FOURIER_DESCRIPTOR          376
 #define IDC_WIDTH                       1000
 #define IDC_HEIGHT                      1001
 #define IDC_IMAGE_TYPE                  1002
@@ -81,6 +87,8 @@
 #define IDC_HARRIS_THRESHOLD            1010
 #define IDC_COLOR_SPACE                 1010
 #define IDC_THRESHOLD_EDIT              1010
+#define IDC_EDIT_MESSAGE                1010
+#define IDC_PERCENT                     1010
 #define IDC_FUNCTION5                   1011
 #define IDC_ALPHA_SLIDER                1011
 #define IDC_DIFFUSION_ITER              1011
@@ -106,7 +114,6 @@
 #define IDC_ROTATE2                     1026
 #define IDC_ROTATE3                     1027
 #define IDC_ROTATE4                     1028
-#define IDC_LIST                        1029
 #define IDC_RADIO_SOLID                 1031
 #define IDC_RADIO_DASH                  1032
 #define IDC_FILTER_TYPE                 1032
@@ -119,6 +126,15 @@
 #define IDC_COMBO_IMAGE3                1037
 #define IDC_IMAGE_PREVIEW               1037
 #define IDC_THRESHOLD_SLIDER            1038
+#define IDC_LIST1                       1040
+#define IDC_LIST                        1040
+#define IDC_BUTTON_SEND                 1043
+#define IDC_BUTTON_CONNECT              1044
+#define IDC_IPADDRESS1                  1045
+#define IDC_BUTTON_REFRESH              1045
+#define IDC_BUTTON1                     1046
+#define IDC_BUTTON_EXECUTE              1046
+#define IDC_EDIT_COMMAND                1048
 #define ID_32771                        32771
 #define ID_WINDOW_DUPLICATE             32772
 #define ID_32773                        32773
@@ -310,14 +326,30 @@
 #define ID_32979                        32979
 #define ID_32980                        32980
 #define ID_ALL_ERASE                    32981
+#define ID_32982                        32982
+#define ID_CHAT_SERVER                  32983
+#define ID_32984                        32984
+#define ID_CHAT_CLIENT                  32985
+#define ID_32986                        32986
+#define ID_32987                        32987
+#define ID_32988                        32988
+#define ID_32989                        32989
+#define ID_FOURIER_DESCRIPTOR           32990
+#define ID_32991                        32991
+#define ID_INVARIANT_MOMENTS            32992
+#define ID_32993                        32993
+#define ID_ZERNIKE_MOMENTS              32994
+#define ID_32995                        32995
+#define ID_TEMPLATE_MATHCING            32996
+#define ID_TEMPLATE_MATCHING            32997
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        368
-#define _APS_NEXT_COMMAND_VALUE         32982
-#define _APS_NEXT_CONTROL_VALUE         1040
+#define _APS_NEXT_RESOURCE_VALUE        378
+#define _APS_NEXT_COMMAND_VALUE         32998
+#define _APS_NEXT_CONTROL_VALUE         1049
 #define _APS_NEXT_SYMED_VALUE           311
 #endif
 #endif

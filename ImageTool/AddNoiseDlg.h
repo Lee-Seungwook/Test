@@ -21,7 +21,6 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	// int m_nAmount;// int m_nAmount;
 	int m_nAmount;
 	int m_nNoiseType;
 	virtual BOOL OnInitDialog();

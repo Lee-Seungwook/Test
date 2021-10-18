@@ -6,6 +6,7 @@
 #pragma once
 #include ".\IppImage\IppDib.h" // 상대경로 지정
 
+
 class CMyData;
 class CMyStick;
 class CMyEllipse;
@@ -20,7 +21,7 @@ class CMyColorFill;
 
 class CImageToolDoc : public CDocument
 {
-protected: // serialization에서만 만들어집니다.
+public: // serialization에서만 만들어집니다.
 	CImageToolDoc() noexcept;
 	DECLARE_DYNCREATE(CImageToolDoc)
 
@@ -86,11 +87,9 @@ public:
 	afx_msg void OnColorbrightnessContrast();
 	afx_msg void OnUpdateColorbrightnessContrast(CCmdUI *pCmdUI);
 	afx_msg void OnGammaCorrection();
-//	afx_msg void OnUpdateGammaCorrection(CCmdUI *pCmdUI);
 	afx_msg void OnViewHistogram();
 	afx_msg void OnHistoStretching();
 	afx_msg void OnHistoEqualization();
-//	afx_msg void OnArimeticLogical();
 	afx_msg void OnArithmeticLogical();
 	afx_msg void OnBitplaneSlicing();
 	afx_msg void OnFilterMean();
@@ -116,7 +115,6 @@ public:
 	afx_msg void OnEdgePrewitt();
 	afx_msg void OnEdgeSobel();
 	afx_msg void OnEdgeCanny();
-	//afx_msg void OnHoughLine();
 	afx_msg void OnHoughLine();
 	afx_msg void OnHarrisCorner();
 	afx_msg void OnColorGrayscale();
@@ -173,7 +171,10 @@ public:
 	afx_msg void OnSearchDot();
 	afx_msg void OnSearchNoise();
 	afx_msg void OnUpdateBitplaneSlicing(CCmdUI *pCmdUI);
-//	afx_msg void OnAllErase();
+	afx_msg void OnFourierDescriptor();
+	afx_msg void OnInvariantMoments();
+	afx_msg void OnZernikeMoments();
+	afx_msg void OnTemplateMatching();
 };
 
 

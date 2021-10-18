@@ -76,6 +76,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -97,6 +98,9 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
+      <AdditionalLibraryDirectories>$(solutiondir)ChatClienLibarary\</AdditionalLibraryDirectories>
+      <LargeAddressAware>true</LargeAddressAware>
+      <AdditionalDependencies>IppImage\jpeg.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -192,10 +196,16 @@
     <ClInclude Include="BinarizationDlg.h" />
     <ClInclude Include="BrightnessContrastDlg.h" />
     <ClInclude Include="CannyEdgeDlg.h" />
+    <ClInclude Include="ChattingClientDlg.h" />
+    <ClInclude Include="ChattingServerDlg.h" />
     <ClInclude Include="ChildFrm.h" />
+    <ClInclude Include="ChildSocket.h" />
+    <ClInclude Include="ClientSocket.h" />
     <ClInclude Include="ColorCombineDlg.h" />
+    <ClInclude Include="ConnectDlg.h" />
     <ClInclude Include="DiffusionDlg.h" />
     <ClInclude Include="FileNewDlg.h" />
+    <ClInclude Include="FourierDescDlg.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="FreqFilteringDlg.h" />
     <ClInclude Include="GammaCorrectionDlg.h" />
@@ -218,6 +228,7 @@
     <ClInclude Include="IppImage\RGBBYTE.h" />
     <ClInclude Include="IppSegment.h" />
     <ClInclude Include="LineStyleDlg.h" />
+    <ClInclude Include="ListenSocket.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="MyColorFill.h" />
     <ClInclude Include="MyData.h" />
@@ -240,6 +251,8 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="ThickDlg.h" />
     <ClInclude Include="TranslateDlg.h" />
+    <ClInclude Include="UIServerThread.h" />
+    <ClInclude Include="UIThread.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AddNoiseDlg.cpp" />
@@ -247,11 +260,17 @@
     <ClCompile Include="BinarizationDlg.cpp" />
     <ClCompile Include="BrightnessContrastDlg.cpp" />
     <ClCompile Include="CannyEdgeDlg.cpp" />
+    <ClCompile Include="ChattingClientDlg.cpp" />
+    <ClCompile Include="ChattingServerDlg.cpp" />
     <ClCompile Include="ChildFrm.cpp" />
+    <ClCompile Include="ChildSocket.cpp" />
+    <ClCompile Include="ClientSocket.cpp" />
     <ClCompile Include="ColorCombineDlg.cpp" />
+    <ClCompile Include="ConnectDlg.cpp" />
     <ClCompile Include="CTranslateDlg.cpp" />
     <ClCompile Include="DiffusionDlg.cpp" />
     <ClCompile Include="FileNewDlg.cpp" />
+    <ClCompile Include="FourierDescDlg.cpp" />
     <ClCompile Include="FreqFilteringDlg.cpp" />
     <ClCompile Include="GammaCorrectionDlg.cpp" />
     <ClCompile Include="GaussianDlg.cpp" />
@@ -268,9 +287,11 @@
     <ClCompile Include="IppGeometry.cpp" />
     <ClCompile Include="IppImage\IppConvert.cpp" />
     <ClCompile Include="IppImage\IppDib.cpp" />
+    <ClCompile Include="IppImage\IppDibJpg.cpp" />
     <ClCompile Include="IppImage\IppEnhance.cpp" />
     <ClCompile Include="IppSegment.cpp" />
     <ClCompile Include="LineStyleDlg.cpp" />
+    <ClCompile Include="ListenSocket.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="MyColorFill.cpp" />
     <ClCompile Include="MyData.cpp" />
@@ -295,6 +316,8 @@
     <ClCompile Include="SelectDiffImageDlg.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="ThickDlg.cpp" />
+    <ClCompile Include="UIServerThread.cpp" />
+    <ClCompile Include="UIThread.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ImageTool.reg" />

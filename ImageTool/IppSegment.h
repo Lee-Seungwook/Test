@@ -2,11 +2,14 @@
 #include <vector>
 #include "IppImage/IppImage.h"
 #include "IppFeature.h"
+#include "IppImage/IppEnhance.h"
+#include "ChatClienLibarary/SegmentAPI.h"
+#pragma comment( lib, "ChatClienLibrary.lib")
 
 class IppLabelInfo
 {
 public:
-	std::vector<IppPoint> pixels; // °´Ã¼ ÇÈ¼¿ ÁÂÇ¥ ¸ñ·Ï
+	std::vector<APIPoint> pixels; // °´Ã¼ ÇÈ¼¿ ÁÂÇ¥ ¸ñ·Ï
 	int cx, cy; // °´Ã¼ÀÇ Áß½É ÁÂÇ¥
 	int minx, miny, maxx, maxy; // °´Ã¼¸¦ °¨½Î´Â »ç°¢Çü ¿µ¿ªÀÇ ÁÂ»ó±Í, ¿ìÇÏ±Í Á¡ÀÇ ÁÂÇ¥
 
@@ -20,9 +23,9 @@ public:
 void IppBinarization(IppByteImage& imgSrc, IppByteImage& imgDst, int threshold);
 int IppBinarizationIterative(IppByteImage& imgSrc);
 
-int IppLabeling(IppByteImage& imgSrc, IppIntImage& imgDst, std::vector<IppLabelInfo>& labels);
+int IppLabeling(IppByteImage& imgSrc, IppIntImage& imgDst, std::vector<APILabelInfo>& labels);
 
-void IppContourTracing(IppByteImage& imgSrc, int sx, int sy, std::vector<IppPoint>& cp);
+void IppContourTracing(IppByteImage& imgSrc, int sx, int sy, std::vector<APIPoint>& cp);
 
 void IppMorphologyErosion(IppByteImage& imgSrc, IppByteImage& imgDst);
 void IppMorphologyDilation(IppByteImage& imgSrc, IppByteImage& imgDst);
@@ -36,4 +39,13 @@ void IppMorphologyGrayDilation(IppByteImage& imgSrc, IppByteImage& imgDst);
 void IppMorphologyGrayOpening(IppByteImage& imgSrc, IppByteImage& imgDst);
 void IppMorphologyGrayClosing(IppByteImage& imgSrc, IppByteImage& imgDst);
 
-int LabelingDot(IppByteImage& imgSrc, IppIntImage& imgDst, std::vector<IppLabelInfo>& labels);
+int LabelingDot(IppByteImage& imgSrc, IppIntImage& imgDst, std::vector<APILabelInfo>& labels);
+
+void IppFourierDescriptor(IppByteImage& img, int sx, int sy, int percent, std::vector<APIPoint>& cp);
+
+void IppInvariantMoments(IppByteImage& img, double m[7]);
+double IppGeometricMoment(IppByteImage& img, int p, int q);
+
+bool IppZernikeMoments(IppByteImage& img, int n, int m, double& zr, double& zi);
+
+APIPoint IppTemplateMatching(IppByteImage& imgSrc, IppByteImage& imgTmpl, IppIntImage& imgMap);

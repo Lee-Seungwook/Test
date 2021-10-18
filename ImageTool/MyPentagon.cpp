@@ -77,10 +77,6 @@ void CMyPentagon::Draw(CDC *pDC)
 	pDC->LineTo(m_temp1.x, m_ptArray[0].y);
 	pDC->EndPath(); // 이거랑
 	pDC->StrokeAndFillPath(); // 이 친구가 없으면 도형으로 그려지지 않는다. 없으면 각각의 직선으로 그려지기 때문이다.
-	/*for (int i = 1; i < m_ptArray.GetSize(); i++)
-	{
-		pDC->LineTo(m_ptArray[i]);
-	}*/
 	pDC->SelectObject(pOldPen);
 	pDC->SelectObject(oldBrush);
 }
